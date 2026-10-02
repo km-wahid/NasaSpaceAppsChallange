@@ -1,0 +1,40 @@
+services:
+  app:
+    build: .
+    ports:
+      - "3333:3333"
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: nasaweb
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-nasaweb}
+      DB_DATABASE: nasaweb
+      NASA_POWER_BASE_URL: https://power.larc.nasa.gov/api
+      NASA_POWER_TIMEOUT_MS: 30000
+      NASA_PROFILE_MAX_AGE_DAYS: 30
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - app_data:/app/tmp
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: nasaweb
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-nasaweb}
+      POSTGRES_DB: nasaweb
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database:/imports:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nasaweb -d nasaweb"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+volumes:
+  app_data:
+  postgres_data:

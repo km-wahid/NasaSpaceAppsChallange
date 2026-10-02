@@ -1,0 +1,49 @@
+# Dependencies and generated application output
+app/node_modules/
+app/build/
+app/.adonisjs/
+app/.vite/
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+app/.env
+app/.env.*
+!app/.env.example
+
+# Runtime files
+app/tmp/
+app/storage/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+
+# Test and browser artifacts
+coverage/
+playwright-report/
+test-results/
+/tmp/
+*.png
+*.jpg
+
+# Local database/import artifacts
+database/*.sqlite
+database/*.sqlite3
+database/*.db
+postgres_data/
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+*.pyc
+__pycache__/
+
+# Generated analytical exports
+reports/**/.data-app-offline/
+/reports/

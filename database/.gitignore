@@ -1,0 +1,4 @@
+generated/
+.env
+*.sqlite
+*.sqlite.tmp

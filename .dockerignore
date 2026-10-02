@@ -1,0 +1,9 @@
+**/node_modules
+**/build
+**/.env
+.git
+analysis
+database
+reports
+scripts
+Project_dataset.xlsx
