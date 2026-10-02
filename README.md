@@ -2,11 +2,38 @@
 
 Deterministic NASA-powered crop-rotation decision support built with AdonisJS, React/Inertia and PostgreSQL.
 
-## Run
+## Run after cloning
+
+Requirements: Docker Desktop with Compose, Python 3, and Git.
 
 ```bash
+git clone https://github.com/km-wahid/NasaSpaceAppsChallange.git
+cd NasaSpaceAppsChallange
+
+# Generate the PostgreSQL CSV imports from the included workbook.
+python3 database/prepare_import.py
+
+# Build the app, run migrations, and start PostgreSQL plus AdonisJS.
 docker compose -f docker.yml up --build -d
+
+# Load the imported Bangladesh district and crop records.
+docker compose -f docker.yml exec -T postgres \
+  psql -v ON_ERROR_STOP=1 -U nasaweb -d nasaweb -f /imports/load_postgres.sql
+```
+
+Open http://localhost:3333/ after the import completes.
+
+The first startup runs all AdonisJS migrations automatically. The import command is separate because it loads the workbook data into the already-created PostgreSQL tables.
+
+To watch the app:
+
+```bash
 docker compose -f docker.yml logs -f app
+```
+
+To stop it:
+
+```bash
 docker compose -f docker.yml down
 ```
 
