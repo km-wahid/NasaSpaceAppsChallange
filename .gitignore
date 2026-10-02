@@ -2,6 +2,15 @@
 app/node_modules/
 app/build/
 app/.adonisjs/
+# The browser Tuyau client imports this registry during a production build.
+# Keep the small checked-in fallback so a fresh clone can build before Ace
+# regenerates the rest of .adonisjs.
+!app/.adonisjs/
+!app/.adonisjs/client/
+!app/.adonisjs/client/registry/
+!app/.adonisjs/client/registry/index.ts
+!app/.adonisjs/client/registry/schema.d.ts
+!app/.adonisjs/client/registry/tree.d.ts
 app/.vite/
 
 # Local environment and secrets
