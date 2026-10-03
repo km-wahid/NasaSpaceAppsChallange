@@ -12,6 +12,7 @@ services:
       NASA_POWER_BASE_URL: https://power.larc.nasa.gov/api
       NASA_POWER_TIMEOUT_MS: 30000
       NASA_PROFILE_MAX_AGE_DAYS: 30
+      NOMINATIM_BASE_URL: ${NOMINATIM_BASE_URL:-https://nominatim.openstreetmap.org/}
     depends_on:
       postgres:
         condition: service_healthy

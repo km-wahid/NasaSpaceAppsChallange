@@ -17,6 +17,14 @@ const RecommendationsController = () => import('#controllers/recommendations_con
 
 router.on('/').renderInertia('home', {}).as('home')
 router.get('/api/v1/catalog', [() => import('#controllers/catalog_controller'), 'index'])
+router.post('/api/v1/crop-rotation/analyze', [
+  () => import('#controllers/farmer_analysis_controller'),
+  'analyze',
+])
+router.post('/api/v1/location/reverse', [
+  () => import('#controllers/location_controller'),
+  'reverse',
+])
 
 router
   .group(() => {
@@ -31,6 +39,8 @@ router
 router
   .group(() => {
     router.post('logout', [controllers.Session, 'destroy'])
+    router.get('api/v1/location', [() => import('#controllers/location_controller'), 'show'])
+    router.put('api/v1/location', [() => import('#controllers/location_controller'), 'update'])
 
     router.get('api/v1/farms', [FarmsController, 'index'])
     router.post('api/v1/farms', [FarmsController, 'store'])

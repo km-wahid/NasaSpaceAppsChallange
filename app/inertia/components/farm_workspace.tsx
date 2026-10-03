@@ -3,20 +3,6 @@ import type { Catalog } from './data_browser'
 import { api } from '../lib/api'
 
 type Farm = { farm_id: string; name: string; district_id: string }
-type Recommendation = {
-  crops: Array<{ name: string }>
-  scores: Record<string, number>
-  plantingDates: string[]
-  harvestDates: string[]
-  totalProfit: number
-  explanations: Array<{ message: string }>
-}
-type Result = {
-  runId: string
-  recommendations: Recommendation[]
-  evaluatedCount: number
-  rejectedCount: number
-}
 type Inputs = {
   soil: { ph: string; sampled_at: string } | null
   measurements: Array<{ nutrient: string; threshold_set_id: string; raw_value: string }>
@@ -60,10 +46,6 @@ export default function FarmWorkspace({ catalog }: { catalog: Catalog }) {
     }))
   )
   const [environment, setEnvironment] = useState<Record<string, unknown> | null>(null)
-  const [result, setResult] = useState<Result | null>(null)
-  const [startSeason, setStartSeason] = useState(
-    String(catalog.seasons.find((season) => season.season_name === 'Kharif 2')?.season_id ?? '')
-  )
   const [busy, setBusy] = useState('')
   const [step, setStep] = useState(0)
   const [inputsLoading, setInputsLoading] = useState(false)
@@ -84,7 +66,6 @@ export default function FarmWorkspace({ catalog }: { catalog: Catalog }) {
   }, [catalog.district.district_id])
   useEffect(() => {
     setEnvironment(null)
-    setResult(null)
     setMessage('')
     setError('')
     setHistory(defaultHistory)
@@ -322,12 +303,6 @@ export default function FarmWorkspace({ catalog }: { catalog: Catalog }) {
               >
                 Refresh NASA observations
               </button>
-              {environment && (
-                <details>
-                  <summary>View cached environmental data</summary>
-                  <pre>{JSON.stringify(environment, null, 2)}</pre>
-                </details>
-              )}
             </section>
             <section>
               <h3>2. Previous crops</h3>
@@ -608,41 +583,10 @@ export default function FarmWorkspace({ catalog }: { catalog: Catalog }) {
               </form>
             </section>
             <section>
-              <h3>5. Rotation strategies</h3>
-              <label>
-                Starting season
-                <select
-                  aria-label="Starting season"
-                  value={startSeason}
-                  onChange={(event) => setStartSeason(event.target.value)}
-                >
-                  {catalog.seasons.map((season) => (
-                    <option key={season.season_id} value={season.season_id}>
-                      {season.season_name}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <button
-                type="button"
-                onClick={() =>
-                  void act('Generate recommendations', async () => {
-                    setResult(null)
-                    setResult(
-                      await api<Result>(`${base}/recommendations`, 'POST', {
-                        startSeasonId: Number(startSeason),
-                        horizon: 3,
-                        constraints: { minimumDistinctCrops: 2, allowAdjacentRepeat: false },
-                      })
-                    )
-                  })
-                }
-              >
-                Generate top rotations
-              </button>
+              <h3>Ready to explore?</h3>
               <p>
-                This uses your saved priorities and cached environmental profile. Save changes
-                before generating again.
+                After saving these details, choose this farm in the dashboard above and build your
+                outlook.
               </p>
             </section>
           </fieldset>
@@ -654,39 +598,6 @@ export default function FarmWorkspace({ catalog }: { catalog: Catalog }) {
         <p role="alert" className="data-warning">
           {error}
         </p>
-      )}
-      {result && (
-        <section>
-          <h3>Results</h3>
-          <p>
-            {result.evaluatedCount} sequences evaluated · {result.rejectedCount} rejected
-          </p>
-          {!result.recommendations.length && (
-            <p>No feasible rotations were found for these saved inputs.</p>
-          )}
-          <div className="data-metrics">
-            {result.recommendations.map((rotation, index) => (
-              <article key={index}>
-                <h3>
-                  {index + 1}. {rotation.crops.map((crop) => crop.name).join(' → ')}
-                </h3>
-                <p>Overall: {rotation.scores.overall.toFixed(1)} / 100</p>
-                {labels.map((label) => (
-                  <p key={label}>
-                    {label}: {rotation.scores[label].toFixed(1)}
-                  </p>
-                ))}
-                <p>
-                  Profit reference: BDT {rotation.totalProfit.toLocaleString()} (not a forecast)
-                </p>
-                {rotation.explanations.map((item, i) => (
-                  <p key={i}>{item.message}</p>
-                ))}
-              </article>
-            ))}
-          </div>
-          <a href={`${base}/recommendations/${result.runId}`}>Open saved recommendation details</a>
-        </section>
       )}
     </section>
   )

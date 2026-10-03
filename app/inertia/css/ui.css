@@ -1,0 +1,63 @@
+@layer theme, base, legacy, components, utilities;
+@import 'tailwindcss';
+@import './app.css' layer(legacy);
+@plugin "daisyui" {
+  themes: false;
+}
+@plugin "daisyui/theme" {
+  name: 'orbit';
+  default: true;
+  prefersdark: false;
+  color-scheme: light;
+  --color-base-100: #fffefa;
+  --color-base-200: #f4f6f0;
+  --color-base-300: #dfe6dc;
+  --color-base-content: #203b2c;
+  --color-primary: #246349;
+  --color-primary-content: #ffffff;
+  --color-secondary: #315e78;
+  --color-secondary-content: #ffffff;
+  --color-accent: #d6e8c5;
+  --color-accent-content: #203b2c;
+  --color-neutral: #203b2c;
+  --color-neutral-content: #ffffff;
+  --color-info: #315e78;
+  --color-info-content: #ffffff;
+  --color-success: #2c6b48;
+  --color-success-content: #ffffff;
+  --color-warning: #795319;
+  --color-warning-content: #ffffff;
+  --color-error: #a63e35;
+  --color-error-content: #ffffff;
+  --radius-selector: 0.5rem;
+  --radius-field: 0.75rem;
+  --radius-box: 1rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 0;
+  --noise: 0;
+}
+@keyframes farmer-dashboard-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.farmer-dashboard-enter {
+  animation: farmer-dashboard-enter 280ms ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .farmer-flow,
+  .farmer-flow *,
+  .farmer-flow *::before,
+  .farmer-flow *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}

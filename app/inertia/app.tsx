@@ -1,4 +1,4 @@
-import './css/app.css'
+import './css/ui.css'
 import { ReactElement } from 'react'
 import { client } from './client'
 import Layout from '~/layouts/default'

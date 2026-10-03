@@ -4,8 +4,11 @@
  */
 
 export const controllers = {
+  Catalog: () => import('#controllers/catalog_controller'),
   Environment: () => import('#controllers/environment_controller'),
+  FarmerAnalysis: () => import('#controllers/farmer_analysis_controller'),
   Farms: () => import('#controllers/farms_controller'),
+  Location: () => import('#controllers/location_controller'),
   NewAccount: () => import('#controllers/new_account_controller'),
   Recommendations: () => import('#controllers/recommendations_controller'),
   Session: () => import('#controllers/session_controller'),

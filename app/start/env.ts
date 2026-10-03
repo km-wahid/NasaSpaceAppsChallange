@@ -26,6 +26,7 @@ export default await Env.create(new URL('../', import.meta.url), {
   NASA_POWER_BASE_URL: Env.schema.string.optional({ format: 'url', tld: false }),
   NASA_POWER_TIMEOUT_MS: Env.schema.number.optional(),
   NASA_PROFILE_MAX_AGE_DAYS: Env.schema.number.optional(),
+  NOMINATIM_BASE_URL: Env.schema.string.optional({ format: 'url', tld: false }),
 
   /*
   |----------------------------------------------------------

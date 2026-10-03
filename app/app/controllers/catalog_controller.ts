@@ -18,7 +18,8 @@ export default class CatalogController {
         : districts.find((row) => Number(row.district_id) === Number(requestedId))
     if (!district) return response.notFound({ error: 'DISTRICT_NOT_FOUND' })
     const batch = await db.from('import_batches').orderBy('imported_at', 'desc').first()
-    const [crops, seasons, thresholds, readiness] = await Promise.all([
+    const [divisions, crops, seasons, thresholds, readiness] = await Promise.all([
+      db.from('divisions').select('division_id', 'division_name').orderBy('division_name'),
       db.from('crops').select('crop_id', 'crop_name').orderBy('crop_name'),
       db.from('seasons').orderBy('season_id'),
       db
@@ -69,6 +70,7 @@ export default class CatalogController {
       : [[], null, null, []]
     return response.ok({
       districts,
+      divisions,
       district,
       crops,
       seasons,

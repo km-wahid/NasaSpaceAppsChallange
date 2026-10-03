@@ -34,11 +34,11 @@ export default function Layout({ children }: { children: ReactElement<Data.Share
             <Icon name="grid" />
             Overview
           </a>
-          <a href="/#crop-library">
+          <a href="/#crop-plans">
             <Icon name="leaf" />
-            Crop library
+            Crop plans
           </a>
-          <a href={children.props.user ? '/#farm-workspace' : '/login'}>
+          <a href={children.props.user ? '/#farm-details' : '/login'}>
             <Icon name="layers" />
             My farms
           </a>
