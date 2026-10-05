@@ -33,7 +33,7 @@ const riskLabel = (input: unknown) =>
 /** Ordinal presentation only. This does not estimate irrigation or replace engine water constraints. */
 export function buildWaterOutlook(
   rows: Array<{ season_name: string; rainfall_mm: unknown }>,
-  choice: WaterLevel,
+  choice: WaterLevel | null,
   seasonMonths: Record<string, number[]>,
   risk: { drought_risk?: unknown; flood_risk?: unknown } | null,
   soil: { soil_nitrogen_status?: unknown } | null
@@ -52,7 +52,10 @@ export function buildWaterOutlook(
         : maximum === minimum
           ? 1
           : Math.min(2, Math.floor((3 * (rain - minimum)) / (maximum - minimum)))
-    const outlook = relativeRain === null ? null : Math.round((relativeRain + ordinal[choice]) / 2)
+    const outlook =
+      relativeRain === null || choice === null
+        ? null
+        : Math.round((relativeRain + ordinal[choice]) / 2)
     return {
       month,
       level: outlook === null ? 'Not available' : labels[outlook],
@@ -63,7 +66,7 @@ export function buildWaterOutlook(
   })
   return {
     level: choice,
-    label: labels[ordinal[choice]],
+    label: choice === null ? 'Not provided' : labels[ordinal[choice]],
     source: 'Farmer-reported water availability with historical seasonal rainfall context',
     chartNote:
       'Season-level patterns shown across their months. This is a planning guide, not a monthly measurement or forecast.',
@@ -75,40 +78,94 @@ export function buildWaterOutlook(
         : 'Not available',
     dryPeriodRisk: riskLabel(risk?.drought_risk),
     heavyRainRisk: riskLabel(risk?.flood_risk),
-    waterStress: choice === 'low' ? 'High' : choice === 'medium' ? 'Medium' : 'Low',
+    waterStress:
+      choice === null
+        ? 'Not available'
+        : choice === 'low'
+          ? 'High'
+          : choice === 'medium'
+            ? 'Medium'
+            : 'Low',
     soilStress: 'Needs a farm soil test',
   }
 }
 
 /** Uses scheduled dates and calculated components from the existing deterministic engine. */
-export function presentRotationPlans(rotations: RotationResult[], runId: string | number) {
-  const needs = rotations.flatMap((rotation) =>
-    rotation.crops.map((crop) => crop.waterRequirementMm)
+export function presentRotationPlans(
+  rotations: RotationResult[],
+  runId: string | number,
+  missingChecks: string[] = []
+) {
+  const soilMissing = missingChecks.some(
+    (check) => check.includes('soil test') || check.includes('crop soil requirements')
   )
+  const climateMissing = missingChecks.some(
+    (check) => check.includes('environmental profile') || check.includes('climate requirements')
+  )
+  const waterMissing =
+    climateMissing ||
+    missingChecks.some(
+      (check) => check.includes('irrigation') || check.includes('crop water requirements')
+    )
+  const needs = rotations
+    .flatMap((rotation) => rotation.crops.map((crop) => crop.waterRequirementMm))
+    .filter((need): need is number => need !== null)
   const min = needs.length ? Math.min(...needs) : 0
   const max = needs.length ? Math.max(...needs) : 0
-  const demand = (water: number): WaterLevel =>
-    max === min
-      ? 'medium'
-      : water <= min + (max - min) / 3
-        ? 'low'
-        : water <= min + (2 * (max - min)) / 3
-          ? 'medium'
-          : 'high'
+  const demand = (water: number | null): WaterLevel | 'unknown' =>
+    water === null
+      ? 'unknown'
+      : max === min
+        ? 'medium'
+        : water <= min + (max - min) / 3
+          ? 'low'
+          : water <= min + (2 * (max - min)) / 3
+            ? 'medium'
+            : 'high'
   return rotations.map((rotation, index) => ({
     id: `${runId}-${index}`,
+    runId: String(runId),
+    rank: index + 1,
     label: `Plan ${String.fromCharCode(65 + index)}`,
-    waterDemand: demand(rotation.totalWaterRequirementMm / rotation.crops.length),
-    fit: scoreLabel(rotation.scores.overall),
+    waterDemand: demand(
+      rotation.totalWaterRequirementMm === null
+        ? null
+        : rotation.totalWaterRequirementMm / rotation.crops.length
+    ),
+    fit: missingChecks.length ? 'Season-based guidance' : scoreLabel(rotation.scores.overall),
+    soilHealth: rotation.crops.some((crop) => (crop.soilEffectPoints ?? 0) > 0)
+      ? 'Includes potential nitrogen support'
+      : rotation.crops.some((crop) => crop.soilEffectPoints === undefined)
+        ? 'Soil evidence unavailable'
+        : rotation.scores.soil >= 70
+          ? 'More soil-supportive'
+          : rotation.scores.soil < 40
+            ? 'More nutrient pressure'
+            : 'Mixed soil effects',
+    soilNote:
+      'Potential effects from documented crop traits and sequence rules, not a measured improvement in your field.',
     crops: rotation.crops.map((crop, position) => ({
       id: crop.id,
       name: crop.name,
       plantingDate: rotation.plantingDates[position],
       harvestDate: rotation.harvestDates[position],
       waterNeed: demand(crop.waterRequirementMm),
-      condition: scoreLabel((crop.scores.water + crop.scores.climate) / 2),
-      reason:
-        crop.scores.water >= 70
+      condition: missingChecks.length
+        ? 'Confirm farm suitability'
+        : scoreLabel((crop.scores.water + crop.scores.climate) / 2),
+      soilContribution:
+        crop.soilEffectPoints === undefined
+          ? 'Soil evidence unavailable'
+          : crop.soilEffectPoints > 0
+            ? 'Potential soil support'
+            : crop.soilEffectPoints < 0
+              ? 'Potential soil pressure'
+              : 'Neutral reference effect',
+      soilSourceId: crop.soilEffectSourceId,
+      soilNote: crop.soilNote,
+      reason: waterMissing
+        ? 'Fits the published planting window. Farm water supply has not been checked.'
+        : crop.scores.water >= 70
           ? 'Fits the planting window, with favorable water checks for the saved farm inputs.'
           : 'Fits the planting window. Its water needs require careful planning.',
       nextCrop:
@@ -118,24 +175,27 @@ export function presentRotationPlans(rotations: RotationResult[], runId: string 
       {
         kind: 'water',
         title: 'Water fit',
-        text:
-          rotation.scores.water >= 70
+        text: waterMissing
+          ? 'Compared by crop water demand; add irrigation and environmental details to check supply.'
+          : rotation.scores.water >= 70
             ? 'Water checks are favorable for your saved supply and these crops.'
             : 'Water fit has trade-offs. Confirm irrigation before planting.',
       },
       {
         kind: 'soil',
         title: 'Soil fit',
-        text:
-          rotation.scores.soil >= 70
+        text: soilMissing
+          ? 'Uses documented crop effects and rotation rules. Your soil pH and nutrient levels have not been checked.'
+          : rotation.scores.soil >= 70
             ? 'Your saved soil measurements fit the crop requirements well.'
             : 'Soil fit has trade-offs. Check nutrient needs with local advice.',
       },
       {
         kind: 'climate',
         title: 'Seasonal fit',
-        text:
-          rotation.scores.climate >= 70
+        text: climateMissing
+          ? 'Uses published planting windows. Local temperature suitability has not been checked.'
+          : rotation.scores.climate >= 70
             ? 'The saved climate context fits these crops well.'
             : 'Climate fit has trade-offs despite passing feasibility checks.',
       },

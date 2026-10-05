@@ -17,10 +17,13 @@ export type Candidate = {
   windowEnd: string
   durationDays: number
   turnaroundDays?: number
-  waterRequirementMm: number
-  profitPerHa: number
+  waterRequirementMm: number | null
+  profitPerHa: number | null
   scores: Scores
-  nutrientRequirements: Record<'n' | 'p' | 'k', NutrientLevel>
+  soilEffectPoints?: number
+  soilEffectSourceId?: string
+  soilNote?: string
+  nutrientRequirements: Record<'n' | 'p' | 'k', NutrientLevel | null>
   nutrientContributions?: Partial<Record<'n' | 'p' | 'k', NutrientLevel>>
 }
 
@@ -38,8 +41,8 @@ export type TransitionRule = {
 export type EngineInput = {
   slots: Array<{ season: string; candidates: Candidate[] }>
   weights: Weights
-  availableWaterMm: number[]
-  farmAreaHa: number
+  availableWaterMm: Array<number | null>
+  farmAreaHa: number | null
   minimumTurnaroundDays: number
   minimumDistinctCrops: number
   allowAdjacentRepeat: boolean
@@ -65,8 +68,8 @@ export type RotationResult = {
   plantingDates: string[]
   harvestDates: string[]
   scores: Scores & { compatibility: number; diversity: number; overall: number }
-  totalWaterRequirementMm: number
-  totalProfit: number
+  totalWaterRequirementMm: number | null
+  totalProfit: number | null
   explanations: Explanation[]
 }
 
@@ -251,11 +254,17 @@ export function recommendRotations(input: EngineInput): EngineResult {
     }
 
     const climate = mean(crops.map((crop) => crop.scores.climate))
-    const totalWater = crops.reduce((sum, crop) => sum + crop.waterRequirementMm, 0)
-    const totalAvailableWater = input.availableWaterMm.reduce((sum, value) => sum + value, 0)
+    const totalWater = crops.some((crop) => crop.waterRequirementMm === null)
+      ? null
+      : crops.reduce((sum, crop) => sum + crop.waterRequirementMm!, 0)
+    const totalAvailableWater = input.availableWaterMm.some((value) => value === null)
+      ? null
+      : input.availableWaterMm.reduce<number>((sum, value) => sum + value!, 0)
     const water =
-      0.7 * mean(crops.map((crop) => crop.scores.water)) +
-      0.3 * Math.min(100, (100 * totalAvailableWater) / totalWater)
+      totalAvailableWater === null || totalWater === null
+        ? mean(crops.map((crop) => crop.scores.water))
+        : 0.7 * mean(crops.map((crop) => crop.scores.water)) +
+          0.3 * Math.min(100, (100 * totalAvailableWater) / totalWater)
     const transitionSoil = transitions.reduce((sum, [from, to], index) => {
       return sum + (rules[index]?.soilAdjustment ?? 0) - nutrientPenalty(from, to)
     }, 0)
@@ -297,7 +306,10 @@ export function recommendRotations(input: EngineInput): EngineResult {
       diversity,
       repeatPenalty,
       totalWaterRequirementMm: totalWater,
-      totalProfit: crops.reduce((sum, crop) => sum + crop.profitPerHa * input.farmAreaHa, 0),
+      totalProfit:
+        input.farmAreaHa === null || crops.some((crop) => crop.profitPerHa === null)
+          ? null
+          : crops.reduce((sum, crop) => sum + crop.profitPerHa! * input.farmAreaHa!, 0),
       explanations,
     })
   }
@@ -324,7 +336,9 @@ export function recommendRotations(input: EngineInput): EngineResult {
       (a, b) =>
         b.scores.overall - a.scores.overall ||
         b.scores.soil - a.scores.soil ||
-        a.totalWaterRequirementMm - b.totalWaterRequirementMm ||
+        (a.totalWaterRequirementMm !== null && b.totalWaterRequirementMm !== null
+          ? a.totalWaterRequirementMm - b.totalWaterRequirementMm
+          : 0) ||
         a.crops
           .map((crop) => crop.id)
           .join(',')

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import { Link } from '@adonisjs/inertia/react'
 import { api } from '../lib/api'
 import type { UserLocation } from '../lib/location'
 import LocationExperience from './location_experience'
@@ -147,6 +148,9 @@ export default function DataBrowser({ signedIn }: { signedIn: boolean }) {
             </a>
             . Native browser location is requested only when you click.
           </p>
+          <Link href="/sources" className="agri-inline-link">
+            Read about our data and its limits
+          </Link>
         </div>
       </details>
     </div>

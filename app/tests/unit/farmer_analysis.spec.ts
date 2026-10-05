@@ -85,7 +85,7 @@ test.group('farmer-facing analysis', () => {
       nutrientRequirements: { n: 'low', p: 'low', k: 'low' },
       scores: { water: 80, climate: 80, soil: 80, resilience: 80, economic: 80 },
     })
-    const result = recommendRotations({
+    const engineInput = {
       slots: [
         { season: 'Kharif 2', candidates: [candidate(1, '2026-07-01', 600)] },
         { season: 'Rabi', candidates: [candidate(2, '2026-11-01', 100)] },
@@ -99,7 +99,17 @@ test.group('farmer-facing analysis', () => {
       allowAdjacentRepeat: false,
       history: [{ landUse: 'fallow', cropId: null }],
       rules: [],
+    } satisfies Parameters<typeof recommendRotations>[0]
+    const result = recommendRotations(engineInput)
+    const incompleteResult = recommendRotations({
+      ...engineInput,
+      availableWaterMm: [null, null, null],
+      farmAreaHa: null,
+      history: [],
     })
+    assert.lengthOf(incompleteResult.recommendations, 1)
+    assert.isNull(incompleteResult.recommendations[0].totalProfit)
+    assert.equal(incompleteResult.recommendations[0].scores.water, 80)
     const plans = presentRotationPlans(result.recommendations, 12)
     assert.lengthOf(plans, 1)
     assert.deepEqual(
@@ -116,6 +126,29 @@ test.group('farmer-facing analysis', () => {
     assert.isTrue(plans[0].tradeoffs.some((item) => item.text.includes('unreviewed')))
     assert.notProperty(plans[0], 'scores')
     assert.deepEqual(presentRotationPlans([], 12), [])
+    const optionalInput = structuredClone(result.recommendations)
+    optionalInput[0].crops[0].soilEffectPoints = 30
+    optionalInput[0].crops[1].soilEffectPoints = -20
+    const optionalPlans = presentRotationPlans(optionalInput, 14, [
+      'farm soil test',
+      'complete cached environmental profile',
+      'measured irrigation',
+    ])
+    assert.equal(optionalPlans[0].fit, 'Season-based guidance')
+    assert.equal(optionalPlans[0].crops[0].soilContribution, 'Potential soil support')
+    assert.equal(optionalPlans[0].crops[1].soilContribution, 'Potential soil pressure')
+    assert.equal(optionalPlans[0].crops[2].soilContribution, 'Soil evidence unavailable')
+    assert.include(optionalPlans[0].reasons[1].text, 'have not been checked')
+    const unknownWater = buildWaterOutlook(
+      [{ season_name: 'Rabi', rainfall_mm: 100 }],
+      null,
+      calendar,
+      null,
+      null
+    )
+    assert.equal(unknownWater.label, 'Not provided')
+    assert.equal(unknownWater.waterStress, 'Not available')
+    assert.isTrue(unknownWater.series.every((point) => point.index === null))
     const equalDemand = structuredClone(result.recommendations)
     equalDemand[0].crops.forEach((crop) => {
       crop.waterRequirementMm = 300

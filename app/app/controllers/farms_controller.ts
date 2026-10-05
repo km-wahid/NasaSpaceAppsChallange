@@ -1,5 +1,6 @@
 import db from '@adonisjs/lucid/services/db'
 import type { HttpContext } from '@adonisjs/core/http'
+import { randomUUID } from 'node:crypto'
 
 export default class FarmsController {
   async inputs({ auth, params, response }: HttpContext) {
@@ -48,23 +49,89 @@ export default class FarmsController {
       'irrigationAvailableMmPerSeason',
       'waterSource',
       'minimumTurnaroundDays',
+      'priorities',
     ])
-    if (!input.name || !input.districtId || Number(input.areaHectares) <= 0)
-      return response.unprocessableEntity({ error: 'INVALID_FARM' })
-    const [farm] = await db
-      .table('farms')
-      .insert({
-        user_id: auth.user!.id,
-        district_id: input.districtId,
-        name: input.name,
-        area_hectares: input.areaHectares,
-        latitude: input.latitude,
-        longitude: input.longitude,
-        irrigation_available_mm_per_season: input.irrigationAvailableMmPerSeason ?? 0,
-        water_source: input.waterSource,
-        minimum_turnaround_days: input.minimumTurnaroundDays ?? 10,
+    const keys = [
+      'climateWeight',
+      'waterWeight',
+      'soilWeight',
+      'resilienceWeight',
+      'economicWeight',
+    ] as const
+    const weights = keys.map((key) => Number(input.priorities?.[key]))
+    if (weights.reduce((sum, weight) => sum + Math.round(weight * 100), 0) !== 10000)
+      return response.unprocessableEntity({
+        error: 'Use priorities with at most two decimal places, totaling 100%.',
       })
-      .returning('*')
+    if (
+      weights.some((weight) => !Number.isFinite(weight) || weight < 0 || weight > 100) ||
+      weights.reduce((a, b) => a + b, 0) !== 100
+    )
+      return response.unprocessableEntity({ error: 'Please set priorities totaling 100%.' })
+    if (!/^\d+$/.test(String(input.districtId)) || !Number.isSafeInteger(Number(input.districtId)))
+      return response.unprocessableEntity({ error: 'INVALID_FARM' })
+    const district = await db.from('districts').where('district_id', input.districtId).first()
+    if (!district) return response.unprocessableEntity({ error: 'Select a supported district.' })
+    for (const [key, min, max] of [
+      ['areaHectares', 0.001, 1000000],
+      ['latitude', -90, 90],
+      ['longitude', -180, 180],
+      ['irrigationAvailableMmPerSeason', 0, 100000],
+      ['minimumTurnaroundDays', 0, 45],
+    ] as const) {
+      if (
+        input[key] !== undefined &&
+        input[key] !== null &&
+        (!Number.isFinite(Number(input[key])) ||
+          Number(input[key]) < min ||
+          Number(input[key]) > max)
+      )
+        return response.unprocessableEntity({ error: `Invalid ${key}. Leave it blank if unknown.` })
+    }
+    if (
+      (input.latitude === null || input.latitude === undefined) !==
+      (input.longitude === null || input.longitude === undefined)
+    )
+      return response.unprocessableEntity({
+        error: 'Provide both coordinates or leave both blank.',
+      })
+    if (
+      input.minimumTurnaroundDays !== null &&
+      input.minimumTurnaroundDays !== undefined &&
+      !Number.isInteger(Number(input.minimumTurnaroundDays))
+    )
+      return response.unprocessableEntity({
+        error: 'Land preparation days must be a whole number.',
+      })
+    if (input.name !== undefined && (typeof input.name !== 'string' || input.name.length > 100))
+      return response.unprocessableEntity({ error: 'Farm name must be at most 100 characters.' })
+    const farm = await db.transaction(async (trx) => {
+      const [created] = await trx
+        .table('farms')
+        .insert({
+          user_id: auth.user!.id,
+          district_id: input.districtId,
+          name:
+            input.name?.trim() || `${district.district_name} farm · ${randomUUID().slice(0, 8)}`,
+          area_hectares: input.areaHectares ?? null,
+          latitude: input.latitude ?? null,
+          longitude: input.longitude ?? null,
+          irrigation_available_mm_per_season: input.irrigationAvailableMmPerSeason ?? null,
+          water_source: input.waterSource,
+          minimum_turnaround_days: input.minimumTurnaroundDays ?? 10,
+        })
+        .returning('*')
+      await trx.table('farmer_preferences').insert({
+        farm_id: created.farm_id,
+        ...Object.fromEntries(
+          keys.map((key, i) => [
+            `${key.replace('Weight', '')}_weight_bp`,
+            Math.round(weights[i] * 100),
+          ])
+        ),
+      })
+      return created
+    })
     return response.created(farm)
   }
 
@@ -74,6 +141,61 @@ export default class FarmsController {
       .where({ farm_id: params.id, user_id: auth.user!.id })
       .first()
     return farm ? response.ok(farm) : response.notFound({ error: 'FARM_NOT_FOUND' })
+  }
+
+  async details({ auth, params, request, response }: HttpContext) {
+    const farm = await db
+      .from('farms')
+      .where({ farm_id: params.id, user_id: auth.user!.id })
+      .first()
+    if (!farm) return response.notFound({ error: 'FARM_NOT_FOUND' })
+    const fields = {
+      areaHectares: ['area_hectares', 0.001, 1000000],
+      latitude: ['latitude', -90, 90],
+      longitude: ['longitude', -180, 180],
+      irrigationAvailableMmPerSeason: ['irrigation_available_mm_per_season', 0, 100000],
+    } as const
+    const input = request.only(Object.keys(fields))
+    const update: Record<string, number | null> = {}
+    for (const [key, [column, min, max]] of Object.entries(fields)) {
+      if (input[key] === undefined) continue
+      const value = input[key] === null ? null : Number(input[key])
+      if (
+        value !== null &&
+        (input[key] === '' || !Number.isFinite(value) || value < min || value > max)
+      )
+        return response.unprocessableEntity({ error: `Invalid ${key}. Leave it blank if unknown.` })
+      update[column] = value
+    }
+    if (!Object.keys(update).length)
+      return response.unprocessableEntity({ error: 'No farm details provided.' })
+    const latitude = Object.hasOwn(update, 'latitude') ? update.latitude : farm.latitude
+    const longitude = Object.hasOwn(update, 'longitude') ? update.longitude : farm.longitude
+    if ((latitude === null) !== (longitude === null))
+      return response.unprocessableEntity({
+        error: 'Provide both coordinates or leave both blank.',
+      })
+    const updated = await db.transaction(async (trx) => {
+      const [row] = await trx
+        .from('farms')
+        .where('farm_id', farm.farm_id)
+        .update(update)
+        .returning('*')
+      if (
+        String(latitude) !== String(farm.latitude) ||
+        String(longitude) !== String(farm.longitude)
+      )
+        await trx
+          .from('farm_environment_profiles')
+          .where('farm_id', farm.farm_id)
+          .update({
+            feature_values: trx.raw(
+              'feature_values || \'{"invalidatedForLocationChange":true}\'::jsonb'
+            ),
+          })
+      return row
+    })
+    return response.ok(updated)
   }
 
   async preferences({ auth, params, request, response }: HttpContext) {

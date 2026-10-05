@@ -36,6 +36,8 @@ test-results/
 /tmp/
 *.png
 *.jpg
+# Bundled website photography is source, not a browser-test artifact.
+!app/inertia/assets/*.jpg
 
 # Local database/import artifacts
 database/*.sqlite

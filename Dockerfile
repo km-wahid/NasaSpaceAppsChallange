@@ -33,4 +33,4 @@ RUN npm ci --omit=dev
 
 EXPOSE 3333
 
-CMD ["sh", "-c", "if [ -z \"$APP_KEY\" ]; then if [ ! -s tmp/app.key ]; then node -e \"process.stdout.write(require('node:crypto').randomBytes(32).toString('base64url'))\" > tmp/app.key && chmod 600 tmp/app.key; fi; export APP_KEY=\"$(cat tmp/app.key)\"; fi; node ace migration:run --force && exec node bin/server.js"]
+CMD ["sh", "-c", "if [ -z \"$APP_KEY\" ]; then if [ ! -s tmp/app.key ]; then node -e \"process.stdout.write(require('node:crypto').randomBytes(32).toString('base64url'))\" > tmp/app.key && chmod 600 tmp/app.key; fi; export APP_KEY=\"$(cat tmp/app.key)\"; fi; node ace migration:run --force && node ace db:seed && exec node bin/server.js"]

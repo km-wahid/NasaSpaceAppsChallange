@@ -24,7 +24,7 @@ export default class EnvironmentController {
       .where('farm_id', params.id)
       .orderBy('calculated_at', 'desc')
       .first()
-    return profile
+    return profile && !profile.feature_values?.invalidatedForLocationChange
       ? response.ok(profile)
       : response.notFound({ error: 'ENVIRONMENT_PROFILE_MISSING' })
   }

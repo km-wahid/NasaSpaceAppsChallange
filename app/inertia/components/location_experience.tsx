@@ -7,6 +7,7 @@ import {
   type UserLocation,
 } from '../lib/location'
 import Icon from './icon'
+import landscape from '../assets/farm-landscape.jpg'
 
 type LocationState =
   | 'idle'
@@ -182,7 +183,7 @@ export default function LocationExperience({
 
   if (!expanded && location)
     return (
-      <section className="location-summary" aria-label="Your location">
+      <section className="location-summary card" aria-label="Your location">
         <span className="location-summary-pin">
           <Icon name="pin" />
         </span>
@@ -221,7 +222,7 @@ export default function LocationExperience({
           : headings[state]
   return (
     <section
-      className={`location-scene location-bg-${backgroundStyle}`}
+      className={`location-scene location-welcome location-bg-${backgroundStyle}`}
       data-motion={animationIntensity}
       style={
         {
@@ -231,14 +232,38 @@ export default function LocationExperience({
       }
       aria-labelledby={`${id}-heading`}
     >
-      <div className="location-context">
-        <span className="location-context-mark">
-          <Icon name="globe" size={17} />
-        </span>{' '}
-        EARTH DATA. LOCAL PERSPECTIVE.
+      <div className="location-intro">
+        <img src={landscape} alt="" className="location-intro-photo" />
+        <div className="location-intro-copy">
+          <span className="agri-eyebrow">
+            <Icon name="leaf" size={18} /> A LOCAL START
+          </span>
+          <h3>
+            Every field
+            <br />
+            has a <em>story.</em>
+          </h3>
+          <p>
+            Let’s start with yours. Your district connects the bigger Earth picture with your next
+            growing season.
+          </p>
+          <div className="location-intro-features">
+            <span>
+              <Icon name="sun" size={18} /> Seasonal context
+            </span>
+            <span>
+              <Icon name="water" size={18} /> Local water patterns
+            </span>
+            <span>
+              <Icon name="leaf" size={18} /> Farm-first planning
+            </span>
+          </div>
+        </div>
       </div>
-      <p className="sr-only" role="status" aria-live="polite">{label}</p>
-      <div className="location-card" data-state={state} aria-busy={busy}>
+      <p className="sr-only" role="status" aria-live="polite">
+        {label}
+      </p>
+      <div className="location-card card" data-state={state} aria-busy={busy}>
         <div
           className={`location-orb ${busy ? 'is-scanning' : ''} ${success ? 'is-success' : ''}`}
           aria-hidden="true"
@@ -317,6 +342,7 @@ export default function LocationExperience({
             <label htmlFor={`${id}-division`}>
               Division
               <select
+                className="select"
                 id={`${id}-division`}
                 value={divisionId}
                 required
@@ -339,6 +365,7 @@ export default function LocationExperience({
             <label htmlFor={`${id}-district`}>
               District
               <select
+                className="select"
                 id={`${id}-district`}
                 value={districtId}
                 required
@@ -362,13 +389,13 @@ export default function LocationExperience({
                 District data is not available yet. Please retry loading the page.
               </p>
             )}
-            <button className="location-primary" disabled={!districtId || busy}>
+            <button className="btn location-primary" disabled={!districtId || busy}>
               {saving ? 'Saving…' : 'Use this district'}
               <Icon name="arrow" size={17} />
             </button>
             <button
               type="button"
-              className="location-secondary"
+              className="btn btn-ghost location-secondary"
               disabled={busy}
               onClick={() => {
                 setManual(false)
@@ -383,7 +410,7 @@ export default function LocationExperience({
           <div className="location-actions">
             <button
               type="button"
-              className="location-primary"
+              className="btn location-primary"
               disabled={busy}
               onClick={success ? proceed : () => void detect()}
             >
@@ -411,7 +438,7 @@ export default function LocationExperience({
             </button>
             <button
               type="button"
-              className="location-secondary"
+              className="btn btn-ghost location-secondary"
               disabled={busy}
               onClick={() => {
                 setManual(true)
@@ -429,7 +456,7 @@ export default function LocationExperience({
             {location?.districtId && !success && (
               <button
                 type="button"
-                className="location-secondary"
+                className="btn btn-ghost location-secondary"
                 disabled={busy}
                 onClick={proceed}
               >
@@ -453,7 +480,9 @@ export default function LocationExperience({
             Check your district near boundaries. This does not change farm coordinates.
           </p>
         </details>
-        <a className="location-attribution" href="https://www.openstreetmap.org/copyright">Location data © OpenStreetMap contributors</a>
+        <a className="location-attribution" href="https://www.openstreetmap.org/copyright">
+          Location data © OpenStreetMap contributors
+        </a>
       </div>
       <p className="location-scene-note">
         <Icon name="leaf" size={15} /> A wider view of Earth. A closer look at your land.

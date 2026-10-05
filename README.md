@@ -19,11 +19,17 @@ docker compose -f docker.yml up --build -d
 # Load the imported Bangladesh district and crop records.
 docker compose -f docker.yml exec -T postgres \
   psql -v ON_ERROR_STOP=1 -U nasaweb -d nasaweb -f /imports/load_postgres.sql
+
+# Load source-backed starter crop references after workbook import.
+docker compose -f docker.yml restart app
 ```
 
 Open http://localhost:3333/ after the import completes.
 
-The first startup runs all AdonisJS migrations automatically. The import command is separate because it loads the workbook data into the already-created PostgreSQL tables.
+The first startup runs all AdonisJS migrations automatically. Each app startup runs the idempotent
+crop-reference seeder; restart after the first workbook import so it can match the imported crops.
+The seeder never overwrites existing curated records. **The workbook import truncates tables with
+CASCADE: use it only on a new database, not to refresh an installation containing farmer data.**
 
 To watch the app:
 
@@ -41,8 +47,11 @@ PostgreSQL data remains in the `postgres_data` volume. Only use `docker compose 
 
 ## Workflow
 
-Open `http://localhost:3333/` for the farmer-friendly growing guide.
-The homepage offers **Use my location** or manual division/district selection. Detection
+Open `http://localhost:3333/` for the agricultural homepage, then select **Plan my season**.
+The responsive navigation links to real pages: `/planner` (crop rotation recommendations),
+`/farms` (account-protected farm workspace), `/sources` (data and limitations),
+`/login` and `/signup`. Successful login/signup opens the planner.
+The planner offers **Use my location** or manual division/district selection. Detection
 runs only on a click: browser `getCurrentPosition()` → latitude/longitude →
 `POST /api/v1/location/reverse` → OpenStreetMap Nominatim. No IP-location fallback,
 Google API key, or new dependency is used. The reusable `detectUserLocation()`
@@ -92,11 +101,26 @@ then recreate/restart the app. The default is `https://nominatim.openstreetmap.o
 ### Visual crop-planning flow
 
 Location → High/Medium/Low water cards → seasonal outlook → crop calendar and alternatives.
-The homepage uses React/Inertia with Tailwind CSS 4 and DaisyUI 5. Water selection is a
+The website uses React/Inertia with Tailwind CSS 4 and DaisyUI 5. Water selection is a
 keyboard-accessible native dialog. Charts have accessible descriptions, missing-data gaps,
 and reduced-motion support. Small screens scroll the calendar inside its card, not the page.
 The map preview uses an attributed [OpenStreetMap embed](https://wiki.openstreetmap.org/wiki/Export#Embeddable_HTML);
 manual selections show the district reference point, not a claimed GPS location.
+
+### Website checks
+
+With Docker or a built application running, use `cd app && npm run test:site`.
+This Playwright check exercises direct routes, navigation, 320–1440px layouts,
+permission denial/manual selection, water API wiring, the farms authentication guard,
+custom 404 recovery and reduced motion. API responses are explicitly test fixtures;
+the check does not write database records or call NASA/Nominatim.
+If a Playwright Chromium browser is not installed, set `BROWSER_EXECUTABLE` to your
+installed Chrome path. Set `BASE_URL` to check a different server address.
+The custom error pages are enabled in built/production mode, not development debug mode.
+
+The landscape photograph is bundled locally in `app/inertia/assets/farm-landscape.jpg`
+from [Unsplash](https://images.unsplash.com/photo-1500382017468-9049fed747ef).
+It is decorative photography, not an image of the farmer's detected district.
 
 `POST /api/v1/crop-rotation/analyze` accepts:
 
@@ -138,22 +162,38 @@ or medium when tied), not absolute crop tolerance or liters of irrigation. Tap a
 its growing period, water needs, expected fit, reason and next crop; tap an alternative
 to switch the calendar and explanation cards.
 
-After signing in, **Add or update your farm details** includes farm creation/selection, crop history,
-soil inputs (when reviewed thresholds exist), priority controls, NASA refresh,
-and measured irrigation. Save changes, refresh the dashboard’s farm list, select the farm,
-then click **Build my outlook**. Saves use authenticated JSON requests with CSRF protection.
+After signing in, **Set priorities · extra details are optional** creates a farm in the selected
+district with only priority weights totaling 100%. Farm name, size, coordinates, measured
+irrigation, soil tests, history and environmental refresh are optional under **Add extra details**.
+Unknown measurements are saved as `NULL`, never invented. The scheduling allowance defaults
+to 10 land-preparation days and can be adjusted in the optional details.
+Optional size, coordinates and irrigation can be added or cleared later through
+`PUT /api/v1/farms/:id/details`. Changing coordinates marks older environmental profiles
+unusable until an explicit NASA refresh; earlier recommendation snapshots remain intact.
+Save changes, refresh the dashboard’s farm list, select the farm, then click **Generate crop rotations**.
+The water-choice popup can also be skipped. Saves use authenticated JSON requests with CSRF protection.
 Saved history and priorities are restored by `GET /api/v1/farms/:id/inputs`.
-API failures are displayed on the page, including missing NASA profiles or curated crop data.
+The planner uses season-based guidance when details are absent: neutral climate/resilience components,
+relative crop-water demand, documented crop soil effects and per-hectare economics. It explicitly
+lists unchecked constraints. It does not claim measured soil improvement or checked farm suitability.
+Each alternative lists crops, planting/harvest months and documented potential soil contributions.
+Source-backed requirements and calendars remain mandatory. The starter seed includes five crops;
+missing economics disables profit comparison instead of blocking all season-based plans.
+Absent reference fields stay unknown. Calculation snapshots and a database engine version record this mode.
 
 1. Register at `/signup`.
-2. Create a farm with `POST /api/v1/farms`.
+2. Create a farm with `POST /api/v1/farms`, including `districtId` and `priorities`:
+   `{ "climateWeight": 15, "waterWeight": 20, "soilWeight": 25, "resilienceWeight": 10, "economicWeight": 30 }`.
 3. Save two or more history slots at `PUT /api/v1/farms/:id/history`.
 4. Save a sourced soil profile at `PUT /api/v1/farms/:id/soil`.
 5. Save weights totaling 100 at `PUT /api/v1/farms/:id/preferences`.
 6. Refresh NASA data explicitly with `POST /api/v1/farms/:id/environment/refresh`.
 7. Generate with `POST /api/v1/farms/:id/recommendations`.
 
-Recommendation generation never calls NASA. It uses the latest cached profile and returns `503` when that profile is missing or stale.
+Recommendation generation never calls NASA. The strict `/farms/:id/recommendations` endpoint
+uses the latest cached profile and returns `503` when it is missing or stale. The dashboard's
+`POST /api/v1/crop-rotation/analyze` endpoint allows missing optional details and returns clearly
+labeled season-based guidance; it never refreshes NASA implicitly.
 
 ## Verification
 
@@ -180,3 +220,12 @@ not a demonstration plan. Tests include the ordinal water adapter, real engine-t
 mapping and transactional PostgreSQL checks for ownership and saved choices.
 
 The engine has no ML or LLM dependency. Crop requirements, calendars, nutrient thresholds, economics and rotation rules must be curated with `data_sources` records before recommendations are available.
+
+The planner puts crop recommendations before supporting water analytics. Select a saved farm,
+choose **Generate crop rotations**, compare calendars and trade-offs, then **Use this rotation**.
+The choice is stored in PostgreSQL per farm via `PUT /api/v1/farms/:id/rotation-choice`
+with `{ "runId": "123", "rank": 1 }`; `GET` on the same endpoint restores it.
+Only the farm owner can choose a completed recommendation belonging to that farm.
+A saved choice is not a planting record and does not change crop history. **Download planting guide**
+exports dates, water needs, explanations and trade-offs as a text file. Empty reference tables are
+reported explicitly; the UI never substitutes demonstration plans for real recommendations.

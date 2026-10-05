@@ -4,6 +4,9 @@ import testUtils from '@adonisjs/core/services/test_utils'
 import type { HttpContext } from '@adonisjs/core/http'
 import FarmerAnalysisController from '#controllers/farmer_analysis_controller'
 import LocationController from '#controllers/location_controller'
+import RecommendationsController from '#controllers/recommendations_controller'
+import FarmsController from '#controllers/farms_controller'
+import BangladeshCropSeeder from '../../database/seeders/bangladesh_crop_seeder.js'
 
 test.group('farmer analysis endpoint', (group) => {
   group.each.setup(() => testUtils.db().withGlobalTransaction())
@@ -79,11 +82,13 @@ test.group('farmer analysis endpoint', (group) => {
     }
     const context = (userId: number | null, input: Record<string, unknown>) =>
       ({
+        params: { id: farm.farm_id },
         auth: { user: userId === null ? undefined : { id: userId } },
         request: { only: () => ({ ...input }), input: (key: string) => input[key] },
         response: {
           header: () => {},
           ok: (data: unknown) => send(200, data),
+          created: (data: unknown) => send(201, data),
           unprocessableEntity: (data: unknown) => send(422, data),
           notFound: (data: unknown) => send(404, data),
           unauthorized: (data: unknown) => send(401, data),
@@ -126,7 +131,7 @@ test.group('farmer analysis endpoint', (group) => {
           farmId: farm.farm_id,
         })
       )
-      assert.equal(payload.planning.status, 'environment_profile_missing')
+      assert.equal(payload.planning.status, 'preferences_missing')
       assert.deepEqual(payload.plans, [])
       const savedFarm = await db.from('farms').where('farm_id', farm.farm_id).first()
       assert.equal(Number(savedFarm.irrigation_available_mm_per_season), 180)
@@ -162,6 +167,124 @@ test.group('farmer analysis endpoint', (group) => {
       await new LocationController().update(context(first.id, { districtId: district.district_id }))
       const changedLocation = await db.from('user_locations').where('user_id', first.id).first()
       assert.isNull(changedLocation.water_availability)
+
+      await new FarmsController().store(
+        context(first.id, {
+          districtId: district.district_id,
+          priorities: {
+            climateWeight: 15,
+            waterWeight: 20,
+            soilWeight: 25,
+            resilienceWeight: 10,
+            economicWeight: 30,
+          },
+        })
+      )
+      assert.equal(status, 201)
+      const minimalFarm = payload
+      assert.isNull(minimalFarm.area_hectares)
+      assert.isNull(minimalFarm.latitude)
+      assert.isNull(minimalFarm.longitude)
+      assert.isNull(minimalFarm.irrigation_available_mm_per_season)
+      assert.equal(minimalFarm.minimum_turnaround_days, 10)
+      const minimalPreferences = await db
+        .from('farmer_preferences')
+        .where('farm_id', minimalFarm.farm_id)
+        .firstOrFail()
+      assert.equal(minimalPreferences.soil_weight_bp, 2500)
+      await controller.analyze(
+        context(first.id, { districtId: district.district_id, farmId: minimalFarm.farm_id })
+      )
+      assert.equal(status, 200)
+      assert.equal(payload.water.label, 'Not provided')
+      assert.equal(payload.planning.status, 'ready')
+      assert.lengthOf(payload.plans, 3)
+      assert.isTrue(payload.plans.every((plan: any) => plan.fit === 'Season-based guidance'))
+      assert.isTrue(
+        payload.plans.some((plan: any) =>
+          plan.crops.some(
+            (crop: any) => crop.name === 'Mug' && crop.soilContribution === 'Potential soil support'
+          )
+        )
+      )
+      const countsBefore = await db.from('crop_calendar_windows').count('* as count').first()
+      await new BangladeshCropSeeder(db.connection()).run()
+      await new BangladeshCropSeeder(db.connection()).run()
+      const countsAfter = await db.from('crop_calendar_windows').count('* as count').first()
+      assert.equal(countsAfter!.count, countsBefore!.count)
+      await new FarmsController().details(context(second.id, { areaHectares: 2 }))
+      assert.equal(status, 404)
+      await new FarmsController().details(context(first.id, { longitude: null }))
+      assert.equal(status, 422)
+      await new FarmsController().details(
+        context(first.id, { areaHectares: 2, irrigationAvailableMmPerSeason: 0 })
+      )
+      assert.equal(status, 200)
+      assert.equal(Number(payload.area_hectares), 2)
+      assert.equal(Number(payload.irrigation_available_mm_per_season), 0)
+
+      // Test-only records roll back with this transaction. Never mark a selection as planted.
+      const version = await db.from('engine_versions').where('is_active', true).firstOrFail()
+      const [preference] = await db
+        .table('farmer_preferences')
+        .insert({
+          farm_id: farm.farm_id,
+          climate_weight_bp: 2000,
+          water_weight_bp: 2000,
+          soil_weight_bp: 2000,
+          resilience_weight_bp: 2000,
+          economic_weight_bp: 2000,
+        })
+        .returning('preference_id')
+      const [run] = await db
+        .table('recommendation_runs')
+        .insert({
+          farm_id: farm.farm_id,
+          preference_id: preference.preference_id,
+          engine_version_id: version.engine_version_id,
+          start_season_id: season.season_id,
+          status: 'completed',
+          input_snapshot: '{}',
+          input_checksum: 'a'.repeat(64),
+        })
+        .returning('recommendation_run_id')
+      for (const rank of [1, 2])
+        await db.table('rotation_recommendations').insert({
+          recommendation_run_id: run.recommendation_run_id,
+          rank,
+          overall_score: 50,
+          climate_score: 50,
+          water_score: 50,
+          soil_score: 50,
+          resilience_score: 50,
+          economic_score: 50,
+          compatibility_score: 50,
+          diversity_score: 50,
+          total_water_requirement_mm: 0,
+          total_profit_bdt: 0,
+          evidence_completeness_percent: 0,
+        })
+      const recommendations = new RecommendationsController()
+      await recommendations.choice(context(first.id, {}))
+      assert.isNull(payload)
+      await recommendations.choose(context(first.id, { runId: run.recommendation_run_id, rank: 1 }))
+      assert.equal(status, 200)
+      assert.equal(payload.rank, 1)
+      await recommendations.choose(
+        context(second.id, { runId: run.recommendation_run_id, rank: 2 })
+      )
+      assert.equal(status, 404)
+      await recommendations.choice(context(second.id, {}))
+      assert.equal(status, 404)
+      await recommendations.choose(context(first.id, { runId: run.recommendation_run_id, rank: 2 }))
+      assert.equal(status, 200)
+      await recommendations.choice(context(first.id, {}))
+      assert.equal(payload.rank, 2)
+      assert.equal(String(payload.runId), String(run.recommendation_run_id))
+      assert.lengthOf(await db.from('farm_rotation_choices').where('farm_id', farm.farm_id), 1)
+      await recommendations.choose(context(first.id, { runId: run.recommendation_run_id, rank: 4 }))
+      assert.equal(status, 422)
+      assert.lengthOf(await db.from('farm_crop_history').where('farm_id', farm.farm_id), 0)
     } finally {
       globalThis.fetch = originalFetch
     }

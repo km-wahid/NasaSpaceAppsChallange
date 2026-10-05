@@ -3,6 +3,8 @@ import type { routes } from './index.ts'
 
 export interface ApiDefinition {
   home: typeof routes['home']
+  planner: typeof routes['planner']
+  sources: typeof routes['sources']
   catalog: {
     index: typeof routes['catalog.index']
   }
@@ -23,7 +25,7 @@ export interface ApiDefinition {
     store: typeof routes['session.store']
     destroy: typeof routes['session.destroy']
   }
-  farms: {
+  farms: typeof routes['farms'] & {
     index: typeof routes['farms.index']
     store: typeof routes['farms.store']
     show: typeof routes['farms.show']

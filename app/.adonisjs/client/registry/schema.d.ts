@@ -19,6 +19,30 @@ export interface Registry {
       errorResponse: unknown
     }
   }
+  'planner': {
+    methods: ["GET","HEAD"]
+    pattern: '/planner'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: unknown
+      errorResponse: unknown
+    }
+  }
+  'sources': {
+    methods: ["GET","HEAD"]
+    pattern: '/sources'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: unknown
+      errorResponse: unknown
+    }
+  }
   'catalog.index': {
     methods: ["GET","HEAD"]
     pattern: '/api/v1/catalog'
@@ -101,6 +125,18 @@ export interface Registry {
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/session_controller').default['store']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/session_controller').default['store']>>>
+    }
+  }
+  'farms': {
+    methods: ["GET","HEAD"]
+    pattern: '/farms'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: unknown
+      errorResponse: unknown
     }
   }
   'session.destroy': {

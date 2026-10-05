@@ -28,6 +28,8 @@ type PowerResponse = {
 export async function refreshNasaProfile(farmId: number, userId: number) {
   const farm = await db.from('farms').where({ farm_id: farmId, user_id: userId }).first()
   if (!farm) throw new Error('FARM_NOT_FOUND')
+  if (farm.latitude === null || farm.longitude === null)
+    throw new Error('Add farm coordinates in optional details before refreshing NASA observations.')
   const version = await db.from('engine_versions').where('is_active', true).first()
   if (!version) throw new Error('ENGINE_VERSION_MISSING')
   const seasons = await db.from('seasons').select('season_id', 'season_name')

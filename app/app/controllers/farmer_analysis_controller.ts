@@ -23,6 +23,8 @@ const missingMessages: Record<string, string> = {
   PREFERENCES_MISSING: 'Save what matters most to you: water, soil, income and resilience.',
   HISTORY_INCOMPLETE: 'Add your previous crops so the plan can check crop breaks.',
   CURATED_CROP_DATA_MISSING: 'Reviewed crop information is not ready for this district yet.',
+  CROP_ECONOMICS_MISSING:
+    'Local prices, yields and costs are missing. Use the season-based planner without profit comparison.',
   NO_FEASIBLE_ROTATION:
     'No suitable rotation passed the checks. Review water, soil and growing windows.',
   ENVIRONMENT_SEASON_MISSING: 'Some seasonal environmental information is missing.',
@@ -39,7 +41,10 @@ export default class FarmerAnalysisController {
       'waterAvailability',
       'farmId',
     ])
-    if (!['low', 'medium', 'high'].includes(input.waterAvailability))
+    if (
+      input.waterAvailability !== undefined &&
+      !['low', 'medium', 'high'].includes(input.waterAvailability)
+    )
       return response.unprocessableEntity({
         error: 'Please choose High, Medium or Low water availability.',
       })
@@ -100,12 +105,12 @@ export default class FarmerAnalysisController {
       : [[], null, null]
     const water = buildWaterOutlook(
       rainfall,
-      input.waterAvailability as WaterLevel,
+      (input.waterAvailability ?? null) as WaterLevel | null,
       version?.scoring_config?.seasonMonths ?? {},
       risk,
       soil
     )
-    if (auth.user)
+    if (auth.user && input.waterAvailability !== undefined)
       await db
         .from('user_locations')
         .where({ user_id: auth.user.id, district_id: district.district_id })
@@ -127,12 +132,15 @@ export default class FarmerAnalysisController {
         const result = await generateFarmRecommendations(auth.user!.id, Number(farm.farm_id), {
           startSeasonId: Number(season?.season_id),
           startYear: nextSeason?.year,
+          allowIncompleteFarm: true,
         })
-        plans = presentRotationPlans(result.recommendations, result.runId)
+        plans = presentRotationPlans(result.recommendations, result.runId, result.missingChecks)
         planning = {
           status: plans.length ? 'ready' : 'no-feasible-plans',
           message: plans.length
-            ? 'Planning from the next full season, compared using your saved priorities for water, soil, climate, resilience and income.'
+            ? result.missingChecks.length
+              ? 'Season-based options ranked by your priorities. Optional farm checks are incomplete; confirm local suitability before planting.'
+              : 'Planning from the next full season, compared using your saved priorities for water, soil, climate, resilience and income.'
             : 'No suitable rotation passed the checks. Review your farm inputs.',
         }
       } catch (error) {

@@ -16,6 +16,8 @@ const EnvironmentController = () => import('#controllers/environment_controller'
 const RecommendationsController = () => import('#controllers/recommendations_controller')
 
 router.on('/').renderInertia('home', {}).as('home')
+router.on('/planner').renderInertia('planner', {}).as('planner')
+router.on('/sources').renderInertia('sources', {}).as('sources')
 router.get('/api/v1/catalog', [() => import('#controllers/catalog_controller'), 'index'])
 router.post('/api/v1/crop-rotation/analyze', [
   () => import('#controllers/farmer_analysis_controller'),
@@ -38,6 +40,7 @@ router
 
 router
   .group(() => {
+    router.on('/farms').renderInertia('farms', {}).as('farms')
     router.post('logout', [controllers.Session, 'destroy'])
     router.get('api/v1/location', [() => import('#controllers/location_controller'), 'show'])
     router.put('api/v1/location', [() => import('#controllers/location_controller'), 'update'])
@@ -45,6 +48,7 @@ router
     router.get('api/v1/farms', [FarmsController, 'index'])
     router.post('api/v1/farms', [FarmsController, 'store'])
     router.get('api/v1/farms/:id', [FarmsController, 'show'])
+    router.put('api/v1/farms/:id/details', [FarmsController, 'details'])
     router.get('api/v1/farms/:id/inputs', [FarmsController, 'inputs'])
     router.put('api/v1/farms/:id/preferences', [FarmsController, 'preferences'])
     router.put('api/v1/farms/:id/soil', [FarmsController, 'soil'])
@@ -53,6 +57,8 @@ router
     router.get('api/v1/farms/:id/environment', [EnvironmentController, 'show'])
     router.post('api/v1/farms/:id/environment/refresh', [EnvironmentController, 'refresh'])
     router.post('api/v1/farms/:id/recommendations', [RecommendationsController, 'store'])
+    router.get('api/v1/farms/:id/rotation-choice', [RecommendationsController, 'choice'])
+    router.put('api/v1/farms/:id/rotation-choice', [RecommendationsController, 'choose'])
     router.get('api/v1/farms/:id/recommendations/:runId', [RecommendationsController, 'show'])
   })
   .use(middleware.auth())

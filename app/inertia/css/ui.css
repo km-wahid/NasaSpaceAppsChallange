@@ -9,19 +9,19 @@
   default: true;
   prefersdark: false;
   color-scheme: light;
-  --color-base-100: #fffefa;
-  --color-base-200: #f4f6f0;
-  --color-base-300: #dfe6dc;
-  --color-base-content: #203b2c;
-  --color-primary: #246349;
+  --color-base-100: #fcfff8;
+  --color-base-200: #edf5e8;
+  --color-base-300: #d2e2c9;
+  --color-base-content: #203c29;
+  --color-primary: #28683e;
   --color-primary-content: #ffffff;
-  --color-secondary: #315e78;
+  --color-secondary: #4b6540;
   --color-secondary-content: #ffffff;
-  --color-accent: #d6e8c5;
+  --color-accent: #dcebc5;
   --color-accent-content: #203b2c;
-  --color-neutral: #203b2c;
+  --color-neutral: #193c29;
   --color-neutral-content: #ffffff;
-  --color-info: #315e78;
+  --color-info: #32664f;
   --color-info-content: #ffffff;
   --color-success: #2c6b48;
   --color-success-content: #ffffff;
@@ -59,5 +59,1772 @@
     animation: none !important;
     transition: none !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* Public site and application share one agricultural identity. */
+.site-shell {
+  --site-width: 1240px;
+  min-height: 100svh;
+  font-size: 15px;
+}
+.site-announcement {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 34px;
+  padding: 6px 18px;
+  background: var(--color-neutral);
+  color: var(--color-neutral-content);
+  font-size: 11px;
+}
+.site-announcement > span {
+  margin-left: 20px;
+  opacity: 0.75;
+}
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: var(--color-base-100);
+  border-bottom: 1px solid var(--color-base-300);
+}
+.site-navbar {
+  max-width: var(--site-width);
+  min-height: 88px;
+  gap: 32px;
+  margin: auto;
+  padding: 14px 32px;
+  justify-content: space-between;
+}
+.site-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 34px;
+  line-height: 1;
+  letter-spacing: -0.065em;
+  font-weight: 750;
+}
+.site-brand-mark {
+  color: var(--color-primary);
+}
+.site-brand-tagline {
+  display: block;
+  margin-top: 7px;
+  font-size: 7px;
+  font-weight: 650;
+  letter-spacing: 0.16em;
+  line-height: 1.2;
+}
+.desktop-navigation {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+.desktop-navigation a {
+  padding: 10px 0;
+  font-size: 13px;
+  font-weight: 550;
+}
+.desktop-navigation a[aria-current='page'] {
+  color: var(--color-primary);
+  box-shadow: 0 2px var(--color-primary);
+}
+.desktop-navigation a:hover,
+.site-login:hover {
+  color: var(--color-primary);
+}
+.site-account-actions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.site-login {
+  font-size: 13px;
+  font-weight: 550;
+}
+.site-account-actions .btn {
+  font-size: 12px;
+}
+.mobile-menu-toggle {
+  display: none;
+}
+.mobile-navigation {
+  display: grid;
+  padding: 8px 24px 20px;
+  border-top: 1px solid var(--color-base-300);
+}
+.mobile-navigation a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 48px;
+  border-bottom: 1px solid var(--color-base-300);
+}
+.mobile-navigation a[aria-current='page'] {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+.site-main {
+  min-height: 60svh;
+  background: var(--color-base-200);
+}
+.site-shell :where(a, button, summary, input, select):focus-visible {
+  outline: 3px solid var(--color-info);
+  outline-offset: 4px;
+}
+.agri-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: block;
+  min-height: 640px;
+  color: var(--color-neutral-content);
+  background: var(--color-neutral);
+}
+.agri-hero-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 55%;
+  z-index: -2;
+}
+.agri-hero-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(90deg, #10271eef 0%, #142a20ad 43%, #142a2020 100%);
+}
+.agri-hero-content {
+  width: 100%;
+  max-width: var(--site-width);
+  margin: auto;
+  padding: 76px 32px 68px;
+}
+.agri-eyebrow {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: 0.15em;
+  line-height: 1.7;
+}
+.agri-small-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 100%;
+  background: var(--color-accent);
+}
+.agri-hero h1 {
+  color: var(--color-neutral-content);
+  max-width: 720px;
+  margin: 24px 0;
+  font-size: clamp(48px, 5.6vw, 78px);
+  font-weight: 520;
+  line-height: 1.06;
+  letter-spacing: -0.055em;
+}
+.agri-hero h1 em,
+.agri-final-cta h2 em {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-weight: 400;
+}
+.agri-hero h1 em {
+  color: var(--color-accent);
+}
+.agri-hero-content > p {
+  max-width: 400px;
+  line-height: 1.8;
+  color: #ffffffe0;
+  font-size: 15px;
+}
+.agri-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 28px;
+  margin-top: 30px;
+}
+.agri-start-button {
+  border-radius: 999px;
+  min-height: 52px;
+  padding-inline: 26px;
+  gap: 18px;
+  background: var(--color-accent);
+  color: var(--color-accent-content);
+  border-color: var(--color-accent);
+}
+.agri-start-button:hover {
+  background: var(--color-base-100);
+  color: var(--color-base-content);
+  border-color: var(--color-base-100);
+}
+.agri-text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  border-bottom: 1px solid #ffffff70;
+  padding-bottom: 4px;
+}
+.agri-hero-content .agri-hero-reassurance {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 30px;
+  font-size: 11px;
+  color: #ffffffe0;
+}
+.agri-hero-caption {
+  position: absolute;
+  bottom: 36px;
+  right: max(32px, calc((100vw - 1176px) / 2));
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 17px 21px;
+  background: #163125d9;
+  border: 1px solid #ffffff30;
+  border-radius: 14px;
+  font-size: 13px;
+  backdrop-filter: blur(12px);
+}
+.agri-hero-caption small {
+  display: block;
+  margin-top: 3px;
+  font-size: 11px;
+  color: #ffffffe0;
+}
+.agri-context-strip {
+  display: grid;
+  grid-template-columns: 1.15fr repeat(4, 1fr);
+  align-items: center;
+  gap: 24px;
+  max-width: var(--site-width);
+  margin: auto;
+  padding: 35px 32px;
+  border-bottom: 1px solid var(--color-base-300);
+}
+.agri-context-strip > span:not(:first-child) {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--color-primary);
+}
+.agri-context-intro {
+  font-size: 13px;
+  line-height: 1.6;
+}
+.agri-section {
+  max-width: var(--site-width);
+  margin: auto;
+  padding: 86px 32px;
+}
+.agri-section h2,
+.agri-how-copy h2,
+.agri-final-cta h2 {
+  font-size: clamp(32px, 3.4vw, 48px);
+  font-weight: 550;
+  line-height: 1.15;
+  letter-spacing: -0.045em;
+}
+.agri-section-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 32px;
+  margin-bottom: 36px;
+}
+.agri-section-heading h2 {
+  margin-top: 15px;
+}
+.agri-section-heading > p {
+  max-width: 340px;
+  font-size: 14px;
+  line-height: 1.8;
+  color: color-mix(in srgb, var(--color-base-content) 76%, transparent);
+}
+.agri-benefit-card {
+  border: 1px solid var(--color-base-300);
+  background: var(--color-base-100);
+  transition:
+    transform 0.2s,
+    border-color 0.2s;
+}
+.agri-benefit-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-primary);
+}
+.agri-benefit-card .card-body {
+  padding: 30px;
+  gap: 14px;
+}
+.agri-benefit-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 26px;
+}
+.agri-benefit-top > span:last-child {
+  font-size: 12px;
+  color: var(--color-primary);
+}
+.agri-icon-box {
+  display: inline-flex;
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-base-200);
+  color: var(--color-primary);
+  border-radius: 16px;
+}
+.agri-benefit-card h3 {
+  font-size: 21px;
+  font-weight: 550;
+  letter-spacing: -0.025em;
+}
+.agri-benefit-card p {
+  font-size: 14px;
+  line-height: 1.8;
+  color: color-mix(in srgb, var(--color-base-content) 76%, transparent);
+}
+.agri-how-section {
+  max-width: var(--site-width);
+  margin: auto;
+  padding: 0 32px 86px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: stretch;
+  gap: 72px;
+}
+.agri-how-photo {
+  position: relative;
+  min-height: 550px;
+  border-radius: 22px;
+  overflow: hidden;
+  background: var(--color-primary);
+}
+.agri-how-photo > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  object-position: 70% center;
+}
+.agri-how-photo > div {
+  position: absolute;
+  inset: auto 24px 24px;
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  padding: 22px;
+  background: var(--color-base-100);
+  border-radius: 14px;
+  font-size: 13px;
+  color: var(--color-primary);
+}
+.agri-how-copy {
+  padding-block: 18px;
+}
+.agri-how-copy h2 {
+  margin-top: 16px;
+}
+.agri-how-copy > p:not(.agri-eyebrow),
+.agri-principles > div > p:not(.agri-eyebrow) {
+  margin-top: 20px;
+  font-size: 14px;
+  line-height: 1.85;
+  color: color-mix(in srgb, var(--color-base-content) 76%, transparent);
+}
+.agri-how-steps {
+  display: grid;
+  gap: 24px;
+  margin: 30px 0;
+}
+.agri-how-steps li {
+  display: flex;
+  gap: 20px;
+  align-items: start;
+}
+.agri-how-steps li > span {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border: 1px solid var(--color-base-300);
+  border-radius: 50%;
+  font-size: 10px;
+  color: var(--color-primary);
+}
+.agri-how-steps h3 {
+  font-size: 15px;
+  font-weight: 650;
+}
+.agri-how-steps p {
+  margin-top: 5px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: color-mix(in srgb, var(--color-base-content) 76%, transparent);
+}
+.agri-inline-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--color-primary);
+  border-bottom: 1px solid var(--color-base-300);
+  padding-bottom: 5px;
+}
+.agri-inline-link:hover {
+  border-color: var(--color-primary);
+}
+.agri-principles {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 90px;
+  border-top: 1px solid var(--color-base-300);
+}
+.agri-principles h2 {
+  margin-top: 15px;
+}
+.agri-principles .agri-inline-link {
+  margin-top: 24px;
+}
+.agri-principle-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 36px;
+}
+.agri-principle-grid svg {
+  color: var(--color-primary);
+}
+.agri-principle-grid h3 {
+  margin-top: 16px;
+  font-size: 16px;
+  font-weight: 650;
+}
+.agri-principle-grid p {
+  margin-top: 8px;
+  font-size: 13px;
+  line-height: 1.8;
+  color: color-mix(in srgb, var(--color-base-content) 76%, transparent);
+}
+.agri-final-cta {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 22px;
+  text-align: center;
+  padding: 64px 24px;
+  margin: 0 auto 72px;
+  max-width: 1176px;
+  border-radius: 24px;
+  background: var(--color-base-200);
+}
+.agri-final-cta p {
+  font-size: 14px;
+}
+.agri-final-cta small {
+  font-size: 11px;
+  opacity: 0.8;
+}
+.site-footer {
+  background: var(--color-neutral);
+  color: var(--color-neutral-content);
+  padding: 45px max(32px, calc((100vw - 1176px) / 2)) 22px;
+}
+.site-footer-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 32px;
+  padding-bottom: 36px;
+}
+.site-footer-top p {
+  font-size: 12px;
+  margin-top: 15px;
+  color: #ffffffe0;
+}
+.site-footer nav {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 30px;
+  font-size: 12px;
+}
+.site-footer a:hover {
+  color: var(--color-accent);
+}
+.site-footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  border-top: 1px solid #ffffff25;
+  padding-top: 20px;
+  font-size: 10px;
+  color: #ffffffe0;
+}
+.site-page {
+  max-width: var(--site-width);
+  margin: auto;
+  padding: 48px 32px 72px;
+}
+.site-page-heading {
+  margin-bottom: 34px;
+}
+.site-page-heading h1 {
+  font-size: clamp(32px, 4vw, 48px);
+  line-height: 1.15;
+  letter-spacing: -0.045em;
+  font-weight: 550;
+  margin: 13px 0 16px;
+}
+.site-page-heading > p:last-child {
+  max-width: 650px;
+  font-size: 14px;
+  line-height: 1.8;
+  color: color-mix(in srgb, var(--color-base-content) 76%, transparent);
+}
+.planner-page .location-scene {
+  min-height: 650px;
+}
+.sources-note {
+  display: flex;
+  gap: 20px;
+  padding: 30px;
+  margin: 30px 0;
+  background: var(--color-base-200);
+  border-radius: 16px;
+}
+.sources-note > svg {
+  color: var(--color-primary);
+}
+.sources-note h2 {
+  font-size: 21px;
+  font-weight: 650;
+}
+.sources-note p {
+  margin-top: 12px;
+  line-height: 1.85;
+  font-size: 14px;
+}
+.auth-page {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  max-width: 1100px;
+  min-height: 650px;
+  margin: 54px auto;
+  padding: 0 32px;
+  gap: 70px;
+  align-items: center;
+}
+.auth-landscape {
+  position: relative;
+  isolation: isolate;
+  height: 100%;
+  min-height: 650px;
+  border-radius: 22px;
+  overflow: hidden;
+  background: var(--color-neutral);
+  color: var(--color-neutral-content);
+}
+.auth-landscape > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -2;
+}
+.auth-landscape::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(0deg, #132e24ed, #132e2450);
+}
+.auth-landscape > div {
+  position: absolute;
+  bottom: 0;
+  padding: 42px;
+}
+.auth-landscape .agri-eyebrow {
+  margin-top: 24px;
+  font-size: 9px;
+}
+.auth-landscape h2 {
+  color: var(--color-neutral-content);
+  font-size: 52px;
+  line-height: 1.1;
+  font-weight: 500;
+  letter-spacing: -0.05em;
+  margin: 18px 0;
+}
+.auth-landscape div > p:last-child {
+  font-size: 14px;
+  line-height: 1.8;
+  color: #ffffffe0;
+}
+.auth-card {
+  padding: 22px 0;
+}
+.auth-card h1 {
+  font-size: 34px;
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 1.2;
+  margin: 22px 0 12px;
+}
+.auth-card > p {
+  color: color-mix(in srgb, var(--color-base-content) 76%, transparent);
+  font-size: 14px;
+}
+.auth-card form {
+  display: grid;
+  gap: 18px;
+  margin: 28px 0;
+}
+.auth-card label {
+  display: block;
+  font-size: 13px;
+  font-weight: 550;
+  margin-bottom: 7px;
+}
+.auth-card .input {
+  min-height: 48px;
+}
+.auth-card .auth-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 13px;
+}
+.auth-switch a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--color-primary);
+  font-weight: 650;
+}
+.auth-card .auth-privacy {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 26px;
+  font-size: 11px;
+}
+@media (max-width: 1050px) {
+  .site-navbar {
+    gap: 20px;
+    padding-inline: 24px;
+  }
+  .desktop-navigation {
+    gap: 20px;
+  }
+  .site-brand-tagline {
+    display: none;
+  }
+  .agri-hero-caption {
+    display: none;
+  }
+  .agri-context-strip {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .agri-context-intro {
+    grid-column: 1 / -1;
+  }
+  .agri-how-section {
+    gap: 38px;
+  }
+  .agri-principles {
+    gap: 44px;
+  }
+  .auth-page {
+    gap: 40px;
+  }
+}
+@media (max-width: 760px) {
+  .site-announcement > span,
+  .desktop-navigation,
+  .site-login {
+    display: none;
+  }
+  .mobile-menu-toggle {
+    display: inline-flex;
+  }
+  .site-navbar {
+    min-height: 76px;
+    padding: 12px 20px;
+  }
+  .site-brand {
+    font-size: 31px;
+  }
+  .site-account-actions {
+    gap: 8px;
+  }
+  .site-account-actions .btn {
+    min-height: 44px;
+  }
+  .site-account-actions > a {
+    padding-inline: 16px;
+  }
+  .site-account-actions > a > svg {
+    display: none;
+  }
+  .agri-hero {
+    min-height: 580px;
+  }
+  .agri-hero-content {
+    padding: 60px 24px;
+  }
+  .agri-hero-overlay {
+    background: linear-gradient(90deg, #10271ee8, #142a2080);
+  }
+  .agri-hero h1 {
+    font-size: clamp(46px, 8vw, 64px);
+  }
+  .agri-eyebrow {
+    font-size: 9px;
+  }
+  .agri-hero-actions {
+    gap: 22px;
+  }
+  .agri-context-strip {
+    padding: 28px 24px;
+    gap: 22px 16px;
+  }
+  .agri-context-strip > span:not(:first-child) {
+    font-size: 11px;
+    gap: 8px;
+  }
+  .agri-section {
+    padding: 56px 24px;
+  }
+  .agri-section-heading {
+    display: block;
+    margin-bottom: 28px;
+  }
+  .agri-section-heading > p {
+    max-width: 100%;
+    margin-top: 20px;
+  }
+  .agri-benefit-card .card-body {
+    padding: 24px;
+  }
+  .agri-benefit-top {
+    margin-bottom: 12px;
+  }
+  .agri-how-section {
+    grid-template-columns: 1fr;
+    padding: 0 24px 54px;
+    gap: 30px;
+  }
+  .agri-how-photo {
+    min-height: 350px;
+  }
+  .agri-how-copy {
+    padding: 0;
+  }
+  .agri-principles {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+  .agri-principle-grid {
+    gap: 30px 24px;
+  }
+  .agri-final-cta {
+    border-radius: 0;
+    margin-bottom: 0;
+    padding: 54px 24px;
+  }
+  .site-footer {
+    padding: 36px 24px 22px;
+  }
+  .site-footer-top,
+  .site-footer-bottom {
+    flex-direction: column;
+    gap: 20px;
+  }
+  .site-footer nav {
+    gap: 18px;
+  }
+  .site-page {
+    padding: 32px 20px 48px;
+  }
+  .planner-page .location-scene {
+    min-height: 580px;
+    padding: 28px 12px;
+  }
+  .sources-note {
+    flex-direction: column;
+    padding: 24px;
+  }
+  .auth-page {
+    display: block;
+    margin: 0 auto;
+    min-height: 0;
+    padding: 30px 24px 48px;
+    max-width: 500px;
+  }
+  .auth-landscape {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .site-shell *,
+  .site-shell *::before,
+  .site-shell *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* Field-first workspace: the same visual language as the public website. */
+.planner-journey {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin: 0 0 28px;
+  padding: 20px 0;
+  border-block: 1px solid var(--color-base-300);
+}
+.planner-journey li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  font-weight: 550;
+}
+.planner-journey li > span {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--color-base-300);
+  border-radius: 50%;
+  color: var(--color-primary);
+  font-size: 10px;
+}
+.site-shell .location-welcome {
+  display: grid;
+  grid-template-columns: 0.95fr 1fr;
+  align-items: stretch;
+  justify-items: stretch;
+  align-content: stretch;
+  gap: 0;
+  padding: 0;
+  min-height: 660px;
+  border-radius: 24px;
+  background: var(--color-base-100);
+  background-image: none;
+}
+.location-welcome::before,
+.location-welcome::after {
+  display: none;
+}
+.location-intro {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-width: 0;
+  background: var(--color-neutral);
+  color: var(--color-neutral-content);
+}
+.location-intro-photo {
+  position: absolute;
+  z-index: -2;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 60% center;
+}
+.location-intro::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: linear-gradient(0deg, #163325ed, #16332570);
+}
+.location-intro-copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  height: 100%;
+  padding: clamp(28px, 4vw, 54px);
+}
+.location-intro h3 {
+  color: var(--color-neutral-content);
+  font-size: clamp(40px, 4.8vw, 62px);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+  margin: 24px 0;
+}
+.location-intro h3 em {
+  font-family: Georgia, serif;
+  color: var(--color-accent);
+  font-weight: 400;
+}
+.location-intro-copy > p {
+  max-width: 340px;
+  font-size: 14px;
+  line-height: 1.9;
+}
+.location-intro-features {
+  display: grid;
+  gap: 18px;
+  margin-top: 38px;
+  padding-top: 25px;
+  border-top: 1px solid #ffffff35;
+}
+.location-intro-features > span {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+}
+.site-shell .location-welcome .location-card {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  max-width: none;
+  width: 100%;
+  align-self: center;
+  padding: 44px clamp(24px, 4vw, 48px);
+  background: var(--color-base-100);
+}
+.location-welcome .location-scene-note {
+  grid-column: 1 / -1;
+  padding: 16px;
+  margin: 0;
+  border-top: 1px solid var(--color-base-300);
+  background: var(--color-base-200);
+}
+.location-welcome .location-card .location-primary {
+  border-radius: 999px;
+  background: var(--color-primary);
+  color: var(--color-primary-content);
+  border-color: var(--color-primary);
+}
+.location-welcome .location-card .location-secondary {
+  border-radius: 999px;
+  border-color: var(--color-base-300);
+}
+.location-welcome .location-orb {
+  background: var(--color-base-200);
+}
+.site-shell .location-summary {
+  flex-direction: row;
+  align-items: center;
+  gap: 18px;
+  border-radius: 22px;
+  border: 1px solid var(--color-base-300);
+  background: var(--color-base-100);
+  padding: 22px 26px;
+}
+.site-shell .location-summary strong {
+  font-size: 22px;
+  letter-spacing: -0.025em;
+}
+.site-shell .location-summary small {
+  font-size: 12px;
+  color: var(--color-base-content);
+  opacity: 0.8;
+}
+.site-shell .location-summary button {
+  border-radius: 999px;
+  min-height: 44px;
+}
+.farmer-dashboard > .grid:first-child {
+  align-items: stretch;
+}
+.farmer-flow .card {
+  border-radius: 22px;
+}
+.local-guide-intro {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--color-neutral);
+}
+.local-guide-intro::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background:
+    linear-gradient(90deg, #183527f0, #183527a0),
+    url('../assets/farm-landscape.jpg') center / cover;
+}
+.local-guide-intro .card-body {
+  min-height: 280px;
+}
+.local-guide-intro h1 {
+  color: var(--color-neutral-content);
+  font-weight: 500;
+  font-size: clamp(28px, 3.1vw, 40px);
+}
+.local-guide-intro .card-body > p,
+.local-guide-intro .card-body > span {
+  color: var(--color-neutral-content);
+}
+.local-guide-intro .badge {
+  background: var(--color-base-100);
+  color: var(--color-base-content);
+  border: 0;
+  padding-inline: 14px;
+  min-height: 28px;
+}
+.local-guide-intro .btn {
+  border-radius: 999px;
+  border-color: #ffffff80;
+  color: var(--color-neutral-content);
+  background: transparent;
+}
+.local-guide-intro .btn:hover {
+  background: var(--color-base-100);
+  color: var(--color-base-content);
+}
+.location-map-card p {
+  margin-top: auto;
+}
+.farm-water-dialog .modal-box {
+  border-radius: 26px;
+}
+.farm-water-dialog .btn:not(.modal-backdrop button) {
+  border-radius: 999px;
+}
+.water-choice {
+  min-height: 230px;
+  border-radius: 18px;
+  transition:
+    border-color 0.2s,
+    background 0.2s,
+    transform 0.2s;
+}
+.water-choice:hover {
+  transform: translateY(-3px);
+}
+.water-choice[data-selected='true'] {
+  background: color-mix(in srgb, var(--color-info) 7%, var(--color-base-100));
+}
+.water-choice-meter {
+  display: flex;
+  align-items: end;
+  gap: 5px;
+  height: 30px;
+  margin: 16px 0 8px;
+}
+.water-choice-meter i {
+  width: 16px;
+  height: 14px;
+  border-radius: 4px;
+  background: var(--color-base-300);
+}
+.water-choice-meter i:nth-child(2) {
+  height: 22px;
+}
+.water-choice-meter i:nth-child(3) {
+  height: 30px;
+}
+.water-choice-meter i[data-filled='true'] {
+  background: var(--color-info);
+}
+.outlook-processing {
+  background: var(--color-base-200);
+}
+.water-outlook {
+  background: color-mix(in srgb, var(--color-info) 3%, var(--color-base-100));
+}
+.water-outlook .card-body > div:first-child {
+  background: var(--color-info);
+  border-radius: 16px;
+  padding: 26px;
+  color: var(--color-info-content);
+}
+.water-outlook .card-body > div:first-child h2 {
+  color: var(--color-info-content);
+  font-weight: 500;
+  font-size: clamp(25px, 3vw, 36px);
+}
+.water-outlook .card-body > div:first-child p {
+  color: var(--color-info-content);
+}
+.water-outlook .card-body > div:first-child .badge {
+  background: var(--color-base-100);
+  color: var(--color-info);
+}
+.outlook-metric {
+  background: var(--color-base-100);
+  border: 1px solid var(--color-base-300);
+}
+.outlook-metric > p:last-child {
+  font-size: 18px;
+}
+.water-calendar {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 8px;
+}
+.water-month {
+  background: var(--color-base-100);
+  color: var(--color-base-content);
+  box-shadow: none;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 12px 3px;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  transition:
+    background 180ms ease,
+    border-color 180ms ease;
+}
+.water-month:hover {
+  background: var(--color-base-200);
+}
+.water-month[aria-pressed='true'] {
+  background: color-mix(in oklch, var(--color-info) 8%, var(--color-base-100));
+  border-color: var(--color-info);
+}
+.water-month:focus-visible {
+  outline: 3px solid var(--color-info);
+  outline-offset: 3px;
+}
+.water-month-track {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: min(32px, 100%);
+  height: 105px;
+  border-radius: 8px;
+  background: var(--color-base-200);
+  overflow: hidden;
+}
+.water-month-fill {
+  width: 100%;
+  background: var(--color-info);
+  border-radius: 8px;
+}
+.water-month[data-level='low'] .water-month-fill {
+  background: color-mix(in oklch, var(--color-info) 40%, var(--color-base-100));
+}
+.water-month[data-level='moderate'] .water-month-fill {
+  background: color-mix(in oklch, var(--color-info) 70%, var(--color-base-100));
+}
+.water-month[data-level='unknown'] .water-month-track {
+  background: transparent;
+  border: 1px dashed var(--color-base-300);
+  align-items: center;
+}
+.water-month-missing {
+  color: var(--color-base-content);
+  opacity: 0.5;
+}
+.water-month strong {
+  font-size: 13px;
+}
+.water-month-label {
+  font-size: 11px;
+  color: var(--color-base-content);
+  opacity: 0.7;
+}
+.water-month-detail {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: 18px;
+  padding: 22px;
+  background: var(--color-base-200);
+  border-radius: 16px;
+}
+.water-month-tip {
+  grid-column: 1 / -1;
+  padding-top: 14px;
+  border-top: 1px solid var(--color-base-300);
+}
+.seasonal-signal {
+  --signal-color: var(--color-base-content);
+}
+.seasonal-signal[data-tone='success'] {
+  --signal-color: var(--color-success);
+}
+.seasonal-signal[data-tone='warning'] {
+  --signal-color: var(--color-warning);
+}
+.seasonal-signal[data-tone='error'] {
+  --signal-color: var(--color-error);
+}
+.signal-icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: color-mix(in oklch, var(--signal-color) 10%, var(--color-base-100));
+  color: var(--color-base-content);
+}
+.signal-meter {
+  display: flex;
+  gap: 5px;
+  margin: 4px 0;
+}
+.signal-meter span {
+  flex: 1;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-base-200);
+}
+.signal-meter [data-active='true'] {
+  background: var(--signal-color);
+}
+@media (max-width: 767px) {
+  .water-calendar {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 6px;
+  }
+  .water-month {
+    padding: 10px 2px;
+  }
+  .water-month-track {
+    height: 75px;
+    width: 26px;
+  }
+  .water-month-label {
+    font-size: 10px;
+  }
+  .water-month-detail {
+    grid-template-columns: 1fr 1fr;
+    padding: 18px;
+    gap: 15px;
+  }
+  .water-month-detail > div:first-child {
+    grid-column: 1 / -1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .water-month {
+    transition: none;
+  }
+}
+.crop-plan-empty {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+.crop-plan-empty > svg {
+  width: 28px;
+  height: 28px;
+  color: var(--color-primary);
+}
+.crop-plan-empty h2 {
+  font-size: 23px;
+  margin-bottom: 12px;
+}
+.crop-plan-empty .btn {
+  border-radius: 999px;
+}
+.rotation-calendar {
+  overflow: hidden;
+}
+.rotation-calendar .card-body > div:first-child h2 {
+  font-size: clamp(24px, 3vw, 34px);
+  font-weight: 500;
+  letter-spacing: -0.035em;
+}
+.rotation-sequence {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.rotation-sequence-crop {
+  flex: 1;
+  height: auto;
+  min-width: 180px;
+  justify-content: start;
+  padding: 16px;
+  min-height: 90px;
+  text-align: left;
+  border: 1px solid var(--color-base-300);
+  border-radius: 16px;
+  font-weight: 400;
+  white-space: normal;
+}
+.rotation-sequence-crop > span:nth-child(2) {
+  display: grid;
+  gap: 6px;
+}
+.rotation-sequence-crop small {
+  font-size: 10px;
+  font-weight: 500;
+}
+.rotation-sequence-crop strong {
+  font-size: 16px;
+  font-weight: 650;
+}
+.rotation-crop-icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: var(--color-base-200);
+  color: var(--color-primary);
+}
+.rotation-sequence-crop[aria-pressed='true'] {
+  border-color: var(--color-primary);
+  background: var(--color-base-200);
+}
+.rotation-month-grid {
+  padding: 24px;
+  background: var(--color-base-200);
+}
+.rotation-month-grid > div > div:first-child {
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--color-base-300);
+}
+.rotation-season-bar {
+  border: 2px solid transparent;
+  border-radius: 12px;
+  background: var(--color-accent);
+  color: var(--color-accent-content);
+  padding: 14px;
+  box-shadow: none;
+}
+.rotation-season-bar[data-tone='1'] {
+  background: color-mix(in oklch, var(--color-info) 12%, var(--color-base-100));
+  color: var(--color-info);
+}
+.rotation-season-bar[data-tone='2'] {
+  background: var(--color-accent);
+  color: var(--color-accent-content);
+}
+.rotation-season-bar[aria-pressed='true'] {
+  border-color: currentColor;
+}
+.rotation-season-bar:hover {
+  filter: brightness(0.97);
+}
+.rotation-crop-detail {
+  border: 1px solid var(--color-base-300);
+  border-left: 4px solid var(--color-primary);
+}
+.crop-selection-reason {
+  display: flex;
+  align-items: start;
+  gap: 10px;
+  border-top: 1px solid var(--color-base-300);
+  padding-top: 18px;
+  line-height: 1.8;
+}
+.crop-selection-reason svg {
+  color: var(--color-primary);
+  margin-top: 4px;
+}
+.rotation-reason {
+  border: 1px solid var(--color-base-300);
+  background: var(--color-base-100);
+}
+.rotation-reasons-card {
+  background: var(--color-base-200);
+}
+.rotation-plan-card {
+  background: var(--color-base-100);
+  min-height: 225px;
+  box-shadow: none;
+}
+.rotation-plan-card[aria-pressed='true'] {
+  background: var(--color-base-200);
+}
+.rotation-plan-card:hover {
+  background: var(--color-base-200);
+}
+.rotation-plan-number {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--color-base-200);
+  font-size: 12px;
+}
+.workspace-page-banner {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: 24px;
+  background: var(--color-neutral);
+  padding: 46px;
+  min-height: 280px;
+}
+.workspace-page-banner > img {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 55%;
+}
+.workspace-page-banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(90deg, #173729f0, #17372980);
+}
+.workspace-page-banner h1 {
+  color: var(--color-neutral-content);
+  max-width: 760px;
+}
+.workspace-page-banner .agri-eyebrow {
+  color: var(--color-accent);
+}
+.workspace-page-banner > p:last-of-type {
+  color: var(--color-neutral-content);
+  max-width: 550px;
+}
+.workspace-banner-note {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  font-size: 11px;
+  color: var(--color-neutral-content);
+  margin-top: 26px;
+}
+.source-pipeline {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  padding: 18px 0 30px;
+}
+.source-pipeline > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+}
+.source-pipeline > div > span {
+  font-size: 10px;
+  color: var(--color-primary);
+}
+.source-pipeline svg {
+  margin-left: auto;
+  color: var(--color-primary);
+}
+.source-guide-card {
+  border-radius: 22px;
+}
+.source-guide-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.source-guide-number {
+  font-size: 12px;
+  color: var(--color-primary);
+}
+.source-guide-card .agri-inline-link {
+  align-self: start;
+  margin-top: auto;
+  padding-top: 20px;
+}
+.sources-page .sources-note {
+  border: 1px solid var(--color-base-300);
+  padding: 34px;
+}
+.site-shell .farm-workspace {
+  padding: 30px;
+  border: 1px solid var(--color-base-300);
+  border-radius: 24px;
+  background: var(--color-base-100);
+  gap: 20px;
+}
+.farm-workspace-heading {
+  display: grid;
+  grid-template-columns: 52px 1fr;
+  gap: 4px 18px;
+}
+.farm-workspace-heading .agri-icon-box {
+  grid-row: span 2;
+}
+.farm-workspace-heading h2 {
+  font-size: 26px;
+  font-weight: 550;
+}
+.site-shell #farm-workspace > p {
+  font-size: 14px;
+  color: var(--color-base-content);
+}
+.site-shell #farm-workspace > label {
+  display: grid;
+  gap: 8px;
+  max-width: none;
+  font-size: 13px;
+  font-weight: 550;
+}
+.site-shell #farm-workspace > details {
+  padding: 22px;
+  border-radius: 16px;
+  background: var(--color-base-200);
+}
+.farm-create-panel summary {
+  color: var(--color-primary);
+  font-size: 15px;
+  font-weight: 650;
+}
+.farm-workspace :where(input, select) {
+  min-height: 46px;
+  border-radius: 10px;
+  border: 1px solid var(--color-base-300);
+  background: var(--color-base-100);
+  color: var(--color-base-content);
+  font-size: 14px;
+  width: 100%;
+}
+.farm-workspace label {
+  color: var(--color-base-content);
+  font-size: 13px;
+}
+.site-shell .farm-workspace .data-form {
+  gap: 22px;
+}
+.site-shell .farm-workspace .data-form p {
+  font-size: 12px;
+  color: var(--color-base-content);
+}
+.site-shell .farm-workspace .workspace-steps {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  overflow: visible;
+  gap: 8px;
+  padding-bottom: 20px;
+}
+.site-shell .workspace-steps button {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  white-space: normal;
+  color: var(--color-base-content);
+  border-radius: 14px;
+  font-size: 12px;
+  min-height: 78px;
+  background: var(--color-base-200);
+  border-color: var(--color-base-300);
+}
+.site-shell .workspace-steps button span {
+  opacity: 1;
+  color: var(--color-primary);
+  font-size: 11px;
+}
+.site-shell .workspace-steps button[aria-pressed='true'] {
+  background: var(--color-neutral);
+  color: var(--color-neutral-content);
+}
+.site-shell .workspace-steps button[aria-pressed='true'] span {
+  color: var(--color-accent);
+}
+.site-shell .workspace-controls > section {
+  padding: 28px;
+  background: var(--color-base-200);
+  border-color: var(--color-base-300);
+  border-radius: 18px;
+}
+.site-shell .workspace-controls p {
+  font-size: 13px;
+  color: var(--color-base-content);
+  line-height: 1.8;
+}
+.site-shell .workspace-controls h3 {
+  font-size: 23px;
+  font-weight: 550;
+  color: var(--color-base-content);
+}
+.farm-workspace button:not(.workspace-steps button) {
+  border-radius: 999px;
+  min-height: 44px;
+  font-size: 13px;
+}
+.farm-workspace .data-toolbar {
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.workspace-controls form {
+  display: grid;
+  gap: 20px;
+}
+.farm-workspace .data-warning {
+  color: var(--color-warning);
+  background: color-mix(in srgb, var(--color-warning) 7%, var(--color-base-100));
+}
+@media (max-width: 900px) {
+  .location-intro-copy {
+    padding: 30px;
+  }
+  .location-intro h3 {
+    font-size: 46px;
+  }
+  .source-pipeline {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 760px) {
+  .planner-journey {
+    gap: 10px;
+    padding: 16px 0;
+  }
+  .planner-journey li {
+    flex-direction: column;
+    align-items: start;
+    gap: 9px;
+    font-size: 11px;
+  }
+  .site-shell .location-welcome {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+  .location-intro {
+    min-height: 230px;
+  }
+  .location-intro-copy {
+    padding: 28px;
+  }
+  .location-intro h3 {
+    font-size: 36px;
+    margin: 14px 0;
+  }
+  .location-intro h3 br {
+    display: none;
+  }
+  .location-intro-copy > p {
+    font-size: 12px;
+    line-height: 1.7;
+  }
+  .location-intro-features {
+    display: none;
+  }
+  .site-shell .location-welcome .location-card {
+    padding: 36px 24px;
+  }
+  .site-shell .location-summary {
+    gap: 12px;
+    padding: 18px;
+  }
+  .site-shell .location-summary strong {
+    font-size: 18px;
+  }
+  .location-summary-pin {
+    display: none;
+  }
+  .water-choice {
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 1fr 38px;
+    padding: 14px;
+    gap: 4px;
+  }
+  .water-choice > span:first-child {
+    position: absolute;
+    right: 14px;
+    top: 14px;
+    margin: 0;
+  }
+  .water-choice > span:first-child > svg {
+    display: none;
+  }
+  .water-choice > span:nth-child(2) {
+    grid-column: 1;
+    font-size: 16px;
+  }
+  .water-choice > span:last-child {
+    grid-column: 1 / -1;
+    font-size: 12px;
+    margin-top: 4px;
+  }
+  .water-choice-meter {
+    grid-column: 1;
+    height: 20px;
+    margin: 8px 0;
+  }
+  .water-choice-meter i {
+    height: 8px;
+  }
+  .water-choice-meter i:nth-child(2) {
+    height: 14px;
+  }
+  .water-choice-meter i:nth-child(3) {
+    height: 20px;
+  }
+  .farm-water-dialog .modal-box {
+    padding: 24px;
+  }
+  .water-outlook .card-body > div:first-child {
+    padding: 20px;
+  }
+  .rotation-sequence {
+    gap: 8px;
+  }
+  .rotation-sequence-crop {
+    min-width: 100%;
+    min-height: 74px;
+  }
+  .rotation-month-grid {
+    padding: 16px;
+  }
+  .workspace-page-banner {
+    padding: 30px 24px;
+    min-height: 0;
+  }
+  .source-pipeline {
+    gap: 22px 16px;
+  }
+  .source-pipeline > div {
+    flex-wrap: wrap;
+    font-size: 11px;
+  }
+  .source-pipeline svg {
+    display: none;
+  }
+  .site-shell .farm-workspace {
+    padding: 20px;
+  }
+  .farm-workspace-heading h2 {
+    font-size: 23px;
+  }
+  .site-shell #farm-workspace > details {
+    padding: 18px;
+  }
+  .site-shell .farm-workspace .workspace-steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .site-shell .workspace-steps button {
+    min-height: 68px;
+    padding: 14px;
+  }
+  .site-shell .workspace-controls > section {
+    padding: 20px;
+  }
+  .site-shell .farm-workspace .data-form {
+    grid-template-columns: 1fr;
+  }
+  .crop-plan-empty {
+    flex-direction: column;
   }
 }

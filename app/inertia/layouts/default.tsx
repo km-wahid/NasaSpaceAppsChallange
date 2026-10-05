@@ -1,106 +1,156 @@
 import { Data } from '@generated/data'
 import { toast, Toaster } from 'sonner'
 import { usePage } from '@inertiajs/react'
-import { ReactElement, useEffect } from 'react'
-import { Form, Link } from '@adonisjs/inertia/react'
+import { ReactElement, useEffect, useState } from 'react'
+import { Form, Link as NavigationLink } from '@adonisjs/inertia/react'
 import Icon from '../components/icon'
 
 export default function Layout({ children }: { children: ReactElement<Data.SharedProps> }) {
+  const { url } = usePage()
+  const [menuOpen, setMenuOpen] = useState(false)
+  const user = children.props.user
+  const path = url.split(/[?#]/)[0]
+  const navigation = [
+    { href: '/', label: 'Home' },
+    { href: '/planner', label: 'Crop planner' },
+    { href: '/farms', label: 'My farms' },
+    { href: '/sources', label: 'Our data' },
+  ]
   useEffect(() => {
     toast.dismiss()
-  }, [usePage().url])
-
-  if (children.props.flash.error) {
-    toast.error(children.props.flash.error)
-  }
+    setMenuOpen(false)
+  }, [url])
+  useEffect(() => {
+    if (children.props.flash.error) toast.error(children.props.flash.error)
+  }, [children.props.flash.error])
 
   return (
-    <div className="app-shell">
+    <div className="site-shell bg-base-100 text-base-content">
       <a className="skip-link" href="#main-content">
         Skip to content
       </a>
-      <aside className="sidebar" aria-label="Main navigation">
-        <Link route="home" className="sidebar-brand">
-          <span className="brand-symbol">
-            <Icon name="leaf" size={26} />
-          </span>
-          <span>
-            orbit<span className="brand-subtitle">AGRICULTURE INTELLIGENCE</span>
-          </span>
-        </Link>
-        <span className="nav-section-label">WORKSPACE</span>
-        <nav className="sidebar-nav">
-          <a href="/#overview">
-            <Icon name="grid" />
-            Overview
-          </a>
-          <a href="/#crop-plans">
-            <Icon name="leaf" />
-            Crop plans
-          </a>
-          <a href={children.props.user ? '/#farm-details' : '/login'}>
-            <Icon name="layers" />
-            My farms
-          </a>
-          <a href="/#data-sources">
-            <Icon name="globe" />
-            Data & sources
-          </a>
-        </nav>
-        <div className="sidebar-note">
-          <span className="orbit-mark">
-            <Icon name="globe" size={28} />
-          </span>
-          <h3>
-            A wider view.
-            <br />A better season.
-          </h3>
-          <p>Earth observations meet local agricultural knowledge.</p>
-          <span className="sidebar-tag">NASA SPACE APPS</span>
-        </div>
-        <div className="sidebar-footer">
-          <span className="status-dot" />
-          Transparent by design<small>Deterministic rotation planning</small>
-        </div>
-      </aside>
-      <div className="app-main">
-        <header className="topbar">
-          <div>
-            <div>
-              <Link route="home" className="breadcrumb">
-                <span>Workspace</span>
-                <Icon name="chevron" size={14} />
-                <strong>Crop Rotation Lab</strong>
-              </Link>
-            </div>
-            <div>
-              <nav>
-                {children.props.user ? (
-                  <>
-                    <span className="user-avatar">{children.props.user.initials}</span>
-                    <Form route="session.destroy">
-                      <button type="submit"> Logout </button>
-                    </Form>
-                  </>
-                ) : (
-                  <>
-                    <Link route="new_account.create" className="header-cta">
-                      Create account
-                      <Icon name="arrow" size={16} />
-                    </Link>
-                    <Link route="session.create">Login</Link>
-                  </>
-                )}
-              </nav>
-            </div>
-          </div>
-        </header>
-        <main id="main-content">{children}</main>
-        <footer className="app-footer">
-          <span>ORBIT · NASA Space Apps Challenge</span>
-          <span>Built for informed farming decisions</span>
-        </footer>
+      <div className="site-announcement">
+        <Icon name="globe" size={14} />A view from space. A plan for your field.
+        <span>NASA Space Apps Challenge</span>
       </div>
+      <header className="site-header">
+        <div className="navbar site-navbar">
+          <NavigationLink href="/" className="site-brand" aria-label="Orbit home">
+            <span className="site-brand-mark">
+              <Icon name="leaf" size={27} />
+            </span>
+            <span>
+              orbit<span className="site-brand-tagline">GROW WITH PERSPECTIVE</span>
+            </span>
+          </NavigationLink>
+          <nav className="desktop-navigation" aria-label="Main navigation">
+            {navigation.map((item) => (
+              <NavigationLink
+                key={item.href}
+                href={item.href}
+                onClick={() => setMenuOpen(false)}
+                aria-current={path === item.href ? 'page' : undefined}
+              >
+                {item.label}
+              </NavigationLink>
+            ))}
+          </nav>
+          <div className="site-account-actions">
+            {user ? (
+              <>
+                <span className="user-avatar" aria-label={`Signed in as ${user.initials}`}>
+                  {user.initials}
+                </span>
+                <Form route="session.destroy">
+                  <button type="submit" className="btn btn-ghost btn-sm">
+                    Log out
+                  </button>
+                </Form>
+              </>
+            ) : (
+              <>
+                <NavigationLink href="/login" className="site-login">
+                  Log in
+                </NavigationLink>
+                <NavigationLink href="/signup" className="btn btn-neutral rounded-full">
+                  Get started <Icon name="arrow" size={17} />
+                </NavigationLink>
+              </>
+            )}
+            <button
+              type="button"
+              className="btn btn-ghost btn-square mobile-menu-toggle"
+              aria-label={menuOpen ? 'Close navigation' : 'Open navigation'}
+              aria-expanded={menuOpen}
+              aria-controls="mobile-navigation"
+              onClick={() => setMenuOpen(!menuOpen)}
+            >
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                aria-hidden="true"
+              >
+                <path d={menuOpen ? 'm6 6 12 12 M6 18 18 6' : 'M4 6h16 M4 12h16 M4 18h16'} />
+              </svg>
+            </button>
+          </div>
+        </div>
+        {menuOpen && (
+          <nav
+            id="mobile-navigation"
+            className="mobile-navigation"
+            aria-label="Mobile navigation"
+            onKeyDown={(event) => {
+              if (event.key === 'Escape') setMenuOpen(false)
+            }}
+          >
+            {navigation.map((item) => (
+              <NavigationLink
+                key={item.href}
+                href={item.href}
+                onClick={() => setMenuOpen(false)}
+                aria-current={path === item.href ? 'page' : undefined}
+              >
+                {item.label}
+                <Icon name="arrow" size={16} />
+              </NavigationLink>
+            ))}
+            {!user && (
+              <NavigationLink href="/login" onClick={() => setMenuOpen(false)}>
+                Log in
+                <Icon name="arrow" size={16} />
+              </NavigationLink>
+            )}
+          </nav>
+        )}
+      </header>
+      <main id="main-content" className="site-main">
+        {children}
+      </main>
+      <footer className="site-footer">
+        <div className="site-footer-top">
+          <div>
+            <NavigationLink href="/" className="site-brand">
+              <Icon name="leaf" size={28} />
+              <span>orbit</span>
+            </NavigationLink>
+            <p>Thoughtful farming starts with a wider view.</p>
+          </div>
+          <nav aria-label="Footer navigation">
+            <NavigationLink href="/planner">Plan your season</NavigationLink>
+            <NavigationLink href="/farms">Your farms</NavigationLink>
+            <NavigationLink href="/sources">Data & transparency</NavigationLink>
+          </nav>
+        </div>
+        <div className="site-footer-bottom">
+          <span>Orbit · NASA Space Apps Challenge</span>
+          <span>Decision support. Your farm, your decision.</span>
+        </div>
+      </footer>
       <Toaster position="top-center" richColors />
     </div>
   )

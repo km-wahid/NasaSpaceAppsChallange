@@ -12,6 +12,18 @@ const routes = {
     tokens: [{"old":"/","type":0,"val":"/","end":""}],
     types: placeholder as Registry['home']['types'],
   },
+  'planner': {
+    methods: ["GET","HEAD"],
+    pattern: '/planner',
+    tokens: [{"old":"/planner","type":0,"val":"planner","end":""}],
+    types: placeholder as Registry['planner']['types'],
+  },
+  'sources': {
+    methods: ["GET","HEAD"],
+    pattern: '/sources',
+    tokens: [{"old":"/sources","type":0,"val":"sources","end":""}],
+    types: placeholder as Registry['sources']['types'],
+  },
   'catalog.index': {
     methods: ["GET","HEAD"],
     pattern: '/api/v1/catalog',
@@ -53,6 +65,12 @@ const routes = {
     pattern: '/login',
     tokens: [{"old":"/login","type":0,"val":"login","end":""}],
     types: placeholder as Registry['session.store']['types'],
+  },
+  'farms': {
+    methods: ["GET","HEAD"],
+    pattern: '/farms',
+    tokens: [{"old":"/farms","type":0,"val":"farms","end":""}],
+    types: placeholder as Registry['farms']['types'],
   },
   'session.destroy': {
     methods: ["POST"],

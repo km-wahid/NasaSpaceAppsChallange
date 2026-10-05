@@ -5,10 +5,13 @@ type ParamValue = string | number | bigint | boolean
 export type ScannedRoutes = {
   ALL: {
     'home': { paramsTuple?: []; params?: {} }
+    'planner': { paramsTuple?: []; params?: {} }
+    'sources': { paramsTuple?: []; params?: {} }
     'new_account.create': { paramsTuple?: []; params?: {} }
     'new_account.store': { paramsTuple?: []; params?: {} }
     'session.create': { paramsTuple?: []; params?: {} }
     'session.store': { paramsTuple?: []; params?: {} }
+    'farms': { paramsTuple?: []; params?: {} }
     'session.destroy': { paramsTuple?: []; params?: {} }
     'farms.index': { paramsTuple?: []; params?: {} }
     'farms.store': { paramsTuple?: []; params?: {} }
@@ -25,8 +28,11 @@ export type ScannedRoutes = {
   }
   GET: {
     'home': { paramsTuple?: []; params?: {} }
+    'planner': { paramsTuple?: []; params?: {} }
+    'sources': { paramsTuple?: []; params?: {} }
     'new_account.create': { paramsTuple?: []; params?: {} }
     'session.create': { paramsTuple?: []; params?: {} }
+    'farms': { paramsTuple?: []; params?: {} }
     'farms.index': { paramsTuple?: []; params?: {} }
     'farms.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'farms.inputs': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -36,8 +42,11 @@ export type ScannedRoutes = {
   }
   HEAD: {
     'home': { paramsTuple?: []; params?: {} }
+    'planner': { paramsTuple?: []; params?: {} }
+    'sources': { paramsTuple?: []; params?: {} }
     'new_account.create': { paramsTuple?: []; params?: {} }
     'session.create': { paramsTuple?: []; params?: {} }
+    'farms': { paramsTuple?: []; params?: {} }
     'farms.index': { paramsTuple?: []; params?: {} }
     'farms.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'farms.inputs': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
