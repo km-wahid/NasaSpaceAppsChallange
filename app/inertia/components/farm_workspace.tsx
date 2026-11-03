@@ -205,13 +205,9 @@ export default function FarmWorkspace({ catalog }: { catalog: Catalog }) {
         <span className="agri-icon-box">
           <Icon name="layers" size={24} />
         </span>
-        <p className="agri-eyebrow text-primary">FROM INSIGHT TO ACTION</p>
-        <h2>Your farm workspace</h2>
+        <h2>Farm details</h2>
       </div>
-      <p>
-        Only your priorities are required. We already have your district. Add extra details only if
-        you want more tailored checks.
-      </p>
+      <p>Priorities are required; other details are optional.</p>
       <label>
         Saved farm
         <select
@@ -261,7 +257,7 @@ export default function FarmWorkspace({ catalog }: { catalog: Catalog }) {
             })
           }}
         >
-          <h3>What matters most to you?</h3>
+          <h3>Priorities</h3>
           {priorityFields}
           <details className="collapse collapse-arrow border border-base-300 bg-base-100 col-span-full">
             <summary className="collapse-title font-semibold">Add extra details (optional)</summary>
@@ -325,13 +321,10 @@ export default function FarmWorkspace({ catalog }: { catalog: Catalog }) {
                   onChange={(event) => setTurnaround(Number(event.target.value))}
                 />
               </label>
-              <p>
-                Leave unknown measurements blank. The planning calendar allows 10 days for land
-                preparation unless you change it.
-              </p>
+              <p>Unknown measurements can be left blank.</p>
             </div>
           </details>
-          <button disabled={!!busy || totalWeight !== 100}>Save priorities and create farm</button>
+          <button disabled={!!busy || totalWeight !== 100}>Create farm</button>
         </form>
       </details>
       {farmId && (
@@ -352,10 +345,7 @@ export default function FarmWorkspace({ catalog }: { catalog: Catalog }) {
             }}
           >
             <h3 className="text-xl font-semibold">Your priorities</h3>
-            <p className="my-3 text-sm">
-              This is all you need to provide. Soil tests, previous crops and environmental refresh
-              are optional.
-            </p>
+            <p className="my-3 text-sm">Soil tests and crop history are optional.</p>
             {priorityFields}
             <button disabled={!!busy || inputsLoading || totalWeight !== 100}>
               Save priorities
@@ -394,7 +384,6 @@ export default function FarmWorkspace({ catalog }: { catalog: Catalog }) {
                 </legend>
                 <section>
                   <h3>1. Environmental observations</h3>
-                  <p className="mb-3">Optional measurements — leave anything unknown blank.</p>
                   <form
                     onSubmit={(event) => {
                       event.preventDefault()
@@ -459,11 +448,11 @@ export default function FarmWorkspace({ catalog }: { catalog: Catalog }) {
                     </div>
                     <button>Save optional details</button>
                   </form>
-                  <p>
-                    {environment
-                      ? `Cached profile available. Last calculated: ${new Date(String(environment.calculated_at)).toLocaleString()}`
-                      : 'No cached NASA profile available for this farm.'}
-                  </p>
+                  {environment && (
+                    <p>
+                      Updated {new Date(String(environment.calculated_at)).toLocaleDateString()}
+                    </p>
+                  )}
                   <button
                     type="button"
                     onClick={() =>
@@ -479,10 +468,7 @@ export default function FarmWorkspace({ catalog }: { catalog: Catalog }) {
                 </section>
                 <section>
                   <h3>2. Previous crops</h3>
-                  <p>
-                    Add two actual previous seasons to check crop breaks. Without them, plans are
-                    season-based guidance and prior-crop checks are marked incomplete.
-                  </p>
+                  <p>Add recent crops to check crop breaks.</p>
                   <form
                     onSubmit={(event) => {
                       event.preventDefault()
@@ -765,11 +751,7 @@ export default function FarmWorkspace({ catalog }: { catalog: Catalog }) {
                   </form>
                 </section>
                 <section>
-                  <h3>Ready to explore?</h3>
-                  <p>
-                    After saving these details, choose this farm in the crop planner and build your
-                    outlook.
-                  </p>
+                  <h3>Crop planner</h3>
                   <Link href="/planner" className="btn btn-neutral rounded-full justify-self-start">
                     Open crop planner <Icon name="arrow" size={18} />
                   </Link>

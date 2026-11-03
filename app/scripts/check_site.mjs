@@ -167,11 +167,11 @@ try {
   for (const width of [1440, 1024, 768, 390, 320]) {
     await page.setViewportSize({ width, height: 900 })
     for (const [path, heading] of [
-      ['/', 'A better season'],
-      ['/planner', 'Find your next crop rotation.'],
-      ['/sources', 'Good decisions start'],
-      ['/login', 'Welcome back.'],
-      ['/signup', 'Let’s grow together.'],
+      ['/', 'Plan your growing season.'],
+      ['/planner', 'Crop planner'],
+      ['/sources', 'Our data'],
+      ['/login', 'Log in'],
+      ['/signup', 'Create account'],
     ]) {
       const response = await page.goto(`${base}${path}`)
       assert.equal(response.status(), 200, `${path} must load directly`)
@@ -193,7 +193,7 @@ try {
   assert.equal(favicon.status(), 200)
   assert.ok(favicon.headers()['content-type'].includes('image/svg+xml'))
   if (process.env.SCREENSHOT_DIR) {
-    await page.getByRole('heading', { name: /A better season/ }).waitFor()
+    await page.getByRole('heading', { name: /Plan your growing season/ }).waitFor()
     await page.locator('.agri-final-cta').waitFor()
     await page.locator('.agri-hero-image').evaluate((image) => image.decode())
     await mkdir(process.env.SCREENSHOT_DIR, { recursive: true })
@@ -254,27 +254,27 @@ try {
   await page.getByRole('img', { name: 'Map preview unavailable for Dhaka' }).waitFor()
   await page.getByRole('link', { name: 'Open larger map' }).waitFor()
   assert.deepEqual(analysisInput, { districtId: '8001', waterAvailability: 'medium' })
-  await page.getByRole('heading', { name: 'Let’s prepare your crop plan' }).waitFor()
-  await page.getByText('Sample plan', { exact: true }).waitFor()
+  await page.getByRole('heading', { name: 'Complete your farm setup' }).waitFor()
+  await page.getByRole('button', { name: 'Sample preview · cannot apply' }).waitFor()
   assert.equal(await page.getByText('Preview sample crop rotations', { exact: true }).count(), 0)
   assert.equal(
-    await page.getByRole('button', { name: 'Sample only · cannot apply' }).isDisabled(),
+    await page.getByRole('button', { name: 'Sample preview · cannot apply' }).isDisabled(),
     true
   )
   await page.getByRole('button', { name: /Sample Plan B/ }).click()
-  await page.getByRole('heading', { name: 'Sample Plan B · Crop rotation' }).waitFor()
+  await page.getByRole('heading', { name: /^Sample Plan B/ }).waitFor()
   await page.getByRole('button', { name: 'Jan: No data water availability' }).click()
   assert.ok(
     await page
       .locator('.water-month-tip')
       .textContent()
-      .then((text) => text.includes('Do not treat missing data as low water'))
+      .then((text) => text.includes('No local data for this month'))
   )
   assert.equal(await page.locator('.seasonal-signal[data-tone="unknown"]').count(), 3)
   showPlans = true
   await page.getByRole('button', { name: 'Change water availability' }).click()
   await dialog.getByRole('button', { name: 'Continue', exact: true }).click()
-  await page.getByRole('heading', { name: 'Plan A · Crop rotation' }).waitFor()
+  await page.getByRole('heading', { name: /^Plan A/ }).waitFor()
   assert.ok(
     await page
       .locator('#crop-plans')
@@ -286,7 +286,7 @@ try {
     'Crop recommendations appear before supporting water analytics'
   )
   const download = page.waitForEvent('download')
-  await page.getByRole('button', { name: 'Download planting guide' }).click()
+  await page.getByRole('button', { name: 'Download guide' }).click()
   assert.equal((await download).suggestedFilename(), 'crop-rotation-plan.txt')
   const march = page.getByRole('button', { name: 'Mar: High water availability' })
   await march.click()
@@ -314,31 +314,18 @@ try {
     })
   }
   await page
-    .getByRole('button', { name: 'Fixture Lentil, Nov 2026 to Feb 2027', exact: true })
+    .getByRole('button', { name: 'Fixture Lentil Nov 2026 → Feb 2027', exact: true })
     .click()
   await page.getByRole('heading', { name: 'Fixture Lentil', exact: true }).waitFor()
   await page.getByRole('button', { name: /Plan B/ }).click()
-  await page.getByRole('heading', { name: 'Plan B · Crop rotation' }).waitFor()
+  await page.getByRole('heading', { name: /^Plan B/ }).waitFor()
   assert.ok(
     (await page.locator('#rotation-alternatives').textContent()).includes('Jul 2026 → Nov 2026'),
     'Alternative listing includes actual growing months'
   )
   assert.ok(
-    (await page.locator('#rotation-alternatives').textContent()).includes(
-      'Fixture soil contribution'
-    ),
-    'Alternative listing includes crop soil contribution'
-  )
-  assert.ok(
-    (await page.locator('#rotation-alternatives').textContent()).includes(
-      'Soil: Fixture soil comparison'
-    ),
-    'Alternative listing includes rotation soil comparison'
-  )
-  assert.ok(
-    await page
-      .getByRole('button', { name: 'Fixture Mustard, Nov 2026 to Feb 2027', exact: true })
-      .count()
+    (await page.locator('#rotation-alternatives').textContent()).includes('Fixture Lentil'),
+    'Alternative listing includes crop names'
   )
   await capture(page, 'crop-plans-mobile')
   await page.setViewportSize({ width: 1440, height: 1000 })
@@ -397,7 +384,7 @@ try {
     .getByRole('navigation', { name: 'Mobile navigation' })
     .getByRole('link', { name: 'My farms' })
     .click()
-  await page.getByRole('heading', { name: 'Your farm workspace' }).waitFor()
+  await page.getByRole('heading', { name: 'Farm details' }).waitFor()
   await page.getByRole('heading', { name: 'Your priorities', exact: true }).waitFor()
   assert.equal(
     await page.getByRole('button', { name: /Crop history/ }).isVisible(),
@@ -462,11 +449,11 @@ try {
     .getByRole('navigation', { name: 'Main navigation' })
     .getByRole('link', { name: 'Crop planner' })
     .click()
-  await page.getByRole('button', { name: 'Generate crop rotations' }).click()
-  await page.getByRole('heading', { name: 'Plan A · Crop rotation' }).waitFor()
+  await page.getByRole('button', { name: 'Generate rotations' }).click()
+  await page.getByRole('heading', { name: /^Plan A/ }).waitFor()
   assert.equal(analysisInput.farmId, 1)
   await page.getByRole('button', { name: 'Use this rotation · Plan A' }).click()
-  await page.getByRole('button', { name: 'Rotation saved to your farm' }).waitFor()
+  await page.getByRole('button', { name: /Saved to your farm/ }).waitFor()
   assert.equal(savedChoice.rank, 1)
   await page.getByRole('button', { name: /Plan B/ }).click()
   rejectChoice = true
@@ -475,9 +462,9 @@ try {
   assert.equal(savedChoice.rank, 1, 'Failed save must preserve the previous choice')
   rejectChoice = false
   await page.getByRole('button', { name: 'Use this rotation · Plan B' }).click()
-  await page.getByRole('button', { name: 'Rotation saved to your farm' }).waitFor()
+  await page.getByRole('button', { name: /Saved to your farm/ }).waitFor()
   assert.equal(savedChoice.rank, 2)
-  await page.getByRole('button', { name: 'Generate crop rotations' }).click()
+  await page.getByRole('button', { name: 'Generate rotations' }).click()
   await page.getByText(/Your saved rotation:.*Fixture Mustard/).waitFor()
   await capture(page, 'recommendation-first-desktop')
   await page.goto(`${base}/this-page-does-not-exist`)

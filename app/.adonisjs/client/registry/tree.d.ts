@@ -29,6 +29,7 @@ export interface ApiDefinition {
     index: typeof routes['farms.index']
     store: typeof routes['farms.store']
     show: typeof routes['farms.show']
+    details: typeof routes['farms.details']
     inputs: typeof routes['farms.inputs']
     preferences: typeof routes['farms.preferences']
     soil: typeof routes['farms.soil']
@@ -41,6 +42,8 @@ export interface ApiDefinition {
   }
   recommendations: {
     store: typeof routes['recommendations.store']
+    choice: typeof routes['recommendations.choice']
+    choose: typeof routes['recommendations.choose']
     show: typeof routes['recommendations.show']
   }
 }

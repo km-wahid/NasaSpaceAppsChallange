@@ -37,11 +37,7 @@ export default function Farms() {
       <Head title="My farms" />
       <div className="site-page-heading workspace-page-banner">
         <img src={landscape} alt="" />
-        <p className="agri-eyebrow text-primary">ROOTED IN REAL INFORMATION</p>
-        <h1>A home for your farm.</h1>
-        <p>
-          Keep your field information together: soil, water, crop history and growing priorities.
-        </p>
+        <h1>My farms</h1>
       </div>
       {catalog && (
         <div className="card border border-base-300 bg-base-100 mb-6 p-6">
@@ -62,7 +58,7 @@ export default function Farms() {
             ))}
           </select>
           <p className="mt-2 text-sm text-base-content/70">
-            This selection is used when creating a new farm. It does not relocate existing farms.
+            Used for new farms only.
           </p>
         </div>
       )}

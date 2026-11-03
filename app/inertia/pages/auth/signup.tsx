@@ -1,12 +1,13 @@
 import { Form } from '@adonisjs/inertia/react'
 import AuthFrame from '../../components/auth_frame'
+import PasswordInput from '../../components/password_input'
 
 export default function Signup() {
   return (
     <AuthFrame
       signup
-      title="Let’s grow together."
-      description="Create an account to save your farm and plan with perspective."
+      title="Create account"
+      description="Save your farms and plans."
     >
       <Form route="new_account.store">
         {({ errors, processing }) => (
@@ -53,16 +54,12 @@ export default function Signup() {
 
             <div>
               <label htmlFor="password">Password</label>
-              <input
-                type="password"
+              <PasswordInput
                 name="password"
                 id="password"
                 autoComplete="new-password"
-                className="input w-full"
-                required
-                aria-invalid={Boolean(errors.password)}
-                aria-describedby={errors.password ? 'password-error' : undefined}
-                data-invalid={errors.password ? 'true' : undefined}
+                invalid={Boolean(errors.password)}
+                errorId="password-error"
               />
               {errors.password && (
                 <p id="password-error" className="text-sm text-error" role="alert">
@@ -73,16 +70,12 @@ export default function Signup() {
 
             <div>
               <label htmlFor="passwordConfirmation">Confirm password</label>
-              <input
-                type="password"
+              <PasswordInput
                 name="passwordConfirmation"
                 id="passwordConfirmation"
                 autoComplete="new-password"
-                className="input w-full"
-                required
-                aria-invalid={Boolean(errors.passwordConfirmation)}
-                aria-describedby={errors.passwordConfirmation ? 'confirm-error' : undefined}
-                data-invalid={errors.passwordConfirmation ? 'true' : undefined}
+                invalid={Boolean(errors.passwordConfirmation)}
+                errorId="confirm-error"
               />
               {errors.passwordConfirmation && (
                 <p id="confirm-error" className="text-sm text-error" role="alert">

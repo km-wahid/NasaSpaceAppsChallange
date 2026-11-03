@@ -8,8 +8,10 @@ import Icon from '../components/icon'
 export default function Layout({ children }: { children: ReactElement<Data.SharedProps> }) {
   const { url } = usePage()
   const [menuOpen, setMenuOpen] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
   const user = children.props.user
   const path = url.split(/[?#]/)[0]
+  const isHome = path === '/'
   const navigation = [
     { href: '/', label: 'Home' },
     { href: '/planner', label: 'Crop planner' },
@@ -21,33 +23,38 @@ export default function Layout({ children }: { children: ReactElement<Data.Share
     setMenuOpen(false)
   }, [url])
   useEffect(() => {
+    const updateScrollState = () => setIsScrolled(window.scrollY > 0)
+    updateScrollState()
+    window.addEventListener('scroll', updateScrollState, { passive: true })
+    return () => window.removeEventListener('scroll', updateScrollState)
+  }, [path])
+  useEffect(() => {
     if (children.props.flash.error) toast.error(children.props.flash.error)
   }, [children.props.flash.error])
 
   return (
-    <div className="site-shell bg-base-100 text-base-content">
+    <div className="site-shell bg-base-200 text-base-content">
       <a className="skip-link" href="#main-content">
         Skip to content
       </a>
-      <div className="site-announcement">
-        <Icon name="globe" size={14} />A view from space. A plan for your field.
-        <span>NASA Space Apps Challenge</span>
-      </div>
-      <header className="site-header">
+      <header
+        className={`site-header${isHome ? ' site-header-home' : ''}${isScrolled ? ' is-scrolled' : ''}`}
+      >
         <div className="navbar site-navbar">
-          <NavigationLink href="/" className="site-brand" aria-label="Orbit home">
-            <span className="site-brand-mark">
-              <Icon name="leaf" size={27} />
-            </span>
-            <span>
-              orbit<span className="site-brand-tagline">GROW WITH PERSPECTIVE</span>
-            </span>
-          </NavigationLink>
-          <nav className="desktop-navigation" aria-label="Main navigation">
+          <div className="navbar-start">
+            <NavigationLink href="/" className="site-brand" aria-label="Orbit home">
+              <Icon name="leaf" size={26} />
+              <span className="site-brand-copy">
+                orbit<span className="site-brand-tagline">GROW WITH PERSPECTIVE</span>
+              </span>
+            </NavigationLink>
+          </div>
+          <nav className="navbar-center desktop-navigation" aria-label="Main navigation">
             {navigation.map((item) => (
               <NavigationLink
                 key={item.href}
                 href={item.href}
+                className="site-nav-link"
                 onClick={() => setMenuOpen(false)}
                 aria-current={path === item.href ? 'page' : undefined}
               >
@@ -55,14 +62,17 @@ export default function Layout({ children }: { children: ReactElement<Data.Share
               </NavigationLink>
             ))}
           </nav>
-          <div className="site-account-actions">
+          <div className="navbar-end site-account-actions">
             {user ? (
               <>
                 <span className="user-avatar" aria-label={`Signed in as ${user.initials}`}>
                   {user.initials}
                 </span>
                 <Form route="session.destroy">
-                  <button type="submit" className="btn btn-ghost btn-sm">
+                  <button
+                    type="submit"
+                    className="text-sm font-semibold text-[#235e37] hover:text-[#174327] bg-transparent border-none p-0 cursor-pointer transition-colors"
+                  >
                     Log out
                   </button>
                 </Form>

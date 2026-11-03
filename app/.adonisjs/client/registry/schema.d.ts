@@ -211,6 +211,18 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/farms_controller').default['show']>>>
     }
   }
+  'farms.details': {
+    methods: ["PUT"]
+    pattern: '/api/v1/farms/:id/details'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/farms_controller').default['details']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/farms_controller').default['details']>>>
+    }
+  }
   'farms.inputs': {
     methods: ["GET","HEAD"]
     pattern: '/api/v1/farms/:id/inputs'
@@ -305,6 +317,30 @@ export interface Registry {
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/recommendations_controller').default['store']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/recommendations_controller').default['store']>>>
+    }
+  }
+  'recommendations.choice': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/farms/:id/rotation-choice'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/recommendations_controller').default['choice']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/recommendations_controller').default['choice']>>>
+    }
+  }
+  'recommendations.choose': {
+    methods: ["PUT"]
+    pattern: '/api/v1/farms/:id/rotation-choice'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/recommendations_controller').default['choose']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/recommendations_controller').default['choose']>>>
     }
   }
   'recommendations.show': {

@@ -47,7 +47,7 @@ export default function LocationExperience({
   divisions,
   onContinue,
   title = 'Let’s find your location',
-  description = 'We use your location to provide local climate and agricultural insights.',
+  description = 'Choose a district for local crop and climate data.',
   buttonText = 'Use my location',
   accentColor = '#246349',
   borderRadius = 24,
@@ -198,6 +198,7 @@ export default function LocationExperience({
         </div>
         <button
           type="button"
+          className="hover:text-white transition-colors"
           onClick={() => {
             setExpanded(true)
             setState('idle')
@@ -239,25 +240,11 @@ export default function LocationExperience({
             <Icon name="leaf" size={18} /> A LOCAL START
           </span>
           <h3>
-            Every field
+            Local data.
             <br />
-            has a <em>story.</em>
+            <em>Better plans.</em>
           </h3>
-          <p>
-            Let’s start with yours. Your district connects the bigger Earth picture with your next
-            growing season.
-          </p>
-          <div className="location-intro-features">
-            <span>
-              <Icon name="sun" size={18} /> Seasonal context
-            </span>
-            <span>
-              <Icon name="water" size={18} /> Local water patterns
-            </span>
-            <span>
-              <Icon name="leaf" size={18} /> Farm-first planning
-            </span>
-          </div>
+          <p>Choose your location to continue.</p>
         </div>
       </div>
       <p className="sr-only" role="status" aria-live="polite">
@@ -299,10 +286,9 @@ export default function LocationExperience({
               <p className="location-region">
                 {[location?.division, location?.country].filter(Boolean).join(', ')}
               </p>
-              <p>Your local agricultural insights are ready.</p>
               {signedIn && (
                 <span className="location-saved">
-                  <Icon name="check" size={14} /> Saved to your account
+                  <Icon name="check" size={14} /> Saved
                 </span>
               )}
             </>
@@ -403,7 +389,7 @@ export default function LocationExperience({
                 setMessage('')
               }}
             >
-              Back to location detection
+              Use location instead
             </button>
           </form>
         ) : (
@@ -484,9 +470,6 @@ export default function LocationExperience({
           Location data © OpenStreetMap contributors
         </a>
       </div>
-      <p className="location-scene-note">
-        <Icon name="leaf" size={15} /> A wider view of Earth. A closer look at your land.
-      </p>
     </section>
   )
 }

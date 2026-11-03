@@ -6,6 +6,7 @@ import FarmWorkspace from './farm_workspace'
 import Icon from './icon'
 import LocationMap from './location_map'
 import RotationPlans, { type RotationPlan } from './rotation_plans'
+import SeasonShiftCard from './season_shift_card'
 import { demoRotations } from '../lib/demo_rotations'
 
 type WaterLevel = 'low' | 'medium' | 'high'
@@ -35,13 +36,13 @@ type Analysis = {
   source: { reportingYear: number | null } | null
 }
 const choices = [
-  { level: 'high', title: 'High', text: 'Plenty of water. Irrigation is easily available.' },
+  { level: 'high', title: 'High', text: 'Irrigation is readily available.' },
   {
     level: 'medium',
     title: 'Medium',
-    text: 'Water is available but limited. Irrigation needs planning.',
+    text: 'Limited water; plan irrigation.',
   },
-  { level: 'low', title: 'Low', text: 'Water is scarce. Conservation matters most.' },
+  { level: 'low', title: 'Low', text: 'Scarce water; conserve where possible.' },
 ] as const
 const phases = [
   'Analyzing local water patterns…',
@@ -58,11 +59,7 @@ function WaterChart({ water }: { water: Analysis['water'] }) {
       <div className="card-body gap-5 p-5 sm:p-7">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
-            <p className="agri-eyebrow mb-2 text-info">PLAN THROUGH THE YEAR</p>
             <h2 className="text-2xl font-semibold">Seasonal water outlook</h2>
-            <p className="mt-2 text-sm text-base-content/70">
-              See when water may be easier to plan for. Tap a month to explore.
-            </p>
           </div>
           <span className="badge badge-outline gap-2">
             <Icon name="water" size={15} />
@@ -71,8 +68,7 @@ function WaterChart({ water }: { water: Analysis['water'] }) {
         </div>
         {!hasData && (
           <p className="rounded-xl bg-base-200 p-4 text-sm">
-            A combined water outlook needs local rainfall context and your optional water choice.
-            Missing information is shown as unavailable, not estimated.
+            No local water data. Unavailable values are not estimated.
           </p>
         )}
         <div
@@ -110,39 +106,36 @@ function WaterChart({ water }: { water: Analysis['water'] }) {
         {month && (
           <div className="water-month-detail" aria-live="polite" aria-atomic="true">
             <div>
-              <span className="text-sm text-base-content/65">Selected month</span>
+              <span className="text-sm text-base-content/80">Month</span>
               <h3 className="mt-1 text-xl font-semibold">
                 {month.month}
                 {month.season ? ` · ${month.season}` : ''}
               </h3>
             </div>
             <div>
-              <span className="text-sm text-base-content/65">Water outlook</span>
+              <span className="text-sm text-base-content/80">Water</span>
               <p className="mt-1 font-semibold">
                 {month.index === null ? 'Not available' : month.level}
               </p>
             </div>
             <div>
-              <span className="text-sm text-base-content/65">Seasonal rainfall</span>
+              <span className="text-sm text-base-content/80">Rainfall</span>
               <p className="mt-1 font-semibold">{month.rainfall}</p>
             </div>
             <p className="water-month-tip text-sm text-base-content/75">
               {month.index === null
-                ? 'No local pattern is available for this month. Do not treat missing data as low water.'
+                ? 'No local data for this month.'
                 : month.level === 'Low'
-                  ? 'Water may be tighter in this period. Review irrigation options before choosing water-intensive crops.'
+                  ? 'Check irrigation before planting.'
                   : month.level === 'High'
-                    ? 'The combined outlook is higher in this period. Confirm actual farm water before planting.'
-                    : 'Some water is indicated in this period. Plan irrigation around your crop’s needs.'}
+                    ? 'Confirm farm water before planting.'
+                    : 'Plan irrigation around crop needs.'}
             </p>
           </div>
         )}
         <p className="flex items-start gap-2 text-xs leading-relaxed text-base-content/65">
           <Icon name="info" size={16} />
-          <span>
-            {water.chartNote} Bar heights show Low / Moderate / High categories, not water
-            quantities.
-          </span>
+          <span>{water.chartNote} Bars show categories, not water volumes.</span>
         </p>
       </div>
     </div>
@@ -188,13 +181,9 @@ function SeasonalRisks({ water }: { water: Analysis['water'] }) {
   return (
     <section className="seasonal-risks" aria-labelledby="seasonal-risks-title">
       <div className="mb-5">
-        <p className="agri-eyebrow mb-2 text-primary">A LITTLE PLANNING GOES A LONG WAY</p>
         <h2 id="seasonal-risks-title" className="text-2xl font-semibold">
           What to watch this season
         </h2>
-        <p className="mt-2 text-sm text-base-content/70">
-          Understand the signals. Know what to check next.
-        </p>
       </div>
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {risks.map((risk) => {
@@ -262,9 +251,8 @@ function SeasonalRisks({ water }: { water: Analysis['water'] }) {
       <p className="mt-4 flex items-start gap-2 text-xs leading-relaxed text-base-content/65">
         <Icon name="info" size={16} />
         <span>
-          These are planning signals, not live warnings. Rain and dry-spell risks come from district
-          history. Irrigation pressure comes from your selection, not a measured water-stress
-          reading.
+          Planning signals, not live warnings. Irrigation pressure uses your selection, not a
+          measured reading.
         </span>
       </p>
     </section>
@@ -384,15 +372,11 @@ export default function FarmerDashboard({
           <div className="card-body justify-center p-6 sm:p-8">
             <span className="flex items-center gap-2 text-sm font-medium text-primary">
               <Icon name="pin" />
-              Your crop rotation guide
+              Crop planner
             </span>
             <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-              What will you grow next?
+              Plan your crop rotation
             </h1>
-            <p className="mt-2 max-w-xl text-base-content/75">
-              Choose a farm, generate rotations, then compare planting dates, water needs and
-              trade-offs.
-            </p>
             <div className="mt-3 flex flex-wrap items-center gap-3">
               <span className="badge badge-info badge-soft">
                 {location.district}, {location.country}
@@ -434,6 +418,7 @@ export default function FarmerDashboard({
           </div>
         )}
       </div>
+      <SeasonShiftCard districtName={location.district ?? catalog.district.district_name} />
       <dialog
         ref={dialog}
         className="modal farm-water-dialog"
@@ -441,15 +426,14 @@ export default function FarmerDashboard({
         aria-describedby="water-description"
       >
         <div className="modal-box w-[calc(100%-2rem)] max-w-2xl rounded-2xl p-6 sm:p-8">
-          <p className="agri-eyebrow text-info mb-3">A LITTLE KNOWLEDGE FROM YOUR FIELD</p>
           <span className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-info/10 text-info">
             <Icon name="water" size={26} />
           </span>
           <h2 id="water-title" className="text-2xl font-semibold">
             How is water availability on your farm?
           </h2>
-          <p id="water-description" className="mt-2 text-base-content/70">
-            Choose what feels closest. You can change this later.
+          <p id="water-description" className="mt-2 text-base-content/80">
+            Choose the closest option.
           </p>
           <fieldset className="my-6 grid gap-3 sm:grid-cols-3">
             <legend className="sr-only">Farm water availability</legend>
@@ -495,8 +479,8 @@ export default function FarmerDashboard({
           <form method="dialog" className="mt-2">
             <button className="btn btn-ghost min-h-12 w-full">Not now</button>
           </form>
-          <p className="mt-3 text-center text-xs text-base-content/65">
-            Your choice is a planning preference, not a measured water supply.
+          <p className="mt-3 text-center text-sm text-base-content/80">
+            Planning preference, not a measured supply.
           </p>
         </div>
         <form method="dialog" className="modal-backdrop">
@@ -511,16 +495,15 @@ export default function FarmerDashboard({
       {signedIn && (
         <div id="rotation-setup" className="card border-2 border-primary/30 bg-base-100">
           <div className="px-5 pt-5">
-            <h2 className="text-xl font-semibold">Generate your crop rotations</h2>
-            <p className="mt-2 text-sm text-base-content/70">
-              Set your priorities to explore crops and growing months. Add soil, irrigation and
-              previous crops only if you want more detailed farm checks.
+            <h2 className="text-xl font-semibold">Crop rotations</h2>
+            <p className="mt-2 text-sm text-base-content/80">
+              Choose a farm to compare crop rotations.
             </p>
           </div>
           <div className="card-body gap-3 p-5 sm:flex-row sm:items-end">
             <label className="flex-1">
               <span className="mb-2 block text-sm font-medium">
-                Use a saved farm for crop planning
+                Saved farm
               </span>
               <select
                 className="select w-full"
@@ -532,7 +515,7 @@ export default function FarmerDashboard({
                 }}
               >
                 <option value="">
-                  {farmsLoading ? 'Loading your farms…' : 'Select a farm to generate rotations'}
+                  {farmsLoading ? 'Loading farms…' : 'Select a farm'}
                 </option>
                 {farms.map((farm) => (
                   <option key={farm.farm_id} value={farm.farm_id}>
@@ -547,7 +530,7 @@ export default function FarmerDashboard({
               className="btn btn-ghost"
               onClick={() => setFarmRefresh((value) => value + 1)}
             >
-              Refresh farms
+              Refresh
             </button>
             <button
               type="button"
@@ -555,13 +538,13 @@ export default function FarmerDashboard({
               disabled={busy || !farmId}
               onClick={() => void analyze(choice)}
             >
-              Generate crop rotations
+              Generate rotations
               <Icon name="arrow" />
             </button>
           </div>
           {!farmsLoading && !farms.length && (
             <p className="px-5 pb-4 text-sm">
-              No farm is saved in this district yet.{' '}
+              No farm saved in this district.{' '}
               <button
                 type="button"
                 className="btn btn-link p-0"
@@ -578,7 +561,7 @@ export default function FarmerDashboard({
           )}
           {!choice && (
             <p className="px-5 pb-4 text-sm text-base-content/70">
-              Water availability is optional. You can add it later for the water outlook.
+              Water availability is optional.
             </p>
           )}
           {farmsError && (
@@ -594,20 +577,18 @@ export default function FarmerDashboard({
           <div className="alert alert-info alert-soft items-start" role="status">
             <Icon name="info" />
             <div>
-              <h2 className="font-semibold">Season-based crop planning is available</h2>
+              <h2 className="font-semibold">Planning guidance only</h2>
               <p className="mt-1 text-sm">
-                Compare crops, growing months and documented soil contributions. Local prices and
-                costs are not available, so these plans do not compare profit. Confirm variety and
-                planting dates with local agricultural advice.
+                Profit data is unavailable. Confirm crop variety and dates locally.
               </p>
               <a className="link mt-2 inline-block text-sm" href="/sources">
-                View crop references and limitations
+                Data limitations
               </a>
             </div>
           </div>
         )}
       {!busy && !analysis?.plans.length && (
-        <RotationPlans key="demo-preview" plans={demoRotations} />
+        <RotationPlans key="demo-preview" plans={demoRotations} waterAvailability={choice} />
       )}
       {busy && (
         <div
@@ -620,9 +601,6 @@ export default function FarmerDashboard({
             <h2 className="mt-3 text-xl font-semibold">
               {phase === 2 && !farmId ? 'Preparing your local outlook…' : phases[phase]}
             </h2>
-            <p className="text-sm text-base-content/65">
-              Checking stored information for {location.district}.
-            </p>
             <ul className="steps steps-horizontal mt-4 text-xs">
               {['Local patterns', 'Seasonal outlook', 'Crop plans'].map((label, i) => (
                 <li key={label} className={`step ${i <= phase ? 'step-primary' : ''}`}>
@@ -664,7 +642,7 @@ export default function FarmerDashboard({
                       ? 'Add water details anytime'
                       : `${water.label} water availability`}
                   </h2>
-                  <p className="mt-2 text-sm text-base-content/70">
+                  <p className="mt-2 text-sm text-base-content/80">
                     {water.label === 'Not provided'
                       ? 'Optional · crop planning can continue without this'
                       : 'Your reported farm availability'}
@@ -705,7 +683,7 @@ export default function FarmerDashboard({
                   </div>
                 ))}
               </div>
-              <p className="text-xs leading-relaxed text-base-content/65">
+              <p className="text-sm leading-relaxed text-base-content/80">
                 {analysis.contextNote}
                 {analysis.source?.reportingYear
                   ? ` District references: ${analysis.source.reportingYear}.`
@@ -715,14 +693,12 @@ export default function FarmerDashboard({
           </section>
           {analysis.plans.length ? (
             <div className="order-0 space-y-4">
-              <p className="px-1 text-sm text-base-content/75">
-                {analysis.planning.message} The water choice above does not change measured
-                irrigation in your farm record.
-              </p>
+              <p className="px-1 text-sm text-base-content/85">{analysis.planning.message}</p>
               <RotationPlans
                 key={analysis.plans.map((plan) => plan.id).join(',')}
                 plans={analysis.plans}
                 farmId={signedIn ? farmId : ''}
+                waterAvailability={choice}
               />
             </div>
           ) : (
@@ -736,17 +712,17 @@ export default function FarmerDashboard({
                   {analysis.planning.status === 'no-feasible-plans' ||
                   analysis.planning.status === 'no_feasible_rotation'
                     ? 'No suitable rotation found'
-                    : 'Let’s prepare your crop plan'}
+                    : 'Complete your farm setup'}
                 </h2>
                 <p className="mt-1 text-sm">{analysis.planning.message}</p>
-                <ol className="mt-4 space-y-2 text-sm text-base-content/75">
-                  <li>1. Save your farm with your priorities.</li>
-                  <li>2. Add extra farm details only if you want more tailored checks.</li>
-                  <li>3. Select your farm above and generate crop rotations.</li>
+                <ol className="mt-4 space-y-2 text-sm text-base-content/85">
+                  <li>1. Save your farm and priorities.</li>
+                  <li>2. Select your farm above.</li>
+                  <li>3. Generate crop rotations.</li>
                 </ol>
                 {!signedIn && (
                   <a className="btn btn-primary btn-sm mt-3" href="/login">
-                    Sign in to plan your farm
+                    Log in to save your farm
                   </a>
                 )}
                 {signedIn && (
@@ -777,10 +753,7 @@ export default function FarmerDashboard({
       )}
       {!busy && !analysis && !error && (
         <div className="card border border-dashed border-base-300 bg-base-100 p-8 text-center">
-          <h2 className="text-xl font-semibold">Start with your farm’s water</h2>
-          <p className="my-3 text-base-content/70">
-            A quick choice helps you explore the local seasonal outlook.
-          </p>
+          <h2 className="text-xl font-semibold">Choose water availability</h2>
           <button
             type="button"
             className="btn btn-primary mx-auto"
@@ -800,10 +773,8 @@ export default function FarmerDashboard({
             Set priorities · extra details are optional
           </summary>
           <div className="collapse-content">
-            <p className="mb-4 text-sm text-base-content/70">
-              Only priorities are required. Open “Add extra details” if you want to include
-              irrigation, soil tests or previous crops. Then refresh your farms and generate
-              rotations above.
+            <p className="mb-4 text-sm text-base-content/85">
+              Priorities are required; other details are optional.
             </p>
             <FarmWorkspace catalog={catalog} />
           </div>

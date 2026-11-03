@@ -16,6 +16,7 @@ export type ScannedRoutes = {
     'farms.index': { paramsTuple?: []; params?: {} }
     'farms.store': { paramsTuple?: []; params?: {} }
     'farms.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'farms.details': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'farms.inputs': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'farms.preferences': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'farms.soil': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -24,6 +25,8 @@ export type ScannedRoutes = {
     'environment.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'environment.refresh': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'recommendations.store': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'recommendations.choice': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'recommendations.choose': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'recommendations.show': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'runId': ParamValue} }
   }
   GET: {
@@ -38,6 +41,7 @@ export type ScannedRoutes = {
     'farms.inputs': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'farms.crops': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'environment.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'recommendations.choice': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'recommendations.show': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'runId': ParamValue} }
   }
   HEAD: {
@@ -52,6 +56,7 @@ export type ScannedRoutes = {
     'farms.inputs': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'farms.crops': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'environment.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'recommendations.choice': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'recommendations.show': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'runId': ParamValue} }
   }
   POST: {
@@ -63,9 +68,11 @@ export type ScannedRoutes = {
     'recommendations.store': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   PUT: {
+    'farms.details': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'farms.preferences': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'farms.soil': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'farms.history': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'recommendations.choose': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
 }
 declare module '@adonisjs/core/types/http' {

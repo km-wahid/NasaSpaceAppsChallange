@@ -1,11 +1,12 @@
 import { Form } from '@adonisjs/inertia/react'
 import AuthFrame from '../../components/auth_frame'
+import PasswordInput from '../../components/password_input'
 
 export default function Login() {
   return (
     <AuthFrame
-      title="Welcome back."
-      description="Log in to pick up where your growing plans left off."
+      title="Log in"
+      description="Access your saved farms and plans."
     >
       <Form route="session.store">
         {({ errors, processing }) => (
@@ -32,15 +33,12 @@ export default function Login() {
 
             <div>
               <label htmlFor="password">Password</label>
-              <input
-                type="password"
+              <PasswordInput
                 name="password"
                 id="password"
                 autoComplete="current-password"
-                className="input w-full"
-                required
-                aria-invalid={Boolean(errors.password)}
-                aria-describedby={errors.password ? 'password-error' : undefined}
+                invalid={Boolean(errors.password)}
+                errorId="password-error"
               />
               {errors.password && (
                 <p id="password-error" className="text-sm text-error" role="alert">

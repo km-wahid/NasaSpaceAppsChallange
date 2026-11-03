@@ -38,6 +38,45 @@
   --depth: 0;
   --noise: 0;
 }
+:root {
+  --font-primary: 'Figtree', system-ui, sans-serif;
+  --font-accent: 'Instrument Serif', Georgia, serif;
+  --orbit-navbar-bg: #fbfdf4;
+  --orbit-dark-green: #1c3a27;
+  --orbit-link-green: #2b6a3d;
+  --orbit-pale-lime: #dfeccb;
+  --orbit-avatar-bg: #e3ecd8;
+  --orbit-floating-card: #1d3426;
+  --orbit-floating-border: rgba(255, 255, 255, 0.14);
+  --orbit-hero-scrim-start: rgba(10, 38, 32, 0.82);
+  --orbit-hero-scrim-mid: rgba(10, 38, 32, 0.55);
+  --orbit-navbar-scroll-bg: rgba(251, 253, 244, 0.62);
+  --orbit-hero-height: 680px;
+  --orbit-nav-height: 70px;
+  --orbit-nav-inset: 56px;
+  --orbit-nav-padding: 32px;
+  --orbit-content-padding: 32px;
+  --orbit-content-top: 150px;
+  --orbit-content-width: 520px;
+  --orbit-heading-size: 76px;
+  --orbit-heading-line-height: 1.04;
+  --orbit-subtext-gap: 28px;
+  --orbit-actions-gap-top: 40px;
+  --orbit-action-gap: 32px;
+  --orbit-trust-gap-top: 36px;
+  --orbit-card-inset: 56px;
+  --orbit-card-bottom: 40px;
+  --orbit-spacing-4: 4px;
+  --orbit-spacing-8: 8px;
+  --orbit-spacing-28: 28px;
+  --orbit-spacing-36: 36px;
+  --orbit-spacing-40: 40px;
+  --orbit-spacing-56: 56px;
+  --orbit-spacing-64: 64px;
+}
+body {
+  font-family: var(--font-primary);
+}
 @keyframes farmer-dashboard-enter {
   from {
     opacity: 0;
@@ -68,93 +107,178 @@
   min-height: 100svh;
   font-size: 15px;
 }
-.site-announcement {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  min-height: 34px;
-  padding: 6px 18px;
-  background: var(--color-neutral);
-  color: var(--color-neutral-content);
-  font-size: 11px;
-}
-.site-announcement > span {
-  margin-left: 20px;
-  opacity: 0.75;
-}
 .site-header {
   position: sticky;
-  top: 0;
+  top: 16px;
   z-index: 40;
-  background: var(--color-base-100);
-  border-bottom: 1px solid var(--color-base-300);
+  width: calc(100% - var(--orbit-nav-inset) * 2);
+  max-width: 1360px;
+  height: var(--orbit-nav-height);
+  margin: 16px auto 0;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: var(--orbit-navbar-bg);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 8px 24px rgba(28, 58, 39, 0.08);
+  transition:
+    background-color 320ms ease,
+    border-color 320ms ease,
+    box-shadow 320ms ease,
+    backdrop-filter 320ms ease;
+}
+.site-header.is-scrolled {
+  background: var(--orbit-navbar-scroll-bg);
+  border-color: rgba(255, 255, 255, 0.45);
+  box-shadow: 0 5px 18px rgba(28, 58, 39, 0.08);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+}
+.site-header:not(.site-header-home) {
+  margin-top: 16px;
+}
+.site-header-home {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 0;
 }
 .site-navbar {
-  max-width: var(--site-width);
-  min-height: 88px;
-  gap: 32px;
-  margin: auto;
-  padding: 14px 32px;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  min-height: 0;
+  gap: 0;
+  margin: 0;
+  padding: 0 var(--orbit-nav-padding);
+  background: transparent;
   justify-content: space-between;
+}
+.site-navbar > .navbar-start,
+.site-navbar > .navbar-center,
+.site-navbar > .navbar-end {
+  position: static;
+  width: auto;
+  transform: none;
+}
+.site-navbar > .navbar-start {
+  flex: 1;
+  justify-content: flex-start;
+}
+.site-navbar > .navbar-center {
+  flex: 0 0 auto;
+  justify-content: center;
+}
+.site-navbar > .navbar-end {
+  flex: 1;
+  justify-content: flex-end;
 }
 .site-brand {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  font-size: 34px;
+  gap: 12px;
+  color: var(--orbit-dark-green);
+  font-size: 30px;
   line-height: 1;
-  letter-spacing: -0.065em;
-  font-weight: 750;
+  letter-spacing: -0.03em;
+  font-weight: 600;
+}
+.site-brand > svg {
+  color: var(--orbit-link-green);
+  stroke-width: 1.8;
+}
+.site-brand-copy {
+  display: block;
 }
 .site-brand-mark {
-  color: var(--color-primary);
+  color: var(--orbit-link-green);
 }
 .site-brand-tagline {
   display: block;
-  margin-top: 7px;
-  font-size: 7px;
-  font-weight: 650;
-  letter-spacing: 0.16em;
+  margin-top: 4px;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
   line-height: 1.2;
 }
 .desktop-navigation {
   display: flex;
   align-items: center;
-  gap: 28px;
+  gap: 36px;
 }
 .desktop-navigation a {
-  padding: 10px 0;
-  font-size: 13px;
-  font-weight: 550;
+  position: relative;
+  padding: 8px 0;
+  color: var(--orbit-dark-green);
+  font-size: 17px;
+  font-weight: 500;
+  transition: color 180ms ease;
+}
+.desktop-navigation a::after {
+  position: absolute;
+  right: 0;
+  bottom: 2px;
+  left: 0;
+  height: 2px;
+  background: transparent;
+  content: '';
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 220ms cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 .desktop-navigation a[aria-current='page'] {
-  color: var(--color-primary);
-  box-shadow: 0 2px var(--color-primary);
+  color: var(--orbit-link-green);
+}
+.desktop-navigation a[aria-current='page']::after {
+  background: var(--orbit-link-green);
+  transform: scaleX(1);
 }
 .desktop-navigation a:hover,
 .site-login:hover {
-  color: var(--color-primary);
+  color: var(--orbit-link-green);
 }
 .site-account-actions {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 20px;
 }
 .site-login {
-  font-size: 13px;
-  font-weight: 550;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--orbit-dark-green);
 }
 .site-account-actions .btn {
-  font-size: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-primary-content);
+}
+.user-avatar {
+  width: 34px;
+  height: 34px;
+  background: var(--orbit-avatar-bg);
+  color: var(--orbit-dark-green);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
 }
 .mobile-menu-toggle {
   display: none;
+  color: var(--orbit-dark-green);
 }
 .mobile-navigation {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  left: 0;
   display: grid;
   padding: 8px 24px 20px;
-  border-top: 1px solid var(--color-base-300);
+  border: 1px solid color-mix(in srgb, var(--color-base-300) 70%, transparent);
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--orbit-navbar-bg) 94%, transparent);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 12px 28px #193c2918;
 }
 .mobile-navigation a {
   display: flex;
@@ -180,7 +304,8 @@
   isolation: isolate;
   overflow: hidden;
   display: block;
-  min-height: 640px;
+  height: var(--orbit-hero-height);
+  min-height: var(--orbit-hero-height);
   color: var(--color-neutral-content);
   background: var(--color-neutral);
 }
@@ -197,112 +322,164 @@
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: linear-gradient(90deg, #10271eef 0%, #142a20ad 43%, #142a2020 100%);
+  background: linear-gradient(
+    90deg,
+    var(--orbit-hero-scrim-start) 0%,
+    var(--orbit-hero-scrim-mid) 38%,
+    transparent 70%
+  );
 }
 .agri-hero-content {
-  width: 100%;
-  max-width: var(--site-width);
+  position: relative;
+  z-index: 1;
+  width: calc(100% - var(--orbit-nav-inset) * 2);
+  max-width: 1360px;
+  height: 100%;
   margin: auto;
-  padding: 76px 32px 68px;
+  padding: var(--orbit-content-top) var(--orbit-content-padding) 0;
 }
 .agri-eyebrow {
   display: flex;
   gap: 8px;
   align-items: center;
-  font-size: 10px;
-  font-weight: 650;
-  letter-spacing: 0.15em;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
   line-height: 1.7;
 }
 .agri-small-dot {
-  width: 6px;
-  height: 6px;
+  width: var(--orbit-spacing-8);
+  height: var(--orbit-spacing-8);
   border-radius: 100%;
   background: var(--color-accent);
 }
 .agri-hero h1 {
-  color: var(--color-neutral-content);
-  max-width: 720px;
-  margin: 24px 0;
-  font-size: clamp(48px, 5.6vw, 78px);
-  font-weight: 520;
-  line-height: 1.06;
-  letter-spacing: -0.055em;
-}
-.agri-hero h1 em,
-.agri-final-cta h2 em {
-  font-family: Georgia, 'Times New Roman', serif;
-  font-weight: 400;
+  width: var(--orbit-content-width);
+  max-width: 100%;
+  margin: 0;
+  color: #fff;
+  font-size: var(--orbit-heading-size);
+  font-weight: 600;
+  line-height: var(--orbit-heading-line-height);
+  letter-spacing: -0.035em;
 }
 .agri-hero h1 em {
-  color: var(--color-accent);
+  color: var(--orbit-pale-lime);
+  font-family: var(--font-accent);
+  font-size: 1.12em;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1;
 }
 .agri-hero-content > p {
-  max-width: 400px;
-  line-height: 1.8;
-  color: #ffffffe0;
-  font-size: 15px;
+  max-width: 440px;
+  margin-top: var(--orbit-subtext-gap);
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 19px;
+  font-weight: 400;
+  line-height: 1.65;
 }
 .agri-hero-actions {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 28px;
-  margin-top: 30px;
+  gap: var(--orbit-action-gap);
+  margin-top: var(--orbit-actions-gap-top);
 }
 .agri-start-button {
   border-radius: 999px;
-  min-height: 52px;
-  padding-inline: 26px;
-  gap: 18px;
-  background: var(--color-accent);
-  color: var(--color-accent-content);
-  border-color: var(--color-accent);
+  min-height: 56px;
+  padding-inline: 28px;
+  gap: 14px;
+  background: var(--orbit-pale-lime);
+  color: var(--orbit-dark-green);
+  border-color: var(--orbit-pale-lime);
+  font-size: 16px;
+  font-weight: 600;
 }
 .agri-start-button:hover {
-  background: var(--color-base-100);
-  color: var(--color-base-content);
-  border-color: var(--color-base-100);
+  background: var(--orbit-navbar-bg);
+  color: var(--orbit-dark-green);
+  border-color: var(--orbit-navbar-bg);
 }
 .agri-text-link {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  font-size: 13px;
-  border-bottom: 1px solid #ffffff70;
-  padding-bottom: 4px;
+  gap: 8px;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 500;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+  padding-bottom: 6px;
 }
 .agri-hero-content .agri-hero-reassurance {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-top: 30px;
-  font-size: 11px;
-  color: #ffffffe0;
+  gap: 10px;
+  margin-top: var(--orbit-trust-gap-top);
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 13px;
+  letter-spacing: 0.01em;
+}
+.agri-hero-reassurance svg {
+  color: var(--orbit-pale-lime);
 }
 .agri-hero-caption {
   position: absolute;
-  bottom: 36px;
-  right: max(32px, calc((100vw - 1176px) / 2));
+  right: var(--orbit-card-inset);
+  bottom: var(--orbit-card-bottom);
+  width: 252px;
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 17px 21px;
-  background: #163125d9;
-  border: 1px solid #ffffff30;
-  border-radius: 14px;
-  font-size: 13px;
-  backdrop-filter: blur(12px);
+  gap: 16px;
+  padding: 18px 22px;
+  color: #fff;
+  background: var(--orbit-floating-card);
+  border: 1px solid var(--orbit-floating-border);
+  border-radius: 16px;
+  font-size: 15px;
+  font-weight: 600;
+}
+.agri-hero-caption > svg {
+  color: var(--orbit-pale-lime);
+  width: 26px;
+  height: 26px;
 }
 .agri-hero-caption small {
   display: block;
-  margin-top: 3px;
-  font-size: 11px;
-  color: #ffffffe0;
+  margin-top: 4px;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 13px;
+  font-weight: 400;
+}
+@keyframes agri-copy-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.agri-hero-content h1,
+.agri-hero-content > p,
+.agri-hero-content .agri-hero-actions {
+  animation: agri-copy-enter 550ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.agri-hero-content h1 {
+  animation-delay: 80ms;
+}
+.agri-hero-content > p {
+  animation-delay: 150ms;
+}
+.agri-hero-content .agri-hero-actions {
+  animation-delay: 220ms;
 }
 .agri-context-strip {
   display: grid;
-  grid-template-columns: 1.15fr repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   align-items: center;
   gap: 24px;
   max-width: var(--site-width);
@@ -310,7 +487,7 @@
   padding: 35px 32px;
   border-bottom: 1px solid var(--color-base-300);
 }
-.agri-context-strip > span:not(:first-child) {
+.agri-context-strip > span {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -590,9 +767,9 @@
 }
 .site-page-heading > p:last-child {
   max-width: 650px;
-  font-size: 14px;
-  line-height: 1.8;
-  color: color-mix(in srgb, var(--color-base-content) 76%, transparent);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--color-base-content);
 }
 .planner-page .location-scene {
   min-height: 650px;
@@ -614,8 +791,9 @@
 }
 .sources-note p {
   margin-top: 12px;
-  line-height: 1.85;
-  font-size: 14px;
+  line-height: 1.65;
+  font-size: 16px;
+  color: var(--color-base-content);
 }
 .auth-page {
   display: grid;
@@ -685,8 +863,8 @@
   margin: 22px 0 12px;
 }
 .auth-card > p {
-  color: color-mix(in srgb, var(--color-base-content) 76%, transparent);
-  font-size: 14px;
+  color: color-mix(in srgb, var(--color-base-content) 90%, transparent);
+  font-size: 15px;
 }
 .auth-card form {
   display: grid;
@@ -695,7 +873,7 @@
 }
 .auth-card label {
   display: block;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 550;
   margin-bottom: 7px;
 }
@@ -706,7 +884,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  font-size: 13px;
+  font-size: 14px;
 }
 .auth-switch a {
   display: inline-flex;
@@ -723,17 +901,7 @@
   font-size: 11px;
 }
 @media (max-width: 1050px) {
-  .site-navbar {
-    gap: 20px;
-    padding-inline: 24px;
-  }
-  .desktop-navigation {
-    gap: 20px;
-  }
   .site-brand-tagline {
-    display: none;
-  }
-  .agri-hero-caption {
     display: none;
   }
   .agri-context-strip {
@@ -752,8 +920,7 @@
     gap: 40px;
   }
 }
-@media (max-width: 760px) {
-  .site-announcement > span,
+@media (max-width: 900px) {
   .desktop-navigation,
   .site-login {
     display: none;
@@ -762,11 +929,16 @@
     display: inline-flex;
   }
   .site-navbar {
-    min-height: 76px;
-    padding: 12px 20px;
+    padding-inline: 24px;
+  }
+  .site-header {
+    width: calc(100% - 48px);
   }
   .site-brand {
-    font-size: 31px;
+    font-size: 28px;
+  }
+  .site-brand-tagline {
+    display: none;
   }
   .site-account-actions {
     gap: 8px;
@@ -781,20 +953,32 @@
     display: none;
   }
   .agri-hero {
-    min-height: 580px;
+    height: auto;
+    min-height: var(--orbit-hero-height);
   }
   .agri-hero-content {
-    padding: 60px 24px;
-  }
-  .agri-hero-overlay {
-    background: linear-gradient(90deg, #10271ee8, #142a2080);
+    width: 100%;
+    padding: 150px 24px 0;
   }
   .agri-hero h1 {
-    font-size: clamp(46px, 8vw, 64px);
+    width: 100%;
+    font-size: 44px;
+  }
+  .agri-hero-content > p {
+    font-size: 17px;
+  }
+  .agri-hero-caption {
+    display: flex;
+    position: relative;
+    right: auto;
+    bottom: auto;
+    margin: 32px 24px 24px;
   }
   .agri-eyebrow {
     font-size: 9px;
   }
+}
+@media (max-width: 760px) {
   .agri-hero-actions {
     gap: 22px;
   }
@@ -880,6 +1064,11 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
+  .agri-hero-content h1,
+  .agri-hero-content > p,
+  .agri-hero-content .agri-hero-actions {
+    animation: none;
+  }
   html {
     scroll-behavior: auto;
   }
@@ -1047,6 +1236,11 @@
 .site-shell .location-summary button {
   border-radius: 999px;
   min-height: 44px;
+  transition: background-color 0.16s ease, color 0.16s ease, box-shadow 0.16s ease;
+}
+.site-shell .location-summary button:hover {
+  background: #194f39;
+  color: #ffffff;
 }
 .farmer-dashboard > .grid:first-child {
   align-items: stretch;
@@ -1577,7 +1771,7 @@
   display: grid;
   gap: 8px;
   max-width: none;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 550;
 }
 .site-shell #farm-workspace > details {
@@ -1596,18 +1790,18 @@
   border: 1px solid var(--color-base-300);
   background: var(--color-base-100);
   color: var(--color-base-content);
-  font-size: 14px;
+  font-size: 16px;
   width: 100%;
 }
 .farm-workspace label {
   color: var(--color-base-content);
-  font-size: 13px;
+  font-size: 15px;
 }
 .site-shell .farm-workspace .data-form {
   gap: 22px;
 }
 .site-shell .farm-workspace .data-form p {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--color-base-content);
 }
 .site-shell .farm-workspace .workspace-steps {
@@ -1624,7 +1818,7 @@
   white-space: normal;
   color: var(--color-base-content);
   border-radius: 14px;
-  font-size: 12px;
+  font-size: 14px;
   min-height: 78px;
   background: var(--color-base-200);
   border-color: var(--color-base-300);
@@ -1714,7 +1908,7 @@
     display: none;
   }
   .location-intro-copy > p {
-    font-size: 12px;
+    font-size: 15px;
     line-height: 1.7;
   }
   .location-intro-features {

@@ -97,7 +97,7 @@ export default function DataBrowser({ signedIn }: { signedIn: boolean }) {
       {loading && (
         <div className="card border border-base-300 bg-base-100 p-6" role="status">
           <span className="loading loading-spinner text-primary" />
-          <p className="mt-3 text-sm">Preparing your local growing guide…</p>
+          <p className="mt-3 text-sm">Loading local data…</p>
         </div>
       )}
       {error && (
@@ -125,17 +125,11 @@ export default function DataBrowser({ signedIn }: { signedIn: boolean }) {
         className="collapse collapse-arrow border border-base-300 bg-base-100"
       >
         <summary className="collapse-title font-semibold">
-          Where do these insights come from?
+          Data sources
         </summary>
         <div className="collapse-content space-y-3 text-sm text-base-content/75">
-          <p>
-            Your water choice is combined with stored district rainfall references for a simple
-            seasonal outlook. It is a planning guide, not a forecast.
-          </p>
-          <p>
-            Crop plans use cached NASA environmental information, your saved farm measurements and
-            priorities, and reviewed crop guidance. Missing information stays missing.
-          </p>
+          <p>Water outlooks use district rainfall history, not forecasts.</p>
+          <p>Crop plans use NASA context, crop guidance and your farm inputs. Missing data stays missing.</p>
           <p>
             Location and map data:{' '}
             <a
@@ -146,10 +140,10 @@ export default function DataBrowser({ signedIn }: { signedIn: boolean }) {
             >
               OpenStreetMap contributors
             </a>
-            . Native browser location is requested only when you click.
+            . Browser location is requested only when selected.
           </p>
           <Link href="/sources" className="agri-inline-link">
-            Read about our data and its limits
+            Our data and limitations
           </Link>
         </div>
       </details>

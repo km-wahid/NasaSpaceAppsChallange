@@ -1,25 +1,26 @@
 import { Head } from '@inertiajs/react'
 import { Link } from '@adonisjs/inertia/react'
 import Icon from '../components/icon'
+import ColorCodedHeatmap from '../components/color_coded_heatmap'
 import landscape from '../assets/farm-landscape.jpg'
 
 const benefits = [
   {
     icon: 'water' as const,
-    title: 'Work with your water.',
-    text: 'Understand local seasonal patterns alongside the water available on your farm.',
+    title: 'Water',
+    text: 'Plan around seasonal water.',
     number: '01',
   },
   {
     icon: 'leaf' as const,
-    title: 'Think beyond one harvest.',
-    text: 'Explore multi-season rotations that consider your soil, crop history and growing windows.',
+    title: 'Crop rotations',
+    text: 'Compare crops across seasons.',
     number: '02',
   },
   {
     icon: 'sun' as const,
-    title: 'Plan with perspective.',
-    text: 'Compare suitable strategies and their trade-offs, guided by what matters most to you.',
+    title: 'Your priorities',
+    text: 'Choose what matters to your farm.',
     number: '03',
   },
 ]
@@ -27,8 +28,8 @@ const benefits = [
 export default function Home() {
   return (
     <>
-      <Head title="A better perspective for every harvest" />
-      <section className="agri-hero hero" aria-labelledby="hero-title">
+      <Head title="Home" />
+      <section className="agri-hero" aria-labelledby="hero-title">
         <img
           className="agri-hero-image"
           src={landscape}
@@ -37,45 +38,32 @@ export default function Home() {
         />
         <div className="hero-overlay agri-hero-overlay" />
         <div className="agri-hero-content">
-          <span className="agri-eyebrow">
-            <span className="agri-small-dot" /> ROOTED IN YOUR FARM. INFORMED BY EARTH.
-          </span>
           <h1 id="hero-title">
-            A better season
+            Plan your
             <br />
-            starts with a<br />
-            <em>wider view.</em>
+            <em>growing season.</em>
           </h1>
-          <p>
-            Turn local climate, soil and water insights into a crop rotation plan that works for
-            your field.
-          </p>
+          <p>Local climate, soil and water insights for your farm.</p>
           <div className="agri-hero-actions">
             <Link href="/planner" className="btn btn-primary agri-start-button">
-              Plan my season <Icon name="arrow" size={20} />
+              Plan my season <Icon name="arrow" size={18} />
             </Link>
-            <a href="#how-it-works" className="agri-text-link">
-              See how it works <Icon name="chevron" size={16} />
-            </a>
           </div>
-          <p className="agri-hero-reassurance">
-            <Icon name="shield" size={16} /> No guesswork hidden behind a recommendation.
-          </p>
         </div>
         <div className="agri-hero-caption">
           <Icon name="leaf" size={26} />
-          <span>
-            Built around real fields.<small>And the people who care for them.</small>
-          </span>
+          <span>Built for your farm.</span>
         </div>
       </section>
 
+      <section
+        className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10"
+        aria-label="Annual climate heatmap"
+      >
+        <ColorCodedHeatmap />
+      </section>
+
       <div className="agri-context-strip">
-        <span className="agri-context-intro">
-          A bigger picture.
-          <br />
-          <strong>A more local plan.</strong>
-        </span>
         <span>
           <Icon name="globe" /> NASA Earth observations
         </span>
@@ -93,17 +81,12 @@ export default function Home() {
       <section className="agri-section" aria-labelledby="benefits-title">
         <div className="agri-section-heading">
           <div>
-            <p className="agri-eyebrow text-primary">GROW WITH CONFIDENCE</p>
             <h2 id="benefits-title">
-              Better decisions.
+              Your farm.
               <br />
-              From the ground up.
+              Your priorities.
             </h2>
           </div>
-          <p>
-            Every field has its own story. Bring your conditions and priorities into one clear view
-            of the season ahead.
-          </p>
         </div>
         <div className="grid gap-5 md:grid-cols-3">
           {benefits.map((benefit) => (
@@ -140,60 +123,45 @@ export default function Home() {
           </div>
         </div>
         <div className="agri-how-copy">
-          <p className="agri-eyebrow text-primary">SIMPLE STEPS. CLEARER SEASONS.</p>
           <h2 id="how-title">
-            Your next harvest.
-            <br />A thoughtful plan.
+            Three steps
+            <br />
+            to a crop plan.
           </h2>
-          <p>
-            You know your farm. Orbit helps connect that knowledge with the bigger environmental
-            picture.
-          </p>
           <ol className="agri-how-steps">
             <li>
               <span>01</span>
               <div>
-                <h3>Start with your location</h3>
-                <p>Use your location or choose your district manually. You’re always in control.</p>
+                <h3>Choose your location</h3>
               </div>
             </li>
             <li>
               <span>02</span>
               <div>
-                <h3>Tell us about your field</h3>
-                <p>
-                  Add water availability, soil information and the priorities that matter to you.
-                </p>
+                <h3>Add farm details</h3>
               </div>
             </li>
             <li>
               <span>03</span>
               <div>
-                <h3>Explore your growing options</h3>
-                <p>
-                  See suitable rotations by month, understand the reasons and compare trade-offs.
-                </p>
+                <h3>Compare crop rotations</h3>
               </div>
             </li>
           </ol>
           <Link href="/planner" className="agri-inline-link">
-            Let’s plan your season <Icon name="arrow" size={18} />
+            Open crop planner <Icon name="arrow" size={18} />
           </Link>
         </div>
       </section>
 
       <section className="agri-section agri-principles" aria-labelledby="principles-title">
         <div>
-          <p className="agri-eyebrow text-primary">SCIENCE YOU CAN SEE</p>
           <h2 id="principles-title">
-            A clear reason.
+            Clear data.
             <br />
-            Behind every option.
+            Honest limits.
           </h2>
-          <p>
-            No black box. Crop plans combine available environmental information, reviewed crop
-            guidance and your farm inputs through transparent rules.
-          </p>
+          <p>See what informs each plan and where information is missing.</p>
           <Link href="/sources" className="agri-inline-link">
             Explore our data <Icon name="arrow" size={18} />
           </Link>
@@ -202,23 +170,23 @@ export default function Home() {
           {[
             {
               icon: 'shield' as const,
-              title: 'Your priorities lead',
-              text: 'Balance water, soil health, climate fit and economic potential.',
+              title: 'Your priorities',
+              text: 'You decide what matters most.',
             },
             {
               icon: 'layers' as const,
-              title: 'More than one option',
-              text: 'Compare feasible rotations, not one universally “best” crop.',
+              title: 'Compare options',
+              text: 'Review suitable crop rotations.',
             },
             {
               icon: 'info' as const,
-              title: 'Honest about the gaps',
-              text: 'Missing information is flagged, never filled with invented results.',
+              title: 'Known data gaps',
+              text: 'Missing values stay unfilled.',
             },
             {
               icon: 'pin' as const,
-              title: 'Local by design',
-              text: 'District context meets your own field measurements.',
+              title: 'Local context',
+              text: 'District data and your farm inputs.',
             },
           ].map((item) => (
             <article key={item.title}>
@@ -235,15 +203,11 @@ export default function Home() {
           <Icon name="leaf" size={28} />
         </span>
         <h2>
-          Let’s grow a better
-          <br />
-          <em>next season.</em>
+          Ready to plan?
         </h2>
-        <p>Start with your district. Build a plan around your farm.</p>
         <Link href="/planner" className="btn btn-neutral rounded-full min-h-12">
-          Explore my growing options <Icon name="arrow" size={18} />
+          Open crop planner <Icon name="arrow" size={18} />
         </Link>
-        <small>No location permission needed for manual selection.</small>
       </section>
     </>
   )

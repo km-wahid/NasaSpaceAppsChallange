@@ -108,6 +108,12 @@ const routes = {
     tokens: [{"old":"/api/v1/farms/:id","type":0,"val":"api","end":""},{"old":"/api/v1/farms/:id","type":0,"val":"v1","end":""},{"old":"/api/v1/farms/:id","type":0,"val":"farms","end":""},{"old":"/api/v1/farms/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['farms.show']['types'],
   },
+  'farms.details': {
+    methods: ["PUT"],
+    pattern: '/api/v1/farms/:id/details',
+    tokens: [{"old":"/api/v1/farms/:id/details","type":0,"val":"api","end":""},{"old":"/api/v1/farms/:id/details","type":0,"val":"v1","end":""},{"old":"/api/v1/farms/:id/details","type":0,"val":"farms","end":""},{"old":"/api/v1/farms/:id/details","type":1,"val":"id","end":""},{"old":"/api/v1/farms/:id/details","type":0,"val":"details","end":""}],
+    types: placeholder as Registry['farms.details']['types'],
+  },
   'farms.inputs': {
     methods: ["GET","HEAD"],
     pattern: '/api/v1/farms/:id/inputs',
@@ -155,6 +161,18 @@ const routes = {
     pattern: '/api/v1/farms/:id/recommendations',
     tokens: [{"old":"/api/v1/farms/:id/recommendations","type":0,"val":"api","end":""},{"old":"/api/v1/farms/:id/recommendations","type":0,"val":"v1","end":""},{"old":"/api/v1/farms/:id/recommendations","type":0,"val":"farms","end":""},{"old":"/api/v1/farms/:id/recommendations","type":1,"val":"id","end":""},{"old":"/api/v1/farms/:id/recommendations","type":0,"val":"recommendations","end":""}],
     types: placeholder as Registry['recommendations.store']['types'],
+  },
+  'recommendations.choice': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/farms/:id/rotation-choice',
+    tokens: [{"old":"/api/v1/farms/:id/rotation-choice","type":0,"val":"api","end":""},{"old":"/api/v1/farms/:id/rotation-choice","type":0,"val":"v1","end":""},{"old":"/api/v1/farms/:id/rotation-choice","type":0,"val":"farms","end":""},{"old":"/api/v1/farms/:id/rotation-choice","type":1,"val":"id","end":""},{"old":"/api/v1/farms/:id/rotation-choice","type":0,"val":"rotation-choice","end":""}],
+    types: placeholder as Registry['recommendations.choice']['types'],
+  },
+  'recommendations.choose': {
+    methods: ["PUT"],
+    pattern: '/api/v1/farms/:id/rotation-choice',
+    tokens: [{"old":"/api/v1/farms/:id/rotation-choice","type":0,"val":"api","end":""},{"old":"/api/v1/farms/:id/rotation-choice","type":0,"val":"v1","end":""},{"old":"/api/v1/farms/:id/rotation-choice","type":0,"val":"farms","end":""},{"old":"/api/v1/farms/:id/rotation-choice","type":1,"val":"id","end":""},{"old":"/api/v1/farms/:id/rotation-choice","type":0,"val":"rotation-choice","end":""}],
+    types: placeholder as Registry['recommendations.choose']['types'],
   },
   'recommendations.show': {
     methods: ["GET","HEAD"],
