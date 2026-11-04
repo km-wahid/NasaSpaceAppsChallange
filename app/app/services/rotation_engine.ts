@@ -11,8 +11,11 @@ export type NutrientLevel = 'low' | 'medium' | 'high'
 
 export type Candidate = {
   id: number
+  key?: string
   name: string
   family: string
+  cropIds?: number[]
+  cropFamilies?: string[]
   windowStart: string
   windowEnd: string
   durationDays: number
@@ -25,6 +28,26 @@ export type Candidate = {
   soilNote?: string
   nutrientRequirements: Record<'n' | 'p' | 'k', NutrientLevel | null>
   nutrientContributions?: Partial<Record<'n' | 'p' | 'k', NutrientLevel>>
+  farmingSystem?: {
+    id: number
+    type: string
+    timingPattern: string
+    spatialPattern: string
+    evidenceStatus: 'eligible'
+    managementNote: string
+    components: Array<{
+      type: string
+      name: string
+      cropId?: number
+      role: string
+      startOffsetDays: number
+      durationDays: number
+      outputPerHa: number
+      outputUnit: string
+      revenuePerHa: number
+      costPerHa: number
+    }>
+  }
 }
 
 export type TransitionRule = {
@@ -49,6 +72,7 @@ export type EngineInput = {
   /** Most recent season first. */
   history: Array<{
     cropId: number | null
+    cropIds?: number[]
     landUse: 'crop' | 'fallow' | 'unknown'
     harvestDate?: string | null
   }>
@@ -107,6 +131,14 @@ function transitionKey(from: number, to: number) {
   return `${from}:${to}`
 }
 
+const candidateCropIds = (candidate: Candidate) => candidate.cropIds ?? [candidate.id]
+
+function transitionRules(from: Candidate, to: Candidate, ruleMap: Map<string, TransitionRule>) {
+  return candidateCropIds(from).flatMap((fromId) =>
+    candidateCropIds(to).map((toId) => ruleMap.get(transitionKey(fromId, toId)))
+  )
+}
+
 function nextYear(date: Date) {
   const result = new Date(date)
   result.setUTCFullYear(result.getUTCFullYear() + 1)
@@ -144,9 +176,16 @@ function schedule(
     const start = new Date(`${crop.windowStart}T00:00:00Z`)
     const end = new Date(`${crop.windowEnd}T00:00:00Z`)
     const previousCrop = crops[index - 1]
-    const previousCropId = previousCrop?.id ?? previous?.cropId
-    const rule = previousCropId ? ruleMap.get(transitionKey(previousCropId, crop.id)) : undefined
-    const turnaround = rule?.turnaroundDays ?? crop.turnaroundDays ?? defaultTurnaround
+    const previousCropIds = previousCrop
+      ? candidateCropIds(previousCrop)
+      : (previous?.cropIds ?? (previous?.cropId ? [previous.cropId] : []))
+    const rules = previousCropIds.flatMap((fromId) =>
+      candidateCropIds(crop).map((toId) => ruleMap.get(transitionKey(fromId, toId)))
+    )
+    const turnaround =
+      Math.max(0, ...rules.map((rule) => rule?.turnaroundDays ?? 0)) ||
+      crop.turnaroundDays ||
+      defaultTurnaround
     const ready = previousHarvest ? addDays(previousHarvest, turnaround) : start
     const planting = ready > start ? ready : start
     if (planting > end) return { error: 'TURNAROUND_WINDOW' as const }
@@ -158,8 +197,11 @@ function schedule(
 
   const first = crops[0]
   const last = crops.at(-1)!
-  const wrapRule = ruleMap.get(transitionKey(last.id, first.id))
-  const wrapTurnaround = wrapRule?.turnaroundDays ?? first.turnaroundDays ?? defaultTurnaround
+  const wrapRules = transitionRules(last, first, ruleMap)
+  const wrapTurnaround =
+    Math.max(0, ...wrapRules.map((rule) => rule?.turnaroundDays ?? 0)) ||
+    first.turnaroundDays ||
+    defaultTurnaround
   const nextWindowEnd = nextYear(new Date(`${first.windowEnd}T00:00:00Z`))
   if (addDays(previousHarvest!, wrapTurnaround) > nextWindowEnd) {
     return { error: 'WRAP_AROUND_WINDOW' as const }
@@ -175,17 +217,17 @@ function violatesMinimumBreak(
 ) {
   const timeline = [...history]
     .reverse()
-    .map((entry) => entry.cropId)
+    .map((entry) => new Set(entry.cropIds ?? (entry.cropId ? [entry.cropId] : [])))
     .concat(
-      crops.map((crop) => crop.id),
-      crops[0].id
+      crops.map((crop) => new Set(candidateCropIds(crop))),
+      new Set(candidateCropIds(crops[0]))
     )
   return rules.some((rule) => {
     if (!rule.minimumBreakSeasons) return false
     for (let from = 0; from < timeline.length; from++) {
-      if (timeline[from] !== rule.fromCropId) continue
+      if (!timeline[from].has(rule.fromCropId)) continue
       for (let to = from + 1; to < timeline.length; to++) {
-        if (timeline[to] === rule.toCropId && to - from - 1 < rule.minimumBreakSeasons) return true
+        if (timeline[to].has(rule.toCropId) && to - from - 1 < rule.minimumBreakSeasons) return true
       }
     }
     return false
@@ -225,21 +267,31 @@ export function recommendRotations(input: EngineInput): EngineResult {
     const transitions = crops.map(
       (crop, index) => [crop, crops[(index + 1) % crops.length]] as const
     )
-    if (!input.allowAdjacentRepeat && transitions.some(([from, to]) => from.id === to.id)) {
+    if (
+      !input.allowAdjacentRepeat &&
+      transitions.some(([from, to]) =>
+        candidateCropIds(from).some((cropId) => candidateCropIds(to).includes(cropId))
+      )
+    ) {
       rejected('ADJACENT_REPEAT')
       continue
     }
-    const distinctCrops = new Set(crops.map((crop) => crop.id)).size
+    const allCropIds = crops.flatMap(candidateCropIds)
+    const distinctCrops = new Set(allCropIds).size
     if (distinctCrops < input.minimumDistinctCrops) {
       rejected('MINIMUM_DIVERSITY')
       continue
     }
-    const rules = transitions.map(([from, to]) => ruleMap.get(transitionKey(from.id, to.id)))
-    const previousCropId = input.history[0]?.cropId
-    const previousRule = previousCropId
-      ? ruleMap.get(transitionKey(previousCropId, crops[0].id))
-      : undefined
-    if (rules.some((rule) => rule?.type === 'forbidden') || previousRule?.type === 'forbidden') {
+    const rules = transitions.map(([from, to]) => transitionRules(from, to, ruleMap))
+    const previousCropIds =
+      input.history[0]?.cropIds ?? (input.history[0]?.cropId ? [input.history[0].cropId] : [])
+    const previousRules = previousCropIds.flatMap((fromId) =>
+      candidateCropIds(crops[0]).map((toId) => ruleMap.get(transitionKey(fromId, toId)))
+    )
+    if (
+      rules.some((row) => row.some((rule) => rule?.type === 'forbidden')) ||
+      previousRules.some((rule) => rule?.type === 'forbidden')
+    ) {
       rejected('FORBIDDEN_TRANSITION')
       continue
     }
@@ -266,17 +318,28 @@ export function recommendRotations(input: EngineInput): EngineResult {
         : 0.7 * mean(crops.map((crop) => crop.scores.water)) +
           0.3 * Math.min(100, (100 * totalAvailableWater) / totalWater)
     const transitionSoil = transitions.reduce((sum, [from, to], index) => {
-      return sum + (rules[index]?.soilAdjustment ?? 0) - nutrientPenalty(from, to)
+      const knownRules = rules[index].filter((rule): rule is TransitionRule => Boolean(rule))
+      const adjustment = knownRules.length
+        ? Math.min(...knownRules.map((rule) => rule.soilAdjustment))
+        : 0
+      return sum + adjustment - nutrientPenalty(from, to)
     }, 0)
     const soil = clamp(mean(crops.map((crop) => crop.scores.soil)) + transitionSoil)
     const resilience = mean(crops.map((crop) => crop.scores.resilience))
     const economic = mean(crops.map((crop) => crop.scores.economic))
-    const compatibility = mean(rules.map((rule) => rule?.compatibility ?? 50))
+    const compatibility = mean(
+      rules.map((row) => {
+        const knownRules = row.filter((rule): rule is TransitionRule => Boolean(rule))
+        return knownRules.length ? Math.min(...knownRules.map((rule) => rule.compatibility)) : 50
+      })
+    )
     const diversity =
-      (100 * (new Set(crops.map((crop) => crop.family)).size - 1)) / (crops.length - 1)
-    const repeatPenalty = crops.length - distinctCrops > 0 ? 4 * (crops.length - distinctCrops) : 0
+      (100 * (new Set(crops.flatMap((crop) => crop.cropFamilies ?? [crop.family])).size - 1)) /
+      Math.max(1, allCropIds.length - 1)
+    const repeatPenalty =
+      allCropIds.length - distinctCrops > 0 ? 4 * (allCropIds.length - distinctCrops) : 0
     const explanations: Explanation[] = []
-    if (rules.some((rule) => !rule))
+    if (rules.some((row) => row.some((rule) => !rule)))
       explanations.push({
         code: 'UNKNOWN_TRANSITION',
         kind: 'warning',
@@ -334,6 +397,7 @@ export function recommendRotations(input: EngineInput): EngineResult {
     })
     .sort(
       (a, b) =>
+        (a.totalProfit !== null && b.totalProfit !== null ? b.totalProfit - a.totalProfit : 0) ||
         b.scores.overall - a.scores.overall ||
         b.scores.soil - a.scores.soil ||
         (a.totalWaterRequirementMm !== null && b.totalWaterRequirementMm !== null

@@ -7,6 +7,7 @@ import { createRoot } from 'react-dom/client'
 import { createInertiaApp } from '@inertiajs/react'
 import { TuyauProvider } from '@adonisjs/inertia/react'
 import { resolvePageComponent } from '@adonisjs/inertia/helpers'
+import { LocaleProvider } from './lib/i18n'
 
 const appName = 'Orbit'
 
@@ -21,12 +22,14 @@ createInertiaApp({
   },
   setup({ el, App, props }) {
     createRoot(el).render(
-      <TuyauProvider client={client}>
-        <App {...props} />
-      </TuyauProvider>
+      <LocaleProvider>
+        <TuyauProvider client={client}>
+          <App {...props} />
+        </TuyauProvider>
+      </LocaleProvider>
     )
   },
   progress: {
-    color: '#246349',
+    color: '#5b97fd',
   },
 })

@@ -1,19 +1,15 @@
 import { useState } from 'react'
 import Icon from './icon'
 
-export default function PasswordInput({
-  name,
-  id,
-  autoComplete,
-  invalid,
-  errorId,
-}: {
+type Props = {
   name: string
   id: string
   autoComplete: string
   invalid: boolean
   errorId: string
-}) {
+}
+
+export default function PasswordInput({ name, id, autoComplete, invalid, errorId }: Props) {
   const [visible, setVisible] = useState(false)
 
   return (
@@ -32,7 +28,7 @@ export default function PasswordInput({
       <button
         type="button"
         className="btn btn-ghost btn-sm btn-square absolute top-1/2 right-1 -translate-y-1/2 text-base-content/60 hover:text-base-content"
-        onClick={() => setVisible((currentlyVisible) => !currentlyVisible)}
+        onClick={() => setVisible((current) => !current)}
         aria-label={visible ? 'Hide password' : 'Show password'}
         aria-pressed={visible}
       >

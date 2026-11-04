@@ -19,6 +19,42 @@ export interface Registry {
       errorResponse: unknown
     }
   }
+  'mission': {
+    methods: ["GET","HEAD"]
+    pattern: '/mission'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: unknown
+      errorResponse: unknown
+    }
+  }
+  'explorer': {
+    methods: ["GET","HEAD"]
+    pattern: '/explorer'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: unknown
+      errorResponse: unknown
+    }
+  }
+  'explorer.map': {
+    methods: ["GET","HEAD"]
+    pattern: '/explorer/map'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: unknown
+      errorResponse: unknown
+    }
+  }
   'planner': {
     methods: ["GET","HEAD"]
     pattern: '/planner'
@@ -77,6 +113,30 @@ export interface Registry {
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/location_controller').default['reverse']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/location_controller').default['reverse']>>>
+    }
+  }
+  'dashboard': {
+    methods: ["GET","HEAD"]
+    pattern: '/dashboard'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: unknown
+      errorResponse: unknown
+    }
+  }
+  'compare': {
+    methods: ["GET","HEAD"]
+    pattern: '/compare'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: unknown
+      errorResponse: unknown
     }
   }
   'new_account.create': {
@@ -221,6 +281,18 @@ export interface Registry {
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/farms_controller').default['details']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/farms_controller').default['details']>>>
+    }
+  }
+  'farms.capabilities': {
+    methods: ["PUT"]
+    pattern: '/api/v1/farms/:id/capabilities'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/farms_controller').default['capabilities']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/farms_controller').default['capabilities']>>>
     }
   }
   'farms.inputs': {

@@ -221,6 +221,33 @@ mapping and transactional PostgreSQL checks for ownership and saved choices.
 
 The engine has no ML or LLM dependency. Crop requirements, calendars, nutrient thresholds, economics and rotation rules must be curated with `data_sources` records before recommendations are available.
 
+### Integrated farming evidence
+
+Integrated farming is screened automatically unless a farmer explicitly opts out. Reviewed systems may contain two or three crop, fish,
+livestock, tree or pollinator components. The engine ranks a system only when its component
+outputs, prices, costs, requirements, geography and citations are complete. Automatically generated
+pairs are shown separately as research ideas and never receive suitability or profit claims.
+
+Import reviewed evidence from JSON with:
+
+```bash
+cd app
+node ace integrated-systems:import ../path/to/reviewed-systems.json
+```
+
+The document contains `sources`, optional `companions`, and `systems`. Every system component must
+reference either an existing crop name or a companion key and include its source-backed output unit,
+expected output per hectare, price, variable cost, annualized setup cost and economic source.
+Requirements use `minimum`, `maximum`, or `equals` against a NASA profile metric, `soil_ph`,
+`irrigation_mm`, or a `capability.<key>` farm answer. Invalid or incomplete documents are rejected in
+one transaction.
+
+The source-controlled Bogura pilot compares BARI Hybrid Maize-16 with BARI Potato-36 using a
+two-season BARI intercropping trial, BARC Bogura Sadar crop economics and SRDI/BARC regional soil
+maps. It always requires reviewed field soil, three available Rabi irrigations, current local
+economics and local extension approval before it can be ranked. Historical study prices are shown
+as evidence, not as a current income forecast.
+
 The planner puts crop recommendations before supporting water analytics. Select a saved farm,
 choose **Generate crop rotations**, compare calendars and trade-offs, then **Use this rotation**.
 The choice is stored in PostgreSQL per farm via `PUT /api/v1/farms/:id/rotation-choice`

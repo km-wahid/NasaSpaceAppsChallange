@@ -3,7 +3,8 @@ import { useEffect, useState } from 'react'
 import { api } from '../lib/api'
 import type { Catalog } from '../components/data_browser'
 import FarmWorkspace from '../components/farm_workspace'
-import landscape from '../assets/farm-landscape.jpg'
+import FarmScene from '../components/farm_scene'
+import Icon from '../components/icon'
 
 export default function Farms() {
   const [catalog, setCatalog] = useState<Catalog | null>(null)
@@ -33,11 +34,17 @@ export default function Farms() {
     return () => controller.abort()
   }, [districtId, retry])
   return (
-    <div className="site-page farms-page">
+    <div className="oa-app-page farms-page">
       <Head title="My farms" />
-      <div className="site-page-heading workspace-page-banner">
-        <img src={landscape} alt="" />
-        <h1>My farms</h1>
+      <div className="oa-page-header workspace-page-banner">
+        <div>
+          <p className="oa-kicker">
+            <Icon name="barn" size={18} /> YOUR FARM AT A GLANCE
+          </p>
+          <h1>Your farm workspace</h1>
+          <p>Keep soil, water, crop history and priorities together.</p>
+        </div>
+        <FarmScene scene="farm" />
       </div>
       {catalog && (
         <div className="card border border-base-300 bg-base-100 mb-6 p-6">
@@ -58,7 +65,7 @@ export default function Farms() {
             ))}
           </select>
           <p className="mt-2 text-sm text-base-content/70">
-            Used for new farms only.
+            This selection is used when creating a new farm. It does not relocate existing farms.
           </p>
         </div>
       )}

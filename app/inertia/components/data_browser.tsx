@@ -43,6 +43,7 @@ export type Catalog = {
   } | null
   risk: { drought_risk: string; flood_risk: string; salinity_risk: string } | null
   climate: Array<{ season_name: string; rainfall_mm: string }>
+  districtClimate: Array<{ district_name: string; mean_rainfall_mm: string }>
   source: { filename: string; reportingYear: number | null; importedAt: string } | null
   readiness: {
     requirements: number
@@ -96,8 +97,14 @@ export default function DataBrowser({ signedIn }: { signedIn: boolean }) {
       )}
       {loading && (
         <div className="card border border-base-300 bg-base-100 p-6" role="status">
-          <span className="loading loading-spinner text-primary" />
-          <p className="mt-3 text-sm">Loading local data…</p>
+          <div className="flex items-center gap-4">
+            <span className="skeleton size-14 shrink-0 rounded-full" aria-hidden="true" />
+            <div className="w-full space-y-3" aria-hidden="true">
+              <span className="skeleton block h-5 w-2/3" />
+              <span className="skeleton block h-4 w-full" />
+            </div>
+          </div>
+          <p className="sr-only">Preparing your local growing guide…</p>
         </div>
       )}
       {error && (
@@ -125,11 +132,17 @@ export default function DataBrowser({ signedIn }: { signedIn: boolean }) {
         className="collapse collapse-arrow border border-base-300 bg-base-100"
       >
         <summary className="collapse-title font-semibold">
-          Data sources
+          Where do these insights come from?
         </summary>
         <div className="collapse-content space-y-3 text-sm text-base-content/75">
-          <p>Water outlooks use district rainfall history, not forecasts.</p>
-          <p>Crop plans use NASA context, crop guidance and your farm inputs. Missing data stays missing.</p>
+          <p>
+            Your water choice is combined with stored district rainfall references for a simple
+            seasonal outlook. It is a planning guide, not a forecast.
+          </p>
+          <p>
+            Crop plans use cached NASA environmental information, your saved farm measurements and
+            priorities, and reviewed crop guidance. Missing information stays missing.
+          </p>
           <p>
             Location and map data:{' '}
             <a
@@ -140,10 +153,10 @@ export default function DataBrowser({ signedIn }: { signedIn: boolean }) {
             >
               OpenStreetMap contributors
             </a>
-            . Browser location is requested only when selected.
+            . Native browser location is requested only when you click.
           </p>
           <Link href="/sources" className="agri-inline-link">
-            Our data and limitations
+            Read about our data and its limits
           </Link>
         </div>
       </details>

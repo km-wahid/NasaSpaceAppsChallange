@@ -6,6 +6,7 @@ import ReactDOMServer from 'react-dom/server'
 import { createInertiaApp } from '@inertiajs/react'
 import { TuyauProvider } from '@adonisjs/inertia/react'
 import { resolvePageComponent } from '@adonisjs/inertia/helpers'
+import { LocaleProvider } from './lib/i18n'
 
 export default function render(page: any) {
   return createInertiaApp({
@@ -20,9 +21,11 @@ export default function render(page: any) {
     },
     setup: ({ App, props }) => {
       return (
-        <TuyauProvider client={client}>
-          <App {...props} />
-        </TuyauProvider>
+        <LocaleProvider>
+          <TuyauProvider client={client}>
+            <App {...props} />
+          </TuyauProvider>
+        </LocaleProvider>
       )
     },
   })

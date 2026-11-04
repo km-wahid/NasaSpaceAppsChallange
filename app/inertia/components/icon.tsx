@@ -20,9 +20,17 @@ const paths = {
   info: 'M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0 M12 11v6 M12 7v1',
   chevron: 'm9 5 7 7-7 7',
   check: 'm5 12 4 4L19 6',
-  volume: 'M11 5L6 9H2v6h4l5 4V5z M15.54 8.46a5 5 0 0 1 0 7.07 M19.07 4.93a10 10 0 0 1 0 14.14',
-  alert: 'm21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3ZM12 9v4 M12 17h.01',
-  history: 'M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8 M3 3v5h5 M12 7v5l4 2',
+  sprout: 'M12 22V10 M12 15c-5 0-8-3-8-8 5 0 8 3 8 8Z M12 12c5 0 8-3 8-8-5 0-8 3-8 8Z',
+  calendar:
+    'M5 3v3 M19 3v3 M3 9h18 M5 5h14a2 2 0 0 1 2 2v13H3V7a2 2 0 0 1 2-2Z M7 13h3 M14 13h3 M7 17h3',
+  soil: 'M3 8c4-2 7 2 11 0 3-1 5 0 7 1 M3 13c4-2 7 2 11 0 3-1 5 0 7 1 M3 18c4-2 7 2 11 0 3-1 5 0 7 1',
+  rain: 'M7 17h10a4 4 0 0 0 0-8 6 6 0 0 0-11-1 4.5 4.5 0 0 0 1 9Z M9 20l-1 2 M14 20l-1 2 M19 20l-1 2',
+  barn: 'm3 10 9-7 9 7v11H3V10Z M8 21v-7h8v7 M3 10h18',
+  money: 'M12 2v20 M17 6H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6',
+  satellite:
+    'm5 3 4 4-2 2-4-4 2-2Z m14 12 2 2-4 4-2-2 4-4Z M9 15l6-6 M7 17l10-10 M14 4a6 6 0 0 1 6 6 M4 14a6 6 0 0 0 6 6',
+  warning: 'M12 3 2 21h20L12 3Z M12 9v5 M12 18v.1',
+  clock: 'M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0 M12 7v5l3 2',
 } as const
 
 export default function Icon({ name, size = 20 }: { name: keyof typeof paths; size?: number }) {

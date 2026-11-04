@@ -1,0 +1,342 @@
+import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
+
+export type Locale = 'bn' | 'en'
+
+const copy = {
+  en: {
+    skip: 'Skip to content',
+    brandTagline: 'NASA EO Intelligence',
+    liveRegion: 'Rangpur · satellite data ready',
+    navHome: 'Overview',
+    navMission: 'Mission',
+    navDashboard: 'Farmer dashboard',
+    navFarms: 'My farms',
+    navFarmWorkspace: 'My farm',
+    navExplorer: 'EO explorer',
+    navMap: 'GIS view',
+    navPlanner: 'Rotation advisor',
+    navCompare: 'Compare',
+    login: 'Log in',
+    logout: 'Log out',
+    signup: 'Get started',
+    menuOpen: 'Open navigation',
+    menuClose: 'Close navigation',
+    language: 'Language',
+    signedIn: 'Signed in as',
+    footerLine: 'NASA Earth observation decision support for Bangladesh farmers.',
+    footerNote: 'Decision support — the farmer makes the final decision.',
+    homeBadge: 'Smart farming from space',
+    homeKicker: 'A complete view of your field, in front of the farmer',
+    homeTitle: 'Know your land. Grow more. Spend less.',
+    homeSubtitle: 'Understand soil. Save water. Grow high-yield crops.',
+    homeBody:
+      'Combine local farm knowledge with stored Earth observations to choose crops for each season with confidence.',
+    homePrimary: 'Explore my farm',
+    homeSecondary: 'View weather and soil',
+    homeTrust: 'Transparent guidance calibrated for Bangladesh conditions',
+    rain: 'Rain',
+    soilWater: 'Soil water',
+    cropHealth: 'Crop health',
+    temperature: 'Temperature',
+    normal: 'Normal',
+    enough: 'Adequate',
+    healthy: 'Healthy canopy',
+    suitable: 'Suitable for seedling growth',
+    homeHowTitle: 'From orbital data to a field-ready plan',
+    homeHowBody: 'A simple path from location and water to a three-season rotation.',
+    capture: 'Observe',
+    captureBody: 'Use stored climate and district references.',
+    calibrate: 'Understand',
+    calibrateBody: 'Add farm water, soil, history and priorities.',
+    recommend: 'Decide',
+    recommendBody: 'Compare transparent, deterministic rotation options.',
+    observationEyebrow: 'Earth observation · GIS layers',
+    observationTitle: 'See what is shaping every season',
+    observationBody:
+      'We turn stored Earth observations and local GIS layers into a clear view of field conditions.',
+    observationTemperature: 'Temperature',
+    observationTemperatureBody:
+      'Surface-temperature layers show where heat may increase crop and water stress.',
+    observationClimate: 'Climate change',
+    observationClimateBody:
+      'Long-term heat and rainfall patterns reveal how local growing conditions are shifting.',
+    observationSoil: 'Soil',
+    observationSoilBody:
+      'Soil reference layers and farm observations help explain drainage and crop suitability.',
+    observationSoilImageAlt:
+      'Crop roots above layers of topsoil, subsoil, sandy clay, gravel and bedrock',
+    observationRainfall: 'Rainfall',
+    observationRainfallBody:
+      'Seasonal rainfall and dry-period layers support planting and irrigation decisions.',
+    observationVegetation: 'Vegetation health',
+    observationVegetationBody:
+      'Changes in crop greenness help reveal stress and uneven growth across the landscape.',
+    homeCycleTitle: 'A three-season crop cycle',
+    homeCycleBody: 'See planting windows, water demand and trade-offs before choosing.',
+    missionEyebrow: 'NASA Earth observation initiative',
+    missionTitle: 'Understand your land. Adapt your farming. Grow resilience.',
+    missionBody:
+      'OrbitAgro turns cached environmental context, reviewed crop guidance and farmer inputs into explainable seasonal choices.',
+    missionPrimary: 'Start a field analysis',
+    missionSecondary: 'Explore the datasets',
+    missionOverviewAction: 'Explore our mission',
+    missionVideoLabel: 'Our mission in action',
+    missionVideoTitle: 'See the whole field before choosing the next crop.',
+    missionVideoBody: 'Earth observations become practical, season-ready guidance.',
+    missionVideoFallback: 'Your browser cannot play this mission video.',
+    missionLayersLabel: 'Five Earth intelligence views',
+    missionImageCredit: 'Image: NASA Earth Observatory',
+    missionPause: 'Pause animation',
+    missionPlay: 'Play animation',
+    missionScrollEyebrow: 'How it works',
+    missionPipeline: 'How raw observations become seed-level guidance',
+    missionScrollBody:
+      'Follow the evidence from a satellite observation to a practical decision for the next season.',
+    missionStepObserve: 'Observe the season',
+    missionStepObserveBody:
+      'We collect cached NASA POWER climate signals, district context and reviewed crop references.',
+    missionStepUnderstand: 'Understand the field',
+    missionStepUnderstandBody:
+      'Your water access, soil condition and crop history turn regional evidence into local context.',
+    missionStepCompare: 'Compare resilient rotations',
+    missionStepCompareBody:
+      'Deterministic rules score climate fit, soil recovery, water demand and transition safety.',
+    missionStepAct: 'Plan the next season',
+    missionStepActBody:
+      'You receive clear options with reasons, trade-offs and planting windows you can verify.',
+    missionPressure: 'Ground realities in northern Bangladesh',
+    drought: 'Dry-season water pressure',
+    flood: 'Monsoon flood exposure',
+    soilLoss: 'Soil organic matter decline',
+    missionPillars: 'Three pillars of a resilient rotation',
+    soilRecovery: 'Soil recovery',
+    climateFit: 'Climate fit',
+    economicStability: 'Economic stability',
+    dashboardTitle: 'Your farm command centre',
+    dashboardBody: 'Choose a saved farm or location to see its water outlook and rotation options.',
+    plannerEyebrow: 'Crop rotation advisor',
+    plannerTitle: 'Build a plan for the next three seasons',
+    plannerBody:
+      'Start with your location, water and field information. Every result explains why.',
+    explorerEyebrow: 'Earth observation explorer',
+    explorerTitle: 'See the environmental context around your district',
+    explorerBody: 'Explore stored climate, soil and risk references without hiding missing data.',
+    mapTitle: 'Spatial telemetry view',
+    mapBody:
+      'Model visualization driven by cached district and farm data — not satellite raster imagery.',
+    modeled: 'MODELED VIEW',
+    layers: 'Earth science layers',
+    diagnostic: 'Field diagnostic',
+    selectDistrict: 'Select district',
+    loading: 'Loading local data…',
+    tryAgain: 'Try again',
+    useMyLocation: 'Use my location',
+    locating: 'Finding location…',
+    locationAccuracy: 'GPS accuracy',
+    locationFallback: 'Location could not be detected. Choose a district instead.',
+    mapPreview: 'Map preview of',
+    mapUnavailable: 'Map preview unavailable for',
+    tileUnavailable: 'Map tiles are unavailable. Your selected location is still saved.',
+    openLargerMap: 'Open larger map',
+    modeledCropContext: 'Modeled crop-health context',
+    modeledWaterContext: 'Modeled soil-water context',
+    modeledHeatContext: 'Modeled heat context',
+    rainfallChoropleth: 'Mean seasonal rainfall',
+    meanSeasonalRainfall: 'Mean seasonal rainfall',
+    hoverDistrict: 'Hover over or tap a district',
+    noRainfallData: 'No stored rainfall data',
+    boundaryUnavailable: 'District boundaries are temporarily unavailable.',
+    compareTitle: 'Strategy comparison',
+    compareBody:
+      'Compare the scores, seasonal sequence and trade-offs from a saved recommendation run.',
+    compareEmpty: 'Open a generated recommendation to compare its strategies.',
+    compareAction: 'Build a recommendation',
+    noData: 'Not available',
+    sourceNote: 'Stored reference data',
+    modelNotice: 'Visualization only; confirm field conditions locally.',
+  },
+  bn: {
+    skip: 'মূল কনটেন্টে যান',
+    brandTagline: 'নাসা ভূ-পর্যবেক্ষণ তথ্য',
+    liveRegion: 'রংপুর · স্যাটেলাইট তথ্য প্রস্তুত',
+    navHome: 'পরিচিতি',
+    navMission: 'উদ্দেশ্য',
+    navDashboard: 'কৃষক ড্যাশবোর্ড',
+    navFarms: 'আমার খামার',
+    navFarmWorkspace: 'আমার খামার',
+    navExplorer: 'ভূ-তথ্য',
+    navMap: 'জিআইএস মানচিত্র',
+    navPlanner: 'ফসল আবর্তন',
+    navCompare: 'তুলনা',
+    login: 'লগ ইন',
+    logout: 'লগ আউট',
+    signup: 'শুরু করুন',
+    menuOpen: 'মেনু খুলুন',
+    menuClose: 'মেনু বন্ধ করুন',
+    language: 'ভাষা',
+    signedIn: 'লগ ইন করেছেন',
+    footerLine: 'বাংলাদেশের কৃষকের জন্য নাসা ভূ-পর্যবেক্ষণভিত্তিক সিদ্ধান্ত সহায়তা।',
+    footerNote: 'এটি সিদ্ধান্ত সহায়তা — চূড়ান্ত সিদ্ধান্ত কৃষকের।',
+    homeBadge: 'মহাকাশ থেকে স্মার্ট কৃষি',
+    homeKicker: 'কৃষকের চোখের সামনে সম্পূর্ণ জমির স্বাস্থ্য',
+    homeTitle: 'আপনার জমি চিনুন। বেশি ফলন পান। খরচ কমান।',
+    homeSubtitle: 'মাটি বুঝুন। পানি বাঁচান। ভালো ফলন পান।',
+    homeBody:
+      'স্থানীয় কৃষি জ্ঞান ও সংরক্ষিত ভূ-পর্যবেক্ষণ তথ্য মিলিয়ে প্রতি মৌসুমের উপযুক্ত ফসল বেছে নিন।',
+    homePrimary: 'আমার খামার দেখুন',
+    homeSecondary: 'আবহাওয়া ও মাটি দেখুন',
+    homeTrust: 'বাংলাদেশের পরিবেশ অনুযায়ী স্বচ্ছ ও ব্যাখ্যাযোগ্য নির্দেশনা',
+    rain: 'বৃষ্টি',
+    soilWater: 'মাটির পানি',
+    cropHealth: 'ফসলের স্বাস্থ্য',
+    temperature: 'তাপমাত্রা',
+    normal: 'স্বাভাবিক',
+    enough: 'পর্যাপ্ত',
+    healthy: 'সুস্থ সবুজ',
+    suitable: 'চারা বৃদ্ধির উপযোগী',
+    homeHowTitle: 'কক্ষপথের তথ্য থেকে মাঠের পরিকল্পনা',
+    homeHowBody: 'অবস্থান ও পানি থেকে তিন মৌসুমের ফসল আবর্তনে যাওয়ার সহজ পথ।',
+    capture: 'দেখুন',
+    captureBody: 'সংরক্ষিত জলবায়ু ও জেলার তথ্য ব্যবহার করুন।',
+    calibrate: 'বুঝুন',
+    calibrateBody: 'খামারের পানি, মাটি, ইতিহাস ও অগ্রাধিকার যোগ করুন।',
+    recommend: 'সিদ্ধান্ত নিন',
+    recommendBody: 'স্বচ্ছ ও নির্ধারিত নিয়মের ফসল আবর্তন তুলনা করুন।',
+    observationEyebrow: 'ভূ-পর্যবেক্ষণ · জিআইএস স্তর',
+    observationTitle: 'প্রতি মৌসুমকে কী প্রভাবিত করে দেখুন',
+    observationBody:
+      'সংরক্ষিত ভূ-পর্যবেক্ষণ ও স্থানীয় জিআইএস স্তর থেকে আমরা জমির অবস্থার সহজ চিত্র তৈরি করি।',
+    observationTemperature: 'তাপমাত্রা',
+    observationTemperatureBody:
+      'ভূপৃষ্ঠের তাপমাত্রার স্তর দেখায় কোথায় তাপ ফসল ও পানির ওপর চাপ বাড়াতে পারে।',
+    observationClimate: 'জলবায়ু পরিবর্তন',
+    observationClimateBody:
+      'দীর্ঘমেয়াদি তাপ ও বৃষ্টির ধরন থেকে স্থানীয় চাষের পরিবেশের পরিবর্তন বোঝা যায়।',
+    observationSoil: 'মাটি',
+    observationSoilBody:
+      'মাটির তথ্যস্তর ও মাঠের পর্যবেক্ষণ পানি নিষ্কাশন এবং ফসলের উপযোগিতা বুঝতে সাহায্য করে।',
+    observationSoilImageAlt:
+      'উপরের ফসলের শিকড়ের নিচে উপরিমাটি, অধোমাটি, বেলে কাদা, নুড়ি ও শিলাস্তর',
+    observationRainfall: 'বৃষ্টিপাত',
+    observationRainfallBody:
+      'মৌসুমি বৃষ্টি ও শুষ্ক সময়ের স্তর বপন এবং সেচের সিদ্ধান্ত নিতে সহায়তা করে।',
+    observationVegetation: 'উদ্ভিদের স্বাস্থ্য',
+    observationVegetationBody: 'ফসলের সবুজ রঙের পরিবর্তন থেকে জমিজুড়ে চাপ ও অসম বৃদ্ধি বোঝা যায়।',
+    homeCycleTitle: 'তিন মৌসুমের ফসলি চাকা',
+    homeCycleBody: 'বেছে নেওয়ার আগে বপনের সময়, পানির চাহিদা ও সুবিধা-অসুবিধা দেখুন।',
+    missionEyebrow: 'নাসা ভূ-পর্যবেক্ষণ উদ্যোগ',
+    missionTitle: 'জমি বুঝুন। চাষ মানিয়ে নিন। সহনশীলতা বাড়ান।',
+    missionBody:
+      'অরবিটএগ্রো সংরক্ষিত পরিবেশ তথ্য, যাচাইকৃত ফসল নির্দেশনা ও কৃষকের তথ্যকে ব্যাখ্যাযোগ্য মৌসুমি বিকল্পে রূপ দেয়।',
+    missionPrimary: 'জমি বিশ্লেষণ শুরু করুন',
+    missionSecondary: 'তথ্যসমূহ দেখুন',
+    missionOverviewAction: 'আমাদের লক্ষ্য দেখুন',
+    missionVideoLabel: 'কাজে আমাদের লক্ষ্য',
+    missionVideoTitle: 'পরবর্তী ফসল বাছাইয়ের আগে পুরো জমির চিত্র দেখুন।',
+    missionVideoBody: 'ভূ-পর্যবেক্ষণ তথ্যকে মৌসুমভিত্তিক ব্যবহারিক নির্দেশনায় রূপ দিই।',
+    missionVideoFallback: 'আপনার ব্রাউজারে এই মিশন ভিডিওটি চালানো যাচ্ছে না।',
+    missionLayersLabel: 'পৃথিবীর তথ্যের পাঁচটি দৃশ্য',
+    missionImageCredit: 'ছবি: নাসা আর্থ অবজারভেটরি',
+    missionPause: 'অ্যানিমেশন থামান',
+    missionPlay: 'অ্যানিমেশন চালান',
+    missionScrollEyebrow: 'কীভাবে কাজ করে',
+    missionPipeline: 'কাঁচা পর্যবেক্ষণ থেকে বীজ-পর্যায়ের নির্দেশনা',
+    missionScrollBody:
+      'স্যাটেলাইট পর্যবেক্ষণ থেকে পরবর্তী মৌসুমের ব্যবহারিক সিদ্ধান্ত পর্যন্ত তথ্যের পথ অনুসরণ করুন।',
+    missionStepObserve: 'মৌসুম পর্যবেক্ষণ করুন',
+    missionStepObserveBody:
+      'আমরা সংরক্ষিত NASA POWER জলবায়ু সংকেত, জেলার প্রেক্ষাপট ও যাচাইকৃত ফসল তথ্য একত্র করি।',
+    missionStepUnderstand: 'জমির অবস্থা বুঝুন',
+    missionStepUnderstandBody:
+      'আপনার পানির সুযোগ, মাটির অবস্থা ও ফসলের ইতিহাস আঞ্চলিক তথ্যকে স্থানীয় প্রেক্ষাপট দেয়।',
+    missionStepCompare: 'সহনশীল আবর্তন তুলনা করুন',
+    missionStepCompareBody:
+      'নির্ধারিত নিয়ম জলবায়ুর উপযোগিতা, মাটির পুনরুদ্ধার, পানির চাহিদা ও পরিবর্তনের নিরাপত্তা যাচাই করে।',
+    missionStepAct: 'পরবর্তী মৌসুম পরিকল্পনা করুন',
+    missionStepActBody:
+      'আপনি কারণ, সুবিধা-অসুবিধা ও যাচাইযোগ্য বপনের সময়সহ পরিষ্কার বিকল্প পাবেন।',
+    missionPressure: 'উত্তর বাংলাদেশের মাঠের বাস্তবতা',
+    drought: 'শুষ্ক মৌসুমে পানির চাপ',
+    flood: 'বর্ষায় বন্যার ঝুঁকি',
+    soilLoss: 'মাটির জৈব পদার্থ কমে যাওয়া',
+    missionPillars: 'সহনশীল আবর্তনের তিন ভিত্তি',
+    soilRecovery: 'মাটির পুনরুদ্ধার',
+    climateFit: 'জলবায়ুর উপযোগিতা',
+    economicStability: 'অর্থনৈতিক স্থিতি',
+    dashboardTitle: 'আপনার খামারের নিয়ন্ত্রণকেন্দ্র',
+    dashboardBody: 'পানির অবস্থা ও ফসল আবর্তন দেখতে সংরক্ষিত খামার বা অবস্থান বেছে নিন।',
+    plannerEyebrow: 'ফসল আবর্তন পরামর্শ',
+    plannerTitle: 'আগামী তিন মৌসুমের পরিকল্পনা তৈরি করুন',
+    plannerBody: 'অবস্থান, পানি ও জমির তথ্য দিয়ে শুরু করুন। প্রতিটি ফলাফলের কারণ দেখানো হবে।',
+    explorerEyebrow: 'ভূ-পর্যবেক্ষণ তথ্য',
+    explorerTitle: 'আপনার জেলার পরিবেশগত প্রেক্ষাপট দেখুন',
+    explorerBody: 'অনুপস্থিত তথ্য না লুকিয়ে সংরক্ষিত জলবায়ু, মাটি ও ঝুঁকির তথ্য দেখুন।',
+    mapTitle: 'স্থানিক তথ্যচিত্র',
+    mapBody: 'সংরক্ষিত জেলা ও খামারের তথ্যচালিত মডেল — এটি স্যাটেলাইট রাস্টার ছবি নয়।',
+    modeled: 'মডেল দৃশ্য',
+    layers: 'ভূ-বিজ্ঞান স্তর',
+    diagnostic: 'জমির অবস্থা',
+    selectDistrict: 'জেলা বেছে নিন',
+    loading: 'স্থানীয় তথ্য আসছে…',
+    tryAgain: 'আবার চেষ্টা করুন',
+    useMyLocation: 'আমার অবস্থান ব্যবহার করুন',
+    locating: 'অবস্থান খোঁজা হচ্ছে…',
+    locationAccuracy: 'জিপিএস নির্ভুলতা',
+    locationFallback: 'অবস্থান পাওয়া যায়নি। পরিবর্তে জেলা বেছে নিন।',
+    mapPreview: 'মানচিত্রে দেখানো হচ্ছে',
+    mapUnavailable: 'মানচিত্র পাওয়া যাচ্ছে না',
+    tileUnavailable: 'মানচিত্রের টাইল পাওয়া যাচ্ছে না। আপনার নির্বাচিত অবস্থান সংরক্ষিত আছে।',
+    openLargerMap: 'বড় মানচিত্র খুলুন',
+    modeledCropContext: 'ফসলের স্বাস্থ্যের মডেল প্রেক্ষাপট',
+    modeledWaterContext: 'মাটির পানির মডেল প্রেক্ষাপট',
+    modeledHeatContext: 'তাপমাত্রার মডেল প্রেক্ষাপট',
+    rainfallChoropleth: 'মৌসুমি গড় বৃষ্টিপাত',
+    meanSeasonalRainfall: 'মৌসুমি গড় বৃষ্টিপাত',
+    hoverDistrict: 'একটি জেলার ওপর আঙুল রাখুন বা ট্যাপ করুন',
+    noRainfallData: 'সংরক্ষিত বৃষ্টির তথ্য নেই',
+    boundaryUnavailable: 'জেলার সীমানা সাময়িকভাবে পাওয়া যাচ্ছে না।',
+    compareTitle: 'কৌশল তুলনা',
+    compareBody: 'সংরক্ষিত সুপারিশের স্কোর, মৌসুমি ক্রম ও সুবিধা-অসুবিধা তুলনা করুন।',
+    compareEmpty: 'কৌশল তুলনা করতে তৈরি করা একটি সুপারিশ খুলুন।',
+    compareAction: 'সুপারিশ তৈরি করুন',
+    noData: 'তথ্য নেই',
+    sourceNote: 'সংরক্ষিত রেফারেন্স তথ্য',
+    modelNotice: 'শুধু তথ্যচিত্র; মাঠের অবস্থা স্থানীয়ভাবে নিশ্চিত করুন।',
+  },
+} as const
+
+type CopyKey = keyof (typeof copy)['en']
+type LocaleContextValue = {
+  locale: Locale
+  setLocale: (locale: Locale) => void
+  t: (key: CopyKey) => string
+}
+
+const LocaleContext = createContext<LocaleContextValue | null>(null)
+
+export function LocaleProvider({ children }: { children: ReactNode }) {
+  const [locale, setLocale] = useState<Locale>('bn')
+
+  useEffect(() => {
+    const stored = window.localStorage.getItem('orbitagro-locale')
+    if (stored === 'bn' || stored === 'en') setLocale(stored)
+  }, [])
+
+  useEffect(() => {
+    document.documentElement.lang = locale
+    window.localStorage.setItem('orbitagro-locale', locale)
+  }, [locale])
+
+  const value = useMemo(
+    () => ({ locale, setLocale, t: (key: CopyKey) => copy[locale][key] }),
+    [locale]
+  )
+
+  return <LocaleContext.Provider value={value}>{children}</LocaleContext.Provider>
+}
+
+export function useLocale() {
+  const value = useContext(LocaleContext)
+  if (!value) throw new Error('useLocale must be used inside LocaleProvider')
+  return value
+}

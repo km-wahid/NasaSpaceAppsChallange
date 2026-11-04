@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react'
 import { Head } from '@inertiajs/react'
 import { Link } from '@adonisjs/inertia/react'
-import landscape from '../assets/farm-landscape.jpg'
+import Icon from './icon'
+import FarmScene from './farm_scene'
 
 export default function AuthFrame({
   title,
@@ -18,20 +19,33 @@ export default function AuthFrame({
     <div className="auth-page">
       <Head title={signup ? 'Create account' : 'Log in'} />
       <aside className="auth-landscape">
-        <img src={landscape} alt="Open green farmland in soft evening light" />
         <div>
-          <h2>Your farm. Your plan.</h2>
+          <Icon name="leaf" size={36} />
+          <p className="agri-eyebrow">YOUR FARM, KEPT TOGETHER</p>
+          <h2>
+            Your field.
+            <br />
+            Your future.
+          </h2>
+          <p>Save your farm. Return to your plan anytime.</p>
         </div>
+        <FarmScene scene="auth" />
       </aside>
       <div className="auth-card">
+        <span className="agri-icon-box">
+          <Icon name="leaf" size={25} />
+        </span>
         <h1>{title}</h1>
         <p>{description}</p>
         {children}
         <p className="auth-switch">
           {signup ? 'Already growing with us?' : 'New to Orbit?'}{' '}
           <Link href={signup ? '/login' : '/signup'}>
-            {signup ? 'Log in' : 'Create an account'}
+            {signup ? 'Log in' : 'Create an account'} <Icon name="arrow" size={14} />
           </Link>
+        </p>
+        <p className="auth-privacy">
+          <Icon name="shield" size={15} /> Your farm records stay linked to your account.
         </p>
       </div>
     </div>

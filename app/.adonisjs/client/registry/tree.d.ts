@@ -3,6 +3,10 @@ import type { routes } from './index.ts'
 
 export interface ApiDefinition {
   home: typeof routes['home']
+  mission: typeof routes['mission']
+  explorer: typeof routes['explorer'] & {
+    map: typeof routes['explorer.map']
+  }
   planner: typeof routes['planner']
   sources: typeof routes['sources']
   catalog: {
@@ -16,6 +20,8 @@ export interface ApiDefinition {
     show: typeof routes['location.show']
     update: typeof routes['location.update']
   }
+  dashboard: typeof routes['dashboard']
+  compare: typeof routes['compare']
   newAccount: {
     create: typeof routes['new_account.create']
     store: typeof routes['new_account.store']
@@ -30,6 +36,7 @@ export interface ApiDefinition {
     store: typeof routes['farms.store']
     show: typeof routes['farms.show']
     details: typeof routes['farms.details']
+    capabilities: typeof routes['farms.capabilities']
     inputs: typeof routes['farms.inputs']
     preferences: typeof routes['farms.preferences']
     soil: typeof routes['farms.soil']

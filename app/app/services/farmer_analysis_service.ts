@@ -1,9 +1,28 @@
 import type { RotationResult } from '#services/rotation_engine'
+import { componentDates } from '#services/integrated_farming_service'
 
 export type WaterLevel = 'low' | 'medium' | 'high'
 const labels = ['Low', 'Moderate', 'High'] as const
 const ordinal = { low: 0, medium: 1, high: 2 }
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+const seasonOrder = ['Kharif 2', 'Rabi', 'Kharif 1']
+
+export type DistrictPreviewRow = {
+  crop_id: string | number
+  crop_name: string
+  botanical_family: string
+  season_name: string
+  sowing_start_month: string | number
+  sowing_start_day: string | number
+  duration_min_days: string | number
+  duration_max_days: string | number
+  water_requirement_mm: string | number | null
+  crop_soil_effect_points: string | number | null
+  soil_effect_source_id: string | number
+  reference_details: { soilNote?: string } | string | null
+  area_acres?: string | number | null
+  reported_yield_metric_tonnes_per_hectare?: string | number | null
+}
 
 /** Plan from the next full configured season, not a planting window already in progress. */
 export function nextPlanningSeason(seasonMonths: Record<string, number[]>, now = new Date()) {
@@ -16,6 +35,137 @@ export function nextPlanningSeason(seasonMonths: Record<string, number[]>, now =
     })
     .filter((season): season is { name: string; month: number; year: number } => season !== null)
     .sort((a, b) => a.year - b.year || a.month - b.month)[0]
+}
+
+const isoDate = (year: number, month: number, day: number) =>
+  new Date(Date.UTC(year, month - 1, day)).toISOString().slice(0, 10)
+const addDays = (date: string, days: number) => {
+  const result = new Date(`${date}T00:00:00Z`)
+  result.setUTCDate(result.getUTCDate() + days)
+  return result.toISOString().slice(0, 10)
+}
+
+/** A location-level preview from reviewed national calendars plus this district's crop records. */
+export function presentDistrictRotationPreviews(
+  rows: DistrictPreviewRow[],
+  districtName: string,
+  start: { name: string; year: number }
+) {
+  const bySeason = new Map(
+    seasonOrder.map((season) => [season, rows.filter((row) => row.season_name === season)])
+  )
+  if (seasonOrder.some((season) => !bySeason.get(season)?.length)) return []
+  const rabi = [...(bySeason.get('Rabi') ?? [])]
+    .sort(
+      (a, b) =>
+        Number(b.area_acres ?? -1) - Number(a.area_acres ?? -1) ||
+        Number(b.reported_yield_metric_tonnes_per_hectare ?? -1) -
+          Number(a.reported_yield_metric_tonnes_per_hectare ?? -1) ||
+        a.crop_name.localeCompare(b.crop_name)
+    )
+    .slice(0, 3)
+  const startIndex = seasonOrder.indexOf(start.name)
+  if (startIndex < 0) return []
+  const orderedSeasons = Array.from(
+    { length: seasonOrder.length },
+    (_, index) => seasonOrder[(startIndex + index) % seasonOrder.length]
+  )
+
+  return rabi.map((rabiCrop, planIndex) => {
+    let year = start.year
+    let priorMonth = 0
+    const selected = orderedSeasons.map((season) =>
+      season === 'Rabi' ? rabiCrop : bySeason.get(season)![0]
+    )
+    const crops = selected.map((row, position) => {
+      const month = Number(row.sowing_start_month)
+      if (priorMonth && month < priorMonth) year++
+      priorMonth = month
+      const plantingDate = isoDate(year, month, Number(row.sowing_start_day))
+      const duration = Math.round(
+        (Number(row.duration_min_days) + Number(row.duration_max_days)) / 2
+      )
+      const soilPoints =
+        row.crop_soil_effect_points === null ? null : Number(row.crop_soil_effect_points)
+      const reference =
+        typeof row.reference_details === 'string'
+          ? JSON.parse(row.reference_details)
+          : row.reference_details
+      return {
+        id: Number(row.crop_id),
+        name: row.crop_name,
+        plantingDate,
+        harvestDate: addDays(plantingDate, duration),
+        waterNeed:
+          row.water_requirement_mm === null
+            ? ('unknown' as const)
+            : Number(row.water_requirement_mm) >= 560
+              ? ('high' as const)
+              : Number(row.water_requirement_mm) >= 400
+                ? ('medium' as const)
+                : ('low' as const),
+        condition: 'District preview',
+        reason:
+          position === orderedSeasons.indexOf('Rabi')
+            ? `Ranked from ${districtName} crop records and placed in its reviewed national planting window.`
+            : 'Placed in its reviewed national planting window to complete the seasonal sequence.',
+        nextCrop: selected[position + 1]?.crop_name ?? selected[0].crop_name,
+        soilContribution:
+          soilPoints === null
+            ? 'Soil evidence unavailable'
+            : soilPoints > 0
+              ? 'Potential soil support'
+              : soilPoints < 0
+                ? 'Potential soil pressure'
+                : 'Neutral reference effect',
+        soilSourceId: String(row.soil_effect_source_id),
+        soilNote: reference?.soilNote,
+      }
+    })
+    const area = Number(rabiCrop.area_acres)
+    const localArea = Number.isFinite(area)
+      ? `${Math.round(area).toLocaleString('en')} recorded acres`
+      : 'local acreage unavailable'
+    const yieldValue = Number(rabiCrop.reported_yield_metric_tonnes_per_hectare)
+    const localYield = Number.isFinite(yieldValue)
+      ? `${yieldValue.toFixed(2)} t/ha reported yield`
+      : 'local yield unavailable'
+    return {
+      id: `district-${districtName}-${planIndex}`,
+      preview: true,
+      label: `Local Plan ${String.fromCharCode(65 + planIndex)}`,
+      waterDemand: crops.some((crop) => crop.waterNeed === 'unknown')
+        ? ('unknown' as const)
+        : crops.some((crop) => crop.waterNeed === 'high')
+          ? ('high' as const)
+          : ('medium' as const),
+      fit: `${districtName} preview`,
+      soilHealth: crops.some((crop) => crop.soilContribution === 'Potential soil support')
+        ? 'Includes a soil-supporting legume slot'
+        : 'Soil evidence is incomplete',
+      soilNote: 'Potential reference effects, not a measured improvement in your field.',
+      combinedGrossMarginBdt: null,
+      crops,
+      reasons: [
+        {
+          kind: 'local',
+          title: `${rabiCrop.crop_name} in ${districtName}`,
+          text: `${localArea} · ${localYield}. This ranks the local preview; it does not predict your harvest.`,
+        },
+        {
+          kind: 'season',
+          title: 'Reviewed growing windows',
+          text: 'Each crop is placed in a published Bangladesh planting window.',
+        },
+      ],
+      tradeoffs: [
+        {
+          kind: 'warning',
+          text: 'Farm soil, irrigation, crop history and current prices are not checked in this district preview.',
+        },
+      ],
+    }
+  })
 }
 const value = (input: unknown) =>
   input === null || input === undefined
@@ -144,6 +294,7 @@ export function presentRotationPlans(
             : 'Mixed soil effects',
     soilNote:
       'Potential effects from documented crop traits and sequence rules, not a measured improvement in your field.',
+    combinedGrossMarginBdt: rotation.totalProfit,
     crops: rotation.crops.map((crop, position) => ({
       id: crop.id,
       name: crop.name,
@@ -170,6 +321,26 @@ export function presentRotationPlans(
           : 'Fits the planting window. Its water needs require careful planning.',
       nextCrop:
         rotation.crops[position + 1]?.name ?? 'Return to the first crop after land preparation',
+      system: crop.farmingSystem
+        ? {
+            id: crop.farmingSystem.id,
+            type: crop.farmingSystem.type,
+            timingPattern: crop.farmingSystem.timingPattern,
+            spatialPattern: crop.farmingSystem.spatialPattern,
+            evidenceStatus: crop.farmingSystem.evidenceStatus,
+            managementNote: crop.farmingSystem.managementNote,
+            components: componentDates(crop, rotation.plantingDates[position]).map((component) => ({
+              type: component.type,
+              name: component.name,
+              role: component.role,
+              startDate: component.startDate,
+              endDate: component.endDate,
+              outputPerHa: component.outputPerHa,
+              outputUnit: component.outputUnit,
+              grossMarginPerHa: component.revenuePerHa - component.costPerHa,
+            })),
+          }
+        : undefined,
     })),
     reasons: [
       {
