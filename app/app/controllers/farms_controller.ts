@@ -9,7 +9,7 @@ export default class FarmsController {
       .where({ farm_id: params.id, user_id: auth.user!.id })
       .first()
     if (!farm) return response.notFound({ error: 'FARM_NOT_FOUND' })
-    const [soil, history, preferences] = await Promise.all([
+    const [soil, history, preferences, capabilityDefinitions, capabilities] = await Promise.all([
       db.from('farm_soil_profiles').where({ farm_id: params.id, is_current: true }).first(),
       db
         .from('farm_crop_history')
@@ -21,6 +21,8 @@ export default class FarmsController {
         .where('farm_id', params.id)
         .orderBy('preference_id', 'desc')
         .first(),
+      db.from('capability_definitions').orderBy('sort_order'),
+      db.from('farm_capabilities').where('farm_id', params.id),
     ])
     const measurements = soil
       ? await db.from('farm_soil_measurements').where('soil_profile_id', soil.soil_profile_id)
@@ -30,7 +32,75 @@ export default class FarmsController {
       measurements,
       history,
       preferences: preferences ?? null,
+      capabilityDefinitions,
+      capabilities,
     })
+  }
+
+  async capabilities({ auth, params, request, response }: HttpContext) {
+    const farm = await db
+      .from('farms')
+      .where({ farm_id: params.id, user_id: auth.user!.id })
+      .first()
+    if (!farm) return response.notFound({ error: 'FARM_NOT_FOUND' })
+    const answers = request.input('answers')
+    if (!Array.isArray(answers) || answers.length > 50)
+      return response.unprocessableEntity({ error: 'Provide a valid capability list.' })
+    const definitions = await db.from('capability_definitions')
+    const byKey = new Map(definitions.map((definition) => [definition.capability_key, definition]))
+    const normalized: Array<Record<string, unknown>> = []
+    for (const answer of answers) {
+      const definition = byKey.get(answer.key)
+      if (!definition)
+        return response.unprocessableEntity({ error: `Unknown capability: ${answer.key}` })
+      if (answer.value === null) {
+        normalized.push({ farm_id: farm.farm_id, capability_key: answer.key, delete: true })
+        continue
+      }
+      const row: Record<string, unknown> = {
+        farm_id: farm.farm_id,
+        capability_key: answer.key,
+        boolean_value: null,
+        number_value: null,
+        text_value: null,
+        observed_at: answer.observedAt ?? null,
+        updated_at: new Date(),
+      }
+      if (definition.value_type === 'boolean') {
+        if (typeof answer.value !== 'boolean')
+          return response.unprocessableEntity({ error: `${answer.key} must be yes or no.` })
+        row.boolean_value = answer.value
+      } else if (definition.value_type === 'number') {
+        const value = Number(answer.value)
+        if (!Number.isFinite(value) || value < 0 || value > 1_000_000)
+          return response.unprocessableEntity({
+            error: `${answer.key} must be a valid measurement.`,
+          })
+        row.number_value = value
+      } else {
+        if (typeof answer.value !== 'string' || answer.value.trim().length > 500)
+          return response.unprocessableEntity({ error: `${answer.key} must be valid text.` })
+        row.text_value = answer.value.trim()
+      }
+      normalized.push(row)
+    }
+    await db.transaction(async (trx) => {
+      for (const row of normalized) {
+        if (row.delete) {
+          await trx
+            .from('farm_capabilities')
+            .where({ farm_id: row.farm_id, capability_key: row.capability_key })
+            .delete()
+          continue
+        }
+        await trx
+          .table('farm_capabilities')
+          .insert(row)
+          .onConflict(['farm_id', 'capability_key'])
+          .merge()
+      }
+    })
+    return response.ok(await db.from('farm_capabilities').where('farm_id', farm.farm_id))
   }
 
   async index({ auth, response }: HttpContext) {
@@ -338,13 +408,34 @@ export default class FarmsController {
     const entries = request.input('entries')
     if (!Array.isArray(entries) || entries.length < 2)
       return response.unprocessableEntity({ error: 'AT_LEAST_TWO_HISTORY_SLOTS_REQUIRED' })
+    const normalizedEntries = entries.map((entry) => ({
+      ...entry,
+      cropIds: [
+        ...new Set<number>(
+          (Array.isArray(entry.cropIds) ? entry.cropIds : [entry.cropId])
+            .filter((value: unknown) => value !== null && value !== undefined)
+            .map(Number)
+        ),
+      ],
+    }))
+    if (
+      normalizedEntries.some(
+        (entry) =>
+          (entry.landUseType === 'crop' && (!entry.cropIds.length || entry.cropIds.length > 3)) ||
+          entry.cropIds.some((cropId: number) => !Number.isSafeInteger(cropId) || cropId < 1)
+      )
+    )
+      return response.unprocessableEntity({
+        error: 'Crop history accepts between one and three valid crops per season.',
+      })
     await db.transaction(async (trx) => {
-      for (const entry of entries) {
-        await trx.rawQuery(
-          `INSERT INTO farm_crop_history(farm_id,crop_id,season_id,crop_year,land_use_type,planting_date,harvest_date,yield_tonnes,notes) VALUES (?,?,?,?,?,?,?,?,?) ON CONFLICT(farm_id,crop_year,season_id) DO UPDATE SET crop_id=excluded.crop_id,land_use_type=excluded.land_use_type,planting_date=excluded.planting_date,harvest_date=excluded.harvest_date,yield_tonnes=excluded.yield_tonnes,notes=excluded.notes`,
+      for (const entry of normalizedEntries) {
+        const cropIds = entry.cropIds
+        const result = await trx.rawQuery(
+          `INSERT INTO farm_crop_history(farm_id,crop_id,season_id,crop_year,land_use_type,planting_date,harvest_date,yield_tonnes,notes) VALUES (?,?,?,?,?,?,?,?,?) ON CONFLICT(farm_id,crop_year,season_id) DO UPDATE SET crop_id=excluded.crop_id,land_use_type=excluded.land_use_type,planting_date=excluded.planting_date,harvest_date=excluded.harvest_date,yield_tonnes=excluded.yield_tonnes,notes=excluded.notes RETURNING history_id`,
           [
             params.id,
-            entry.cropId ?? null,
+            cropIds[0] ?? null,
             entry.seasonId,
             entry.cropYear,
             entry.landUseType,
@@ -354,6 +445,14 @@ export default class FarmsController {
             entry.notes ?? null,
           ]
         )
+        const historyId = result.rows[0].history_id
+        await trx.from('farm_history_components').where('history_id', historyId).delete()
+        if (entry.landUseType === 'crop')
+          await trx
+            .table('farm_history_components')
+            .multiInsert(
+              cropIds.map((cropId: number) => ({ history_id: historyId, crop_id: cropId }))
+            )
       }
     })
     return response.ok(

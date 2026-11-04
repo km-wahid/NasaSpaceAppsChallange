@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { Catalog } from './data_browser'
 import { api } from '../lib/api'
 import { Link } from '@adonisjs/inertia/react'
@@ -24,8 +24,28 @@ type Inputs = {
     harvest_date: string | null
   }>
   preferences: Record<string, number> | null
+  capabilityDefinitions: Array<{
+    capability_key: string
+    label: string
+    value_type: 'boolean' | 'number' | 'text'
+    unit: string | null
+    help_text: string
+  }>
+  capabilities: Array<{
+    capability_key: string
+    boolean_value: boolean | null
+    number_value: string | null
+    text_value: string | null
+  }>
 }
 const labels = ['climate', 'water', 'soil', 'resilience', 'economic'] as const
+const priorityMeta = {
+  climate: { title: 'Climate fit', icon: 'sun' as const },
+  water: { title: 'Save water', icon: 'water' as const },
+  soil: { title: 'Build soil', icon: 'soil' as const },
+  resilience: { title: 'Weather safety', icon: 'shield' as const },
+  economic: { title: 'Income', icon: 'money' as const },
+}
 const currentYear = new Date().getFullYear()
 const defaultHistory = [0, 1].map((index) => ({
   cropId: '',
@@ -56,11 +76,17 @@ export default function FarmWorkspace({ catalog }: { catalog: Catalog }) {
     }))
   )
   const [environment, setEnvironment] = useState<Record<string, unknown> | null>(null)
+  const [capabilityDefinitions, setCapabilityDefinitions] = useState<
+    Inputs['capabilityDefinitions']
+  >([])
+  const [capabilityAnswers, setCapabilityAnswers] = useState<Record<string, string>>({})
   const [busy, setBusy] = useState('')
   const [step, setStep] = useState(0)
   const [inputsLoading, setInputsLoading] = useState(false)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
+  const extraDetails = useRef<HTMLDetailsElement>(null)
+  const integratedSection = useRef<HTMLElement>(null)
   const totalWeight = weights.reduce((sum, value) => sum + value, 0)
   useEffect(() => {
     const selected = farms.find((farm) => String(farm.farm_id) === farmId)
@@ -97,6 +123,17 @@ export default function FarmWorkspace({ catalog }: { catalog: Catalog }) {
     const controller = new AbortController()
     api<Inputs>(`/api/v1/farms/${farmId}/inputs`, 'GET', undefined, controller.signal)
       .then((data) => {
+        setCapabilityDefinitions(data.capabilityDefinitions)
+        setCapabilityAnswers(
+          Object.fromEntries(
+            data.capabilities.map((answer) => [
+              answer.capability_key,
+              answer.boolean_value !== null
+                ? String(answer.boolean_value)
+                : (answer.number_value ?? answer.text_value ?? ''),
+            ])
+          )
+        )
         if (data.preferences)
           setWeights(labels.map((label) => data.preferences![`${label}_weight_bp`] / 100))
         if (data.history.length)
@@ -159,29 +196,25 @@ export default function FarmWorkspace({ catalog }: { catalog: Catalog }) {
   const base = `/api/v1/farms/${farmId}`
   const priorityFields = (
     <>
-      <div className="data-toolbar">
-        <button type="button" onClick={() => setWeights([15, 10, 10, 15, 50])}>
-          Income focus
+      <div className="priority-presets">
+        <button className="btn" type="button" onClick={() => setWeights([15, 10, 10, 15, 50])}>
+          <Icon name="money" /> More income
         </button>
-        <button type="button" onClick={() => setWeights([15, 30, 35, 10, 10])}>
-          Soil and water focus
+        <button className="btn" type="button" onClick={() => setWeights([15, 30, 35, 10, 10])}>
+          <Icon name="sprout" /> Soil + water
         </button>
       </div>
-      <div className="data-form">
+      <div className="priority-grid">
         {labels.map((label, index) => (
-          <label key={label}>
-            {
-              {
-                climate: 'Climate suitability',
-                water: 'Water conservation',
-                soil: 'Soil health',
-                resilience: 'Weather resilience',
-                economic: 'Income potential',
-              }[label]
-            }{' '}
-            (%)
+          <label className="priority-control" key={label}>
+            <span className="priority-control-heading">
+              <span><Icon name={priorityMeta[label].icon} /> {priorityMeta[label].title}</span>
+              <strong>{weights[index]}%</strong>
+            </span>
+            <progress className="progress progress-primary" value={weights[index]} max="100" />
             <input
-              type="number"
+              aria-label={`${priorityMeta[label].title} percent`}
+              type="range"
               required
               min="0"
               max="100"
@@ -196,7 +229,10 @@ export default function FarmWorkspace({ catalog }: { catalog: Catalog }) {
           </label>
         ))}
       </div>
-      <p>Total: {totalWeight}% — must equal 100%.</p>
+      <p className={`priority-total ${totalWeight === 100 ? 'is-ready' : ''}`} role="status">
+        <Icon name={totalWeight === 100 ? 'check' : 'warning'} />
+        {totalWeight === 100 ? 'Ready to save' : `${totalWeight}% selected · make the total 100%`}
+      </p>
     </>
   )
   return (
@@ -209,9 +245,30 @@ export default function FarmWorkspace({ catalog }: { catalog: Catalog }) {
         <h2>Your farm workspace</h2>
       </div>
       <p>
-        Only your priorities are required. We already have your district. Add extra details only if
-        you want more tailored checks.
+        Pick a farm, set what matters, then see your crop options.
       </p>
+      {farms.length > 0 && (
+        <div className="saved-farm-grid" aria-label="Saved farms">
+          {farms.map((farm) => (
+            <button
+              className="card saved-farm-card"
+              data-selected={String(farm.farm_id) === farmId}
+              type="button"
+              key={farm.farm_id}
+              onClick={() => setFarmId(String(farm.farm_id))}
+            >
+              <span><Icon name="barn" size={24} /></span>
+              <strong>{farm.name}</strong>
+              <small>
+                {catalog.districts.find(
+                  (district) => String(district.district_id) === String(farm.district_id)
+                )?.district_name}
+              </small>
+              {String(farm.farm_id) === farmId && <Icon name="check" size={18} />}
+            </button>
+          ))}
+        </div>
+      )}
       <label>
         Saved farm
         <select
@@ -233,6 +290,18 @@ export default function FarmWorkspace({ catalog }: { catalog: Catalog }) {
           ))}
         </select>
       </label>
+      {!farmId && (
+        <div className="card card-border my-5 bg-base-100">
+          <div className="card-body gap-2">
+            <p className="agri-eyebrow text-info">MULTI-COMPONENT FARMING</p>
+            <h3 className="card-title">Integrated farming systems</h3>
+            <p className="text-sm text-base-content/70">
+              Create or select a farm first. You can then configure intercropping, crop–fish,
+              livestock and agroforestry capabilities for that farm.
+            </p>
+          </div>
+        </div>
+      )}
       <details className="farm-create-panel" open={!farms.length}>
         <summary>Create a farm in {catalog.district.district_name}</summary>
         <form
@@ -365,24 +434,63 @@ export default function FarmWorkspace({ catalog }: { catalog: Catalog }) {
             See crop rotations
             <Icon name="arrow" />
           </Link>
-          <details className="collapse collapse-arrow border border-base-300 bg-base-100">
+          <div className="card card-border mb-5 bg-base-100">
+            <div className="card-body gap-3">
+              <div>
+                <p className="agri-eyebrow text-info">MULTI-COMPONENT FARMING</p>
+                <h3 className="card-title mt-1">Integrated farming systems</h3>
+              </div>
+              <p className="text-sm text-base-content/70">
+                Tell us whether your farm can support intercropping, crop–fish, livestock or
+                agroforestry systems. Unknown answers can stay blank.
+              </p>
+              <div className="card-actions">
+                <button
+                  type="button"
+                  className="btn btn-outline"
+                  onClick={() => {
+                    setStep(1)
+                    if (extraDetails.current) extraDetails.current.open = true
+                    requestAnimationFrame(() =>
+                      integratedSection.current?.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start',
+                      })
+                    )
+                  }}
+                >
+                  Set up integrated farming
+                  <Icon name="arrow" />
+                </button>
+              </div>
+            </div>
+          </div>
+          <details
+            ref={extraDetails}
+            className="collapse collapse-arrow border border-base-300 bg-base-100"
+          >
             <summary className="collapse-title font-semibold">Add extra details (optional)</summary>
             <div className="collapse-content">
               <nav className="workspace-steps" aria-label="Farm setup steps">
-                {['Environment', 'Crop history', 'Soil inputs', 'Priorities', 'Rotations'].map(
-                  (title, index) => (
-                    <button
-                      key={title}
-                      type="button"
-                      aria-pressed={step === index}
-                      disabled={!!busy}
-                      onClick={() => setStep(index)}
-                    >
-                      <span>{String(index + 1).padStart(2, '0')}</span>
-                      {title}
-                    </button>
-                  )
-                )}
+                {[
+                  'Environment',
+                  'Integrated systems',
+                  'Crop history',
+                  'Soil inputs',
+                  'Priorities',
+                  'Rotations',
+                ].map((title, index) => (
+                  <button
+                    key={title}
+                    type="button"
+                    aria-pressed={step === index}
+                    disabled={!!busy}
+                    onClick={() => setStep(index)}
+                  >
+                    <span>{String(index + 1).padStart(2, '0')}</span>
+                    {title}
+                  </button>
+                ))}
               </nav>
               <fieldset
                 disabled={!!busy || inputsLoading}
@@ -477,8 +585,89 @@ export default function FarmWorkspace({ catalog }: { catalog: Catalog }) {
                     Refresh NASA observations
                   </button>
                 </section>
+                <section ref={integratedSection}>
+                  <h3>2. Integrated farming capabilities</h3>
+                  <p>
+                    Optional answers are used only for reviewed multi-component systems. Unknown
+                    answers stay unknown and cannot silently pass a requirement.
+                  </p>
+                  {!capabilityDefinitions.length ? (
+                    <div className="alert alert-info alert-soft" role="status">
+                      Integrated-system questions are not configured yet.
+                    </div>
+                  ) : (
+                    <form
+                      onSubmit={(event) => {
+                        event.preventDefault()
+                        void act('Save integrated farming capabilities', async () => {
+                          await api(`${base}/capabilities`, 'PUT', {
+                            answers: capabilityDefinitions.map((definition) => {
+                              const answer = capabilityAnswers[definition.capability_key]
+                              return {
+                                key: definition.capability_key,
+                                value:
+                                  answer === undefined || answer === ''
+                                    ? null
+                                    : definition.value_type === 'boolean'
+                                      ? answer === 'true'
+                                      : definition.value_type === 'number'
+                                        ? Number(answer)
+                                        : answer,
+                              }
+                            }),
+                          })
+                        })
+                      }}
+                    >
+                      <div className="grid gap-4 md:grid-cols-2">
+                        {capabilityDefinitions.map((definition) => (
+                          <fieldset className="fieldset" key={definition.capability_key}>
+                            <legend className="fieldset-legend">{definition.label}</legend>
+                            {definition.value_type === 'boolean' ? (
+                              <select
+                                className="select w-full"
+                                value={capabilityAnswers[definition.capability_key] ?? ''}
+                                onChange={(event) =>
+                                  setCapabilityAnswers({
+                                    ...capabilityAnswers,
+                                    [definition.capability_key]: event.target.value,
+                                  })
+                                }
+                              >
+                                <option value="">Unknown</option>
+                                <option value="true">Yes</option>
+                                <option value="false">No</option>
+                              </select>
+                            ) : (
+                              <input
+                                className="input w-full"
+                                type={definition.value_type === 'number' ? 'number' : 'text'}
+                                min={definition.value_type === 'number' ? 0 : undefined}
+                                step={definition.value_type === 'number' ? 'any' : undefined}
+                                value={capabilityAnswers[definition.capability_key] ?? ''}
+                                onChange={(event) =>
+                                  setCapabilityAnswers({
+                                    ...capabilityAnswers,
+                                    [definition.capability_key]: event.target.value,
+                                  })
+                                }
+                              />
+                            )}
+                            <p className="label">
+                              {definition.help_text}
+                              {definition.unit ? ` Unit: ${definition.unit}.` : ''}
+                            </p>
+                          </fieldset>
+                        ))}
+                      </div>
+                      <button className="btn" type="submit">
+                        Save integrated farming capabilities
+                      </button>
+                    </form>
+                  )}
+                </section>
                 <section>
-                  <h3>2. Previous crops</h3>
+                  <h3>3. Previous crops</h3>
                   <p>
                     Add two actual previous seasons to check crop breaks. Without them, plans are
                     season-based guidance and prior-crop checks are marked incomplete.
@@ -606,7 +795,7 @@ export default function FarmWorkspace({ catalog }: { catalog: Catalog }) {
                   </form>
                 </section>
                 <section>
-                  <h3>3. Soil measurements</h3>
+                  <h3>4. Soil measurements</h3>
                   {nutrients.some(
                     (item) =>
                       !catalog.thresholds.some((threshold) => threshold.nutrient === item.nutrient)
@@ -715,7 +904,7 @@ export default function FarmWorkspace({ catalog }: { catalog: Catalog }) {
                   )}
                 </section>
                 <section>
-                  <h3>4. Farmer priorities</h3>
+                  <h3>5. Farmer priorities</h3>
                   <div className="data-toolbar">
                     <button type="button" onClick={() => setWeights([15, 10, 10, 15, 50])}>
                       Profit focus

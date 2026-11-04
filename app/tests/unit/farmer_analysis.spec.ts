@@ -1,6 +1,7 @@
 import { test } from '@japa/runner'
 import {
   buildWaterOutlook,
+  presentDistrictRotationPreviews,
   presentRotationPlans,
   nextPlanningSeason,
 } from '#services/farmer_analysis_service'
@@ -68,6 +69,61 @@ test.group('farmer-facing analysis', () => {
         (point) => point.index === null
       )
     )
+  })
+
+  test('ranks three seasonal previews with the selected district crop records', ({ assert }) => {
+    const row = (
+      id: number,
+      name: string,
+      season: string,
+      month: number,
+      area: number,
+      soil: number | null = null
+    ) => ({
+      crop_id: id,
+      crop_name: name,
+      botanical_family: `Family ${id}`,
+      season_name: season,
+      sowing_start_month: month,
+      sowing_start_day: 1,
+      duration_min_days: 80,
+      duration_max_days: 80,
+      water_requirement_mm: name === 'Aman' ? 575 : null,
+      crop_soil_effect_points: soil,
+      soil_effect_source_id: id,
+      reference_details: {},
+      area_acres: area,
+      reported_yield_metric_tonnes_per_hectare: 1,
+    })
+    const shared = [row(1, 'Aman', 'Kharif 2', 7, 1000), row(2, 'Mug', 'Kharif 1', 4, 100, 20)]
+    const districtA = presentDistrictRotationPreviews(
+      [
+        ...shared,
+        row(3, 'Mustard', 'Rabi', 11, 900),
+        row(4, 'Lentil', 'Rabi', 11, 200, 20),
+        row(5, 'Wheat', 'Rabi', 11, 100),
+      ],
+      'District A',
+      { name: 'Rabi', year: 2026 }
+    )
+    const districtB = presentDistrictRotationPreviews(
+      [
+        ...shared,
+        row(3, 'Mustard', 'Rabi', 11, 100),
+        row(4, 'Lentil', 'Rabi', 11, 1200, 20),
+        row(5, 'Wheat', 'Rabi', 11, 300),
+      ],
+      'District B',
+      { name: 'Rabi', year: 2026 }
+    )
+
+    assert.lengthOf(districtA, 3)
+    assert.lengthOf(districtB, 3)
+    assert.equal(districtA[0].crops[0].name, 'Mustard')
+    assert.equal(districtB[0].crops[0].name, 'Lentil')
+    assert.equal(districtA[0].crops[1].plantingDate, '2027-04-01')
+    assert.equal(districtA[0].fit, 'District A preview')
+    assert.isTrue(districtA.every((plan) => plan.preview))
   })
 
   test('presents actual scheduled dates and calculated trade-offs from the engine', ({

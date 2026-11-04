@@ -12,6 +12,24 @@ const routes = {
     tokens: [{"old":"/","type":0,"val":"/","end":""}],
     types: placeholder as Registry['home']['types'],
   },
+  'mission': {
+    methods: ["GET","HEAD"],
+    pattern: '/mission',
+    tokens: [{"old":"/mission","type":0,"val":"mission","end":""}],
+    types: placeholder as Registry['mission']['types'],
+  },
+  'explorer': {
+    methods: ["GET","HEAD"],
+    pattern: '/explorer',
+    tokens: [{"old":"/explorer","type":0,"val":"explorer","end":""}],
+    types: placeholder as Registry['explorer']['types'],
+  },
+  'explorer.map': {
+    methods: ["GET","HEAD"],
+    pattern: '/explorer/map',
+    tokens: [{"old":"/explorer/map","type":0,"val":"explorer","end":""},{"old":"/explorer/map","type":0,"val":"map","end":""}],
+    types: placeholder as Registry['explorer.map']['types'],
+  },
   'planner': {
     methods: ["GET","HEAD"],
     pattern: '/planner',
@@ -41,6 +59,18 @@ const routes = {
     pattern: '/api/v1/location/reverse',
     tokens: [{"old":"/api/v1/location/reverse","type":0,"val":"api","end":""},{"old":"/api/v1/location/reverse","type":0,"val":"v1","end":""},{"old":"/api/v1/location/reverse","type":0,"val":"location","end":""},{"old":"/api/v1/location/reverse","type":0,"val":"reverse","end":""}],
     types: placeholder as Registry['location.reverse']['types'],
+  },
+  'dashboard': {
+    methods: ["GET","HEAD"],
+    pattern: '/dashboard',
+    tokens: [{"old":"/dashboard","type":0,"val":"dashboard","end":""}],
+    types: placeholder as Registry['dashboard']['types'],
+  },
+  'compare': {
+    methods: ["GET","HEAD"],
+    pattern: '/compare',
+    tokens: [{"old":"/compare","type":0,"val":"compare","end":""}],
+    types: placeholder as Registry['compare']['types'],
   },
   'new_account.create': {
     methods: ["GET","HEAD"],
@@ -108,6 +138,18 @@ const routes = {
     tokens: [{"old":"/api/v1/farms/:id","type":0,"val":"api","end":""},{"old":"/api/v1/farms/:id","type":0,"val":"v1","end":""},{"old":"/api/v1/farms/:id","type":0,"val":"farms","end":""},{"old":"/api/v1/farms/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['farms.show']['types'],
   },
+  'farms.details': {
+    methods: ["PUT"],
+    pattern: '/api/v1/farms/:id/details',
+    tokens: [{"old":"/api/v1/farms/:id/details","type":0,"val":"api","end":""},{"old":"/api/v1/farms/:id/details","type":0,"val":"v1","end":""},{"old":"/api/v1/farms/:id/details","type":0,"val":"farms","end":""},{"old":"/api/v1/farms/:id/details","type":1,"val":"id","end":""},{"old":"/api/v1/farms/:id/details","type":0,"val":"details","end":""}],
+    types: placeholder as Registry['farms.details']['types'],
+  },
+  'farms.capabilities': {
+    methods: ["PUT"],
+    pattern: '/api/v1/farms/:id/capabilities',
+    tokens: [{"old":"/api/v1/farms/:id/capabilities","type":0,"val":"api","end":""},{"old":"/api/v1/farms/:id/capabilities","type":0,"val":"v1","end":""},{"old":"/api/v1/farms/:id/capabilities","type":0,"val":"farms","end":""},{"old":"/api/v1/farms/:id/capabilities","type":1,"val":"id","end":""},{"old":"/api/v1/farms/:id/capabilities","type":0,"val":"capabilities","end":""}],
+    types: placeholder as Registry['farms.capabilities']['types'],
+  },
   'farms.inputs': {
     methods: ["GET","HEAD"],
     pattern: '/api/v1/farms/:id/inputs',
@@ -155,6 +197,18 @@ const routes = {
     pattern: '/api/v1/farms/:id/recommendations',
     tokens: [{"old":"/api/v1/farms/:id/recommendations","type":0,"val":"api","end":""},{"old":"/api/v1/farms/:id/recommendations","type":0,"val":"v1","end":""},{"old":"/api/v1/farms/:id/recommendations","type":0,"val":"farms","end":""},{"old":"/api/v1/farms/:id/recommendations","type":1,"val":"id","end":""},{"old":"/api/v1/farms/:id/recommendations","type":0,"val":"recommendations","end":""}],
     types: placeholder as Registry['recommendations.store']['types'],
+  },
+  'recommendations.choice': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/farms/:id/rotation-choice',
+    tokens: [{"old":"/api/v1/farms/:id/rotation-choice","type":0,"val":"api","end":""},{"old":"/api/v1/farms/:id/rotation-choice","type":0,"val":"v1","end":""},{"old":"/api/v1/farms/:id/rotation-choice","type":0,"val":"farms","end":""},{"old":"/api/v1/farms/:id/rotation-choice","type":1,"val":"id","end":""},{"old":"/api/v1/farms/:id/rotation-choice","type":0,"val":"rotation-choice","end":""}],
+    types: placeholder as Registry['recommendations.choice']['types'],
+  },
+  'recommendations.choose': {
+    methods: ["PUT"],
+    pattern: '/api/v1/farms/:id/rotation-choice',
+    tokens: [{"old":"/api/v1/farms/:id/rotation-choice","type":0,"val":"api","end":""},{"old":"/api/v1/farms/:id/rotation-choice","type":0,"val":"v1","end":""},{"old":"/api/v1/farms/:id/rotation-choice","type":0,"val":"farms","end":""},{"old":"/api/v1/farms/:id/rotation-choice","type":1,"val":"id","end":""},{"old":"/api/v1/farms/:id/rotation-choice","type":0,"val":"rotation-choice","end":""}],
+    types: placeholder as Registry['recommendations.choose']['types'],
   },
   'recommendations.show': {
     methods: ["GET","HEAD"],

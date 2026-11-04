@@ -9,6 +9,7 @@ export type UserLocation = {
   country: string | null
   countryCode: string | null
   waterAvailability?: 'low' | 'medium' | 'high' | null
+  accuracy?: number | null
 }
 
 export type LocationProgress = 'requesting-permission' | 'detecting' | 'reverse-geocoding'
@@ -89,7 +90,7 @@ export async function detectUserLocation(
   onProgress?.('reverse-geocoding')
   const timeout = AbortSignal.timeout(12000)
   try {
-    return await api<UserLocation>(
+    const location = await api<UserLocation>(
       '/api/v1/location/reverse',
       'POST',
       {
@@ -98,6 +99,7 @@ export async function detectUserLocation(
       },
       signal ? AbortSignal.any([signal, timeout]) : timeout
     )
+    return { ...location, accuracy: coordinates.accuracy }
   } catch (error) {
     if (signal?.aborted) throw error
     throw new LocationDetectionError(

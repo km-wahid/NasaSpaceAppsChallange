@@ -43,6 +43,7 @@ export type Catalog = {
   } | null
   risk: { drought_risk: string; flood_risk: string; salinity_risk: string } | null
   climate: Array<{ season_name: string; rainfall_mm: string }>
+  districtClimate: Array<{ district_name: string; mean_rainfall_mm: string }>
   source: { filename: string; reportingYear: number | null; importedAt: string } | null
   readiness: {
     requirements: number
@@ -96,8 +97,14 @@ export default function DataBrowser({ signedIn }: { signedIn: boolean }) {
       )}
       {loading && (
         <div className="card border border-base-300 bg-base-100 p-6" role="status">
-          <span className="loading loading-spinner text-primary" />
-          <p className="mt-3 text-sm">Preparing your local growing guide…</p>
+          <div className="flex items-center gap-4">
+            <span className="skeleton size-14 shrink-0 rounded-full" aria-hidden="true" />
+            <div className="w-full space-y-3" aria-hidden="true">
+              <span className="skeleton block h-5 w-2/3" />
+              <span className="skeleton block h-4 w-full" />
+            </div>
+          </div>
+          <p className="sr-only">Preparing your local growing guide…</p>
         </div>
       )}
       {error && (

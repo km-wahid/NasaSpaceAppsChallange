@@ -6,6 +6,12 @@ import {
 } from '#services/rotation_engine'
 import db from '@adonisjs/lucid/services/db'
 import { createHash } from 'node:crypto'
+import {
+  componentDates,
+  generateResearchIdeas,
+  integratedCandidatesForSlot,
+  type SystemAssessment,
+} from '#services/integrated_farming_service'
 
 const clamp = (value: number) => Math.min(100, Math.max(0, value))
 const rangeFit = (value: number, minimum: number, maximum: number) =>
@@ -111,6 +117,12 @@ export async function generateFarmRecommendations(
     .orderBy('crop_year', 'desc')
     .orderBy('season_id', 'desc')
     .limit(3)
+  const historyComponents = histories.length
+    ? await db.from('farm_history_components').whereIn(
+        'history_id',
+        histories.map((row) => row.history_id)
+      )
+    : []
   const historyComplete =
     histories.length >= 2 && !histories.some((entry) => entry.land_use_type === 'unknown')
   if (!historyComplete && !input.allowIncompleteFarm)
@@ -174,6 +186,9 @@ export async function generateFarmRecommendations(
   let calendarYear = baseYear
   let priorMonth = 0
   const candidateSlots: Array<{ season: string; candidates: Candidate[] }> = []
+  const systemAssessments: SystemAssessment[] = []
+  const researchIdeaCandidates: Candidate[] = []
+  let integratedFarmingEnabled = false
   const rejectionCounts: Record<string, number> = {}
 
   for (const slot of slots) {
@@ -337,6 +352,30 @@ export async function generateFarmRecommendations(
           row.nitrogen_contribution_level === 'none' ? {} : { n: row.nitrogen_contribution_level },
       })
     }
+    researchIdeaCandidates.push(...candidates)
+    const integrated = await integratedCandidatesForSlot({
+      farm,
+      soil: soil ?? null,
+      seasonId: Number(slot.season_id),
+      feature: feature ?? null,
+      environmentCoverageMinimumPercent: Number(
+        version.scoring_config.environmentCoverageMinimumPercent ?? 90
+      ),
+      baseCandidates: candidates,
+    })
+    candidates.push(...integrated.candidates)
+    integratedFarmingEnabled ||= integrated.enabled
+    systemAssessments.push(...integrated.assessments)
+    if (candidates.every((candidate) => candidate.profitPerHa !== null)) {
+      const candidateProfits = candidates.map((candidate) => candidate.profitPerHa!)
+      const lowestProfit = Math.min(...candidateProfits)
+      const highestProfit = Math.max(...candidateProfits)
+      for (const candidate of candidates)
+        candidate.scores.economic =
+          highestProfit === lowestProfit
+            ? 50
+            : (100 * (candidate.profitPerHa! - lowestProfit)) / (highestProfit - lowestProfit)
+    }
     candidateSlots.push({
       season: slot.season_name,
       candidates: candidates
@@ -377,6 +416,7 @@ export async function generateFarmRecommendations(
     history: histories,
     cropRequirementsAndEconomics: rows,
     rotationRules: ruleRows,
+    integratedSystemAssessments: systemAssessments,
     slots: candidateSlots,
   })
   const snapshotJson = JSON.stringify(inputSnapshot)
@@ -395,6 +435,9 @@ export async function generateFarmRecommendations(
     allowAdjacentRepeat: Boolean(input.allowAdjacentRepeat ?? false),
     history: (historyComplete ? histories : []).map((row) => ({
       cropId: row.crop_id ? Number(row.crop_id) : null,
+      cropIds: historyComponents
+        .filter((component) => String(component.history_id) === String(row.history_id))
+        .map((component) => Number(component.crop_id)),
       landUse: row.land_use_type,
       harvestDate: row.harvest_date,
     })),
@@ -499,31 +542,62 @@ export async function generateFarmRecommendations(
               : 100,
         })
         .returning('*')
-      for (const [position, crop] of recommendation.crops.entries())
-        await trx.table('rotation_recommendation_items').insert({
-          recommendation_id: saved.recommendation_id,
-          position: position + 1,
-          season_id: slots[position].season_id,
-          crop_id: crop.id,
-          planting_date: recommendation.plantingDates[position],
-          harvest_date: recommendation.harvestDates[position],
-          climate_score: crop.scores.climate,
-          water_score: crop.scores.water,
-          soil_score: crop.scores.soil,
-          resilience_score: crop.scores.resilience,
-          economic_score: crop.scores.economic,
-          weighted_crop_score:
-            (crop.scores.climate * weights.climate) / 100 +
-            (crop.scores.water * weights.water) / 100 +
-            (crop.scores.soil * weights.soil) / 100 +
-            (crop.scores.resilience * weights.resilience) / 100 +
-            (crop.scores.economic * weights.economic) / 100,
-          calculation_trace: JSON.stringify({
-            scores: crop.scores,
-            waterRequirementMm: crop.waterRequirementMm,
-            profitPerHa: crop.profitPerHa,
-          }),
-        })
+      for (const [position, crop] of recommendation.crops.entries()) {
+        const [savedItem] = await trx
+          .table('rotation_recommendation_items')
+          .insert({
+            recommendation_id: saved.recommendation_id,
+            position: position + 1,
+            season_id: slots[position].season_id,
+            crop_id: crop.id,
+            farming_system_id: crop.farmingSystem?.id,
+            planting_date: recommendation.plantingDates[position],
+            harvest_date: recommendation.harvestDates[position],
+            climate_score: crop.scores.climate,
+            water_score: crop.scores.water,
+            soil_score: crop.scores.soil,
+            resilience_score: crop.scores.resilience,
+            economic_score: crop.scores.economic,
+            weighted_crop_score:
+              (crop.scores.climate * weights.climate) / 100 +
+              (crop.scores.water * weights.water) / 100 +
+              (crop.scores.soil * weights.soil) / 100 +
+              (crop.scores.resilience * weights.resilience) / 100 +
+              (crop.scores.economic * weights.economic) / 100,
+            calculation_trace: JSON.stringify({
+              scores: crop.scores,
+              waterRequirementMm: crop.waterRequirementMm,
+              profitPerHa: crop.profitPerHa,
+              farmingSystem: crop.farmingSystem,
+            }),
+          })
+          .returning('*')
+        for (const component of componentDates(crop, recommendation.plantingDates[position]))
+          await trx.table('rotation_recommendation_item_components').insert({
+            recommendation_item_id: savedItem.recommendation_item_id,
+            component_type: component.type,
+            name: component.name,
+            crop_id: component.cropId,
+            planting_or_start_date: component.startDate,
+            harvest_or_end_date: component.endDate,
+            output_quantity:
+              farm.area_hectares === null
+                ? null
+                : component.outputPerHa * Number(farm.area_hectares),
+            output_unit: component.outputUnit,
+            revenue_bdt:
+              farm.area_hectares === null
+                ? null
+                : component.revenuePerHa * Number(farm.area_hectares),
+            cost_bdt:
+              farm.area_hectares === null ? null : component.costPerHa * Number(farm.area_hectares),
+            calculation_trace: JSON.stringify({
+              outputPerHa: component.outputPerHa,
+              revenuePerHa: component.revenuePerHa,
+              costPerHa: component.costPerHa,
+            }),
+          })
+      }
       for (const [order, explanation] of recommendation.explanations.entries())
         await trx.table('recommendation_explanations').insert({
           recommendation_id: saved.recommendation_id,
@@ -538,11 +612,21 @@ export async function generateFarmRecommendations(
     }
     return createdRun
   })
+  const uniqueAssessments = [
+    ...new Map(systemAssessments.map((assessment) => [assessment.systemId, assessment])).values(),
+  ]
   return {
     runId: run.recommendation_run_id,
     ...result,
     prefilterRejections: rejectionCounts,
     profileType: 'historical seasonal context, not a forecast',
     missingChecks,
+    conditionalSystems: uniqueAssessments.filter(
+      (assessment) => assessment.status === 'conditional'
+    ),
+    ineligibleSystems: uniqueAssessments.filter((assessment) => assessment.status === 'ineligible'),
+    researchIdeas: integratedFarmingEnabled
+      ? await generateResearchIdeas(researchIdeaCandidates)
+      : [],
   }
 }

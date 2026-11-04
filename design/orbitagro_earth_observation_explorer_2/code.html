@@ -1,0 +1,813 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<meta content="web_dashboard" name="shell-type">
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<style>
+    @layer base {
+      html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: #071426; }
+      ::-webkit-scrollbar { width: 6px; height: 6px; }
+      ::-webkit-scrollbar-track { background: rgba(7, 20, 38, 0.6); }
+      ::-webkit-scrollbar-thumb { background: #1f3654; border-radius: 3px; }
+      ::-webkit-scrollbar-thumb:hover { background: #325888; }
+    }
+    .gis-grid-line {
+      background-size: 60px 60px;
+      background-image: 
+        linear-gradient(to right, rgba(91, 151, 253, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(91, 151, 253, 0.05) 1px, transparent 1px);
+    }
+    .viridis-ramp {
+      background: linear-gradient(90deg, #440154 0%, #482878 15%, #3e4989 30%, #31688e 45%, #26828e 60%, #1f9e89 75%, #35b779 88%, #6ece58 95%, #fde725 100%);
+    }
+    .turbo-ramp {
+      background: linear-gradient(90deg, #30123b 0%, #4145ab 20%, #4686fb 38%, #1ae4b6 55%, #72fe5e 70%, #f8ca34 85%, #d1300a 100%);
+    }
+    .ag-green-ramp {
+      background: linear-gradient(90deg, #d73027 0%, #fc8d59 20%, #fee08b 40%, #d9ef8b 60%, #91cf60 80%, #1a9850 100%);
+    }
+    .smap-ramp {
+      background: linear-gradient(90deg, #8c510a 0%, #d8b365 25%, #f6e8c3 45%, #c7eae5 65%, #5ab4ac 85%, #01665e 100%);
+    }
+  </style>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary-container": "#071426",
+            "surface-dim": "#0a1b33",
+            "surface-panel": "rgba(10, 27, 51, 0.88)",
+            "on-surface": "#e1e7f0",
+            "on-surface-variant": "#94a3b8",
+            "outline": "#334b6b",
+            "outline-variant": "rgba(51, 75, 107, 0.4)",
+            "secondary": "#005bbe",
+            "secondary-container": "#5b97fd",
+            "secondary-fixed": "#d7e2ff",
+            "secondary-fixed-dim": "#acc7ff",
+            "tertiary-fixed": "#38e09e",
+            "tertiary-fixed-dim": "#89d7ab",
+            "tertiary-container": "#003b22",
+            "radar-amber": "#f59e0b",
+            "thermal-red": "#ef4444"
+          },
+          fontFamily: {
+            "title-md": ["Manrope", "sans-serif"],
+            "headline-lg": ["Manrope", "sans-serif"],
+            "headline-md": ["Manrope", "sans-serif"],
+            "headline-sm": ["Manrope", "sans-serif"],
+            "body-md": ["Inter", "sans-serif"],
+            "body-sm": ["Inter", "sans-serif"],
+            "label-lg": ["Inter", "sans-serif"],
+            "label-md": ["Inter", "sans-serif"],
+            "label-sm": ["Inter", "sans-serif"],
+            "data-mono": ["JetBrains Mono", "monospace"]
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="h-screen w-screen flex flex-col font-body-md text-on-surface bg-[#050e1a] antialiased select-none overflow-hidden">
+<!-- TOP HEADER / NASA VEDA & ORBITAGRO MASTHEAD -->
+<header class="h-16 w-full bg-[#071426]/75 border-b border-white/10 px-4 flex items-center justify-between z-50 shrink-0 backdrop-blur-md">
+<div class="flex items-center gap-4">
+  <div class="flex items-center gap-3">
+    <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-[#005bbe]/20 border border-[#005bbe]/40 text-[#5b97fd]">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="9"></circle>
+        <path d="M3.6 9h16.8M3.6 15h16.8"></path>
+        <path d="M11.5 3a17 17 0 0 0 0 18M12.5 3a17 17 0 0 1 0 18"></path>
+      </svg>
+    </div>
+    <div class="flex items-center gap-2">
+      <span class="font-title-md text-lg font-bold tracking-tight text-white">OrbitAgro</span>
+      <span class="px-2 py-0.5 rounded text-[10px] font-data-mono font-semibold bg-[#005bbe]/30 text-[#8ec5fc] border border-[#005bbe]/40 uppercase tracking-wider">VEDA GIS</span>
+    </div>
+  </div>
+  <div class="h-5 w-px bg-white/10 hidden md:block"></div>
+  <div class="hidden lg:flex items-center gap-1 bg-[#0a1b33]/60 border border-white/10 rounded-lg p-1 text-xs">
+    <span class="px-2 text-[#7994b5] font-data-mono flex items-center gap-1.5">
+      <svg class="w-3.5 h-3.5 text-tertiary-fixed" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="10"></circle>
+        <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+      </svg>
+      AEZ:
+    </span>
+    <button class="px-2.5 py-1 rounded bg-[#005bbe] text-white font-medium shadow-sm transition-all" id="btn-aez-rangpur">Rangpur Alluvial</button>
+    <button class="px-2.5 py-1 rounded text-[#94a3b8] hover:text-white hover:bg-white/5 transition-colors" id="btn-aez-barind">Barind Tract</button>
+    <button class="px-2.5 py-1 rounded text-[#94a3b8] hover:text-white hover:bg-white/5 transition-colors" id="btn-aez-haor">Haor Basin</button>
+    <button class="px-2.5 py-1 rounded text-[#94a3b8] hover:text-white hover:bg-white/5 transition-colors" id="btn-aez-saline">Coastal Saline</button>
+  </div>
+</div>
+<div class="hidden xl:flex items-center gap-3 bg-[#0a1b33]/40 px-3 py-1.5 rounded-full border border-white/10 backdrop-blur-md">
+  <div class="flex items-center gap-2 font-data-mono text-xs text-[#9bb3d3]">
+    <span class="relative flex h-2 w-2">
+      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+      <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+    </span>
+    <span class="">VEDA DAAC: LIVE</span>
+  </div>
+  <span class="text-[#3b5980]">•</span>
+  <span class="font-data-mono text-xs text-[#b8d4f8]">S2B-MSI / SMAP-L4 / ECOSTRESS</span>
+  <span class="text-[#3b5980]">•</span>
+  <span class="font-data-mono text-xs text-tertiary-fixed">Rangpur T45RYN (Cloud 1.2%)</span>
+</div>
+<div class="flex items-center gap-3">
+  <div class="flex items-center bg-[#0d223f]/60 border border-white/10 rounded-lg p-0.5 text-xs">
+    <button class="px-2 py-1 rounded bg-[#005bbe] text-white font-semibold">EN</button>
+    <button class="px-2 py-1 rounded text-[#8ea8cb] hover:text-white transition-colors">বাং</button>
+  </div>
+  <div class="hidden sm:flex items-center gap-2 pl-2 border-l border-white/10">
+    <div class="text-right">
+      <div class="text-xs font-semibold text-white leading-none">Md. Rafiqul Islam</div>
+      <div class="text-[10px] text-tertiary-fixed font-data-mono mt-0.5">RPR-FIELD-04 Lead</div>
+    </div>
+    <img alt="Profile" class="w-8 h-8 rounded-full object-cover ring-1 ring-tertiary-fixed/60" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMShH6_6l5tlma21DNnioSA2_32uVBxc0AS1kuCyBo__-daCfSfE7fzwnY7hpy8YIsptlQg_JJ5XryBtiVKZGjRDKWQjXBrwl_nv6hP7a53inrqSbdk0wPG89_feMy_Iaxb1JykaUxvricPUzvKXBmB3fiFpQCftaUZOCk1Bkl5KCYNl_apQ_WoEHoXhd8eWZcVaYaI4qPLwe_3MbgdJljDZ2FwRZlMHHIJ7N0A4LC">
+  </div>
+  <button class="flex items-center gap-1.5 bg-[#005bbe]/20 hover:bg-[#005bbe]/40 border border-[#005bbe]/40 px-3 py-1.5 rounded-lg text-xs font-medium text-white transition-all shadow-sm" id="toggle-drawer-btn" title="Toggle Telemetry Drawer">
+    <svg class="w-4 h-4 text-tertiary-fixed" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24">
+      <circle cx="11" cy="11" r="8"></circle>
+      <line x1="21" x2="16.65" y1="21" y2="16.65"></line>
+      <line x1="11" x2="11" y1="8" y2="14"></line>
+      <line x1="8" x2="14" y1="11" y2="11"></line>
+    </svg>
+    <span class="hidden md:inline">Inspect Pixel</span>
+  </button>
+</div>
+</header>
+<!-- MAIN GIS WORKSPACE (FULLSCREEN VIEWPORT WITH FLOATING HUDs) -->
+<div class="relative flex-1 w-full h-[calc(100vh-64px)] overflow-hidden bg-[#030914]">
+<!-- ========================================================================= -->
+<!-- 1. MASSIVE CENTRAL SATELLITE GIS MAP CANVAS (VEDA / MAPBOX DARK AESTHETIC) -->
+<!-- ========================================================================= -->
+<div class="absolute inset-0 w-full h-full cursor-crosshair overflow-hidden" id="gis-viewport">
+<!-- Dark Global / Regional Satellite Raster Basemap (Teesta Riverine Floodplain & Rangpur Delta) -->
+<div class="absolute inset-0 w-full h-full bg-[#050f1d] gis-grid-line">
+<!-- SVG Multispectral Satellite Heatmap & River Channel Representation -->
+<svg class="w-full h-full object-cover" preserveAspectRatio="none" viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<!-- Water Body Gradient (Teesta River meandering system) -->
+<linearGradient id="riverGrad" x1="0%" x2="100%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#021b3a" stop-opacity="0.95"></stop>
+<stop offset="50%" stop-color="#072d5c" stop-opacity="0.85"></stop>
+<stop offset="100%" stop-color="#041833" stop-opacity="0.95"></stop>
+</linearGradient>
+<!-- NDVI Spectral Multi-Zone Filter -->
+<radialGradient cx="52%" cy="45%" id="ndviZoneA" r="35%">
+<stop offset="0%" stop-color="#1a9850" stop-opacity="0.68"></stop>
+<stop offset="35%" stop-color="#91cf60" stop-opacity="0.55"></stop>
+<stop offset="65%" stop-color="#fee08b" stop-opacity="0.32"></stop>
+<stop offset="100%" stop-color="#1a9850" stop-opacity="0.0"></stop>
+</radialGradient>
+<radialGradient cx="30%" cy="65%" id="ndviZoneB" r="28%">
+<stop offset="0%" stop-color="#26828e" stop-opacity="0.6"></stop>
+<stop offset="50%" stop-color="#35b779" stop-opacity="0.4"></stop>
+<stop offset="100%" stop-color="#440154" stop-opacity="0.0"></stop>
+</radialGradient>
+<radialGradient cx="72%" cy="32%" id="moistureAnomaly" r="25%">
+<stop offset="0%" stop-color="#005bbe" stop-opacity="0.55"></stop>
+<stop offset="60%" stop-color="#5ab4ac" stop-opacity="0.25"></stop>
+<stop offset="100%" stop-color="#071426" stop-opacity="0.0"></stop>
+</radialGradient>
+</defs>
+<!-- Satellite Terrestrial Backdrop with Soil/Sediment Texturing -->
+<rect fill="#061220" height="900" width="1600"></rect>
+<!-- Low-frequency land cover raster simulation -->
+<path d="M-50,-50 L1650,-50 L1650,950 L-50,950 Z" fill="#081729"></path>
+<!-- Agricultural Alluvial Fertile Floodplain Belt -->
+<path d="M 120,0 Q 400,280 650,220 T 1180,480 T 1600,380 L 1600,900 L 0,900 Z" fill="#0b223a" opacity="0.8"></path>
+<!-- Teesta River Meandering Braided Sandbars (Char lands) & Water Stream -->
+<path d="M 680,-40 Q 640,160 590,280 T 720,510 T 890,740 T 1020,950" fill="none" stroke="url(#riverGrad)" stroke-linecap="round" stroke-width="52"></path>
+<path d="M 690,-40 Q 650,160 600,280 T 730,510 T 900,740 T 1030,950" fill="none" stroke="#1d4ed8" stroke-linecap="round" stroke-opacity="0.4" stroke-width="14"></path>
+<!-- Tributary stream (Ghaghat River branch) -->
+<path d="M 590,280 Q 440,360 380,520 T 310,920" fill="none" stroke="url(#riverGrad)" stroke-width="22"></path>
+<!-- NDVI Multispectral Synthetic Raster Overlays (Sentinel-2 B8/B4 ratio) -->
+<rect fill="url(#ndviZoneA)" height="900" id="layer-ndvi-rect" opacity="0.85" style="mix-blend-mode: screen; transition: opacity 0.3s;" width="1600" x="0" y="0"></rect>
+<rect fill="url(#moistureAnomaly)" height="900" id="layer-smap-rect" opacity="0.75" style="mix-blend-mode: screen; transition: opacity 0.3s;" width="1600" x="0" y="0"></rect>
+<rect fill="url(#ndviZoneB)" height="900" id="layer-ecostress-rect" opacity="0.60" style="mix-blend-mode: screen; transition: opacity 0.3s;" width="1600" x="0" y="0"></rect>
+<!-- Cadastral Field Parcel Vector Boundaries (Rangpur Division Agricultural Plots) -->
+<!-- Active Target Inspection Parcel (Gangachara Parcel RPR-FIELD-04) -->
+<polygon class="cursor-pointer hover:fill-emerald-400/40 transition-all" fill="rgba(56, 224, 158, 0.22)" id="target-polygon" points="810,340 930,315 970,410 880,470 790,410" stroke="#38e09e" stroke-dasharray="8,4" stroke-width="2.5"></polygon>
+<!-- Neighboring Parcel A (Wheat / Mustard Polygons) -->
+<polygon class="cursor-pointer hover:fill-blue-400/30 transition-all" fill="rgba(91, 151, 253, 0.18)" points="690,320 795,305 780,395 675,390" stroke="#5b97fd" stroke-width="1.5"></polygon>
+<!-- Neighboring Parcel B (Mithapukur Boro Seedbeds) -->
+<polygon class="cursor-pointer hover:fill-amber-400/30 transition-all" fill="rgba(245, 158, 11, 0.2)" points="890,480 1010,440 1060,560 950,590 870,520" stroke="#f59e0b" stroke-width="1.5"></polygon>
+<!-- Riparian Silt Char Parcel C -->
+<polygon fill="rgba(168, 85, 247, 0.18)" points="560,430 650,410 680,510 580,540" stroke="#a855f7" stroke-width="1.2"></polygon>
+<!-- High Precision Target Reticle & Crosshair (25.7482° N, 89.2811° E) -->
+<g transform="translate(876, 396)">
+<!-- Target Outer Ring -->
+<circle class="animate-ping" cx="0" cy="0" fill="none" opacity="0.4" r="16" stroke="#38e09e" stroke-width="1.8"></circle>
+<circle cx="0" cy="0" fill="none" r="10" stroke="#ffffff" stroke-width="2"></circle>
+<circle cx="0" cy="0" fill="#38e09e" r="3"></circle>
+<!-- Reticle Crosshairs -->
+<line stroke="#ffffff" stroke-width="1.5" x1="-22" x2="-12" y1="0" y2="0"></line>
+<line stroke="#ffffff" stroke-width="1.5" x1="12" x2="22" y1="0" y2="0"></line>
+<line stroke="#ffffff" stroke-width="1.5" x1="0" x2="0" y1="-22" y2="-12"></line>
+<line stroke="#ffffff" stroke-width="1.5" x1="0" x2="0" y1="12" y2="22"></line>
+<!-- Coordinate Tag Label -->
+<rect fill="rgba(7, 20, 38, 0.92)" height="22" rx="4" stroke="#38e09e" stroke-width="1" width="138" x="14" y="-28"></rect>
+<text fill="#ffffff" font-family="'JetBrains Mono', monospace" font-size="10.5" font-weight="600" x="22" y="-13">RPR-FIELD-04 (ACTIVE)</text>
+</g>
+<!-- Interactive Marker 1: BMD Regional Doppler Weather Radar Station -->
+<g class="cursor-pointer group" transform="translate(630, 220)">
+<circle cx="0" cy="0" fill="rgba(0, 91, 190, 0.3)" r="12" stroke="#5b97fd" stroke-width="1.5"></circle>
+<circle cx="0" cy="0" fill="#60a5fa" r="4"></circle>
+<rect fill="rgba(10, 27, 51, 0.85)" height="20" rx="3" stroke="#234b79" stroke-width="1" width="124" x="12" y="-12"></rect>
+<text fill="#d7e2ff" font-family="'Inter', sans-serif" font-size="9.5" x="18" y="2">BMD Radar Rangpur</text>
+</g>
+<!-- Interactive Marker 2: Ground Soil Moisture In-Situ Flux Tower (BARI Validation Node) -->
+<g class="cursor-pointer group" transform="translate(1080, 410)">
+<polygon fill="rgba(245, 158, 11, 0.4)" points="0,-10 9,6 -9,6" stroke="#f59e0b" stroke-width="1.5"></polygon>
+<circle cx="0" cy="1" fill="#fef08a" r="2.5"></circle>
+<rect fill="rgba(10, 27, 51, 0.85)" height="20" rx="3" stroke="#234b79" stroke-width="1" width="130" x="14" y="-10"></rect>
+<text fill="#fde68a" font-family="'Inter', sans-serif" font-size="9.5" x="20" y="4">BARI Soil Probe #12</text>
+</g>
+<!-- Interactive Marker 3: Teesta Barrage Hydrological Gauge -->
+<g class="cursor-pointer group" transform="translate(670, 80)">
+<circle cx="0" cy="0" fill="#0284c7" r="7" stroke="#38bdf8" stroke-width="1.5"></circle>
+<rect fill="rgba(10, 27, 51, 0.85)" height="20" rx="3" stroke="#234b79" stroke-width="1" width="132" x="12" y="-10"></rect>
+<text fill="#bae6fd" font-family="'Inter', sans-serif" font-size="9.5" x="18" y="4">Teesta Hydrology Stn</text>
+</g>
+</svg>
+<!-- Dynamic Lat/Long Reticle Grid Overlay Labels -->
+<div class="absolute inset-0 pointer-events-none p-4 flex flex-col justify-between font-data-mono text-[11px] text-[#6384ab]/70">
+<div class="flex justify-between">
+<span class="bg-[#071426]/75 px-1.5 py-0.5 rounded border border-[#173152]">25°54'00"N · 89°06'00"E [TL]</span>
+<span class="bg-[#071426]/75 px-1.5 py-0.5 rounded border border-[#173152]">25°54'00"N · 89°36'00"E [TR]</span>
+</div>
+<div class="flex justify-between">
+<span class="bg-[#071426]/75 px-1.5 py-0.5 rounded border border-[#173152]">25°30'00"N · 89°06'00"E [BL]</span>
+<span class="bg-[#071426]/75 px-1.5 py-0.5 rounded border border-[#173152]">25°30'00"N · 89°36'00"E [BR]</span>
+</div>
+</div>
+</div>
+<!-- ========================================================================= -->
+<!-- TOP-LEFT GIS HEADS-UP DISPLAY (HUD): COORDINATE & MISSION TELEMETRY STREAM -->
+<!-- ========================================================================= -->
+<div class="absolute top-4 left-4 z-20 flex flex-col gap-2">
+<div class="bg-[#071426]/90 backdrop-blur-md border border-[#1a385f] rounded-xl p-3 shadow-2xl text-on-surface max-w-sm">
+<div class="flex items-center justify-between pb-1.5 mb-1.5 border-b border-[#1b3454]">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[18px] text-tertiary-fixed">satellite_alt</span>
+<span class="font-title-md text-xs font-bold text-white uppercase tracking-wider">Spatial Telemetry HUD</span>
+</div>
+<span class="font-data-mono text-[10px] text-[#7198c4] bg-[#0d233e] px-1.5 py-0.5 rounded border border-[#1f3f66]">EPSG: 32645</span>
+</div>
+<div class="grid grid-cols-2 gap-2 font-data-mono text-xs mb-2">
+<div class="bg-[#0a1c33]/70 p-2 rounded border border-[#162f4f]">
+<span class="text-[10px] text-[#7b9bbb] block">LATITUDE / LONGITUDE</span>
+<span class="text-white font-semibold text-[13px]">25.7482°N, 89.2811°E</span>
+</div>
+<div class="bg-[#0a1c33]/70 p-2 rounded border border-[#162f4f]">
+<span class="text-[10px] text-[#7b9bbb] block">TERRAIN ELEVATION</span>
+<span class="text-tertiary-fixed font-semibold text-[13px]">+31.4m MSL (SRTM)</span>
+</div>
+</div>
+<div class="flex items-center justify-between text-[11px] text-[#8eaecf] pt-1">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-secondary-container">pin_drop</span>
+<span class="">Gangachara Upazila, Rangpur</span>
+</div>
+<span class="text-emerald-400 font-medium">Boro/Maize Mosaic</span>
+</div>
+</div>
+<!-- Quick Switch Spectrogram Buttons -->
+<div class="bg-[#071426]/90 backdrop-blur-md border border-[#1a385f] rounded-lg p-1 shadow-lg flex items-center gap-1 w-fit">
+<button class="px-2.5 py-1 rounded bg-[#005bbe] text-white text-xs font-semibold shadow-sm transition-all flex items-center gap-1" id="btn-mode-ndvi">
+<span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            NDVI Vigor
+          </button>
+<button class="px-2.5 py-1 rounded text-[#94a3b8] hover:text-white hover:bg-[#122b4a] text-xs font-medium transition-all flex items-center gap-1" id="btn-mode-smap">
+<span class="w-2 h-2 rounded-full bg-blue-400"></span>
+            SMAP Moisture
+          </button>
+<button class="px-2.5 py-1 rounded text-[#94a3b8] hover:text-white hover:bg-[#122b4a] text-xs font-medium transition-all flex items-center gap-1" id="btn-mode-thermal">
+<span class="w-2 h-2 rounded-full bg-amber-400"></span>
+            LST Thermal
+          </button>
+<button class="px-2.5 py-1 rounded text-[#94a3b8] hover:text-white hover:bg-[#122b4a] text-xs font-medium transition-all flex items-center gap-1" id="btn-mode-rgb">
+<span class="w-2 h-2 rounded-full bg-slate-300"></span>
+            True Color
+          </button>
+</div>
+</div>
+<!-- ========================================================================= -->
+<!-- TOP-RIGHT GIS VIEW CONTROLS & MEASUREMENT TOOLBAR -->
+<!-- ========================================================================= -->
+<div class="absolute top-4 right-4 z-20 flex flex-col items-end gap-2">
+<div class="bg-[#071426]/90 backdrop-blur-md border border-[#1a385f] rounded-lg p-1 shadow-xl flex items-center gap-1">
+<button class="w-8 h-8 rounded hover:bg-[#16365c] text-white flex items-center justify-center transition-colors" title="Zoom In">
+<span class="material-symbols-outlined text-[18px]">add</span>
+</button>
+<button class="w-8 h-8 rounded hover:bg-[#16365c] text-white flex items-center justify-center transition-colors" title="Zoom Out">
+<span class="material-symbols-outlined text-[18px]">remove</span>
+</button>
+<div class="w-px h-5 bg-[#1b3454] my-auto"></div>
+<button class="w-8 h-8 rounded hover:bg-[#16365c] text-white flex items-center justify-center transition-colors" title="Measure Polygon / Area">
+<span class="material-symbols-outlined text-[18px]">square_foot</span>
+</button>
+<button class="w-8 h-8 rounded hover:bg-[#16365c] text-white flex items-center justify-center transition-colors" title="Split-Screen Swipe Compare">
+<span class="material-symbols-outlined text-[18px]">splitscreen</span>
+</button>
+<button class="w-8 h-8 rounded hover:bg-[#16365c] text-tertiary-fixed flex items-center justify-center transition-colors" title="Center on Active Field">
+<span class="material-symbols-outlined text-[18px]">filter_center_focus</span>
+</button>
+<button class="w-8 h-8 rounded hover:bg-[#16365c] text-[#5b97fd] flex items-center justify-center transition-colors" title="Download GeoTIFF Granule">
+<span class="material-symbols-outlined text-[18px]">download</span>
+</button>
+</div>
+<!-- Scale Bar Indicator -->
+<div class="bg-[#071426]/85 backdrop-blur-md border border-[#1a385f] px-2.5 py-1 rounded text-[11px] font-data-mono text-[#8cb0d8] flex items-center gap-2">
+<span class="">500 m</span>
+<div class="w-16 h-1.5 bg-[#5b97fd] rounded-sm border border-white/20"></div>
+<span class="">1:10,000</span>
+</div>
+</div>
+<!-- ========================================================================= -->
+<!-- 2. FLOATING GIS LAYER-CONTROL PANEL (SEMI-TRANSPARENT HUD OVERLAY) -->
+<!-- ========================================================================= -->
+<div class="absolute left-4 top-48 z-20 w-80 bg-[#071426]/90 backdrop-blur-md border border-[#1a385f] rounded-xl shadow-2xl overflow-hidden transition-all duration-300" id="layer-control-panel">
+<!-- Panel Header -->
+<div class="px-3.5 py-2.5 bg-[#0a1e38] border-b border-[#193556] flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-[#5b97fd]">layers</span>
+<span class="font-title-md text-xs font-bold text-white tracking-wide uppercase">Earth Science Layers</span>
+</div>
+<span class="text-[10px] font-data-mono px-2 py-0.5 rounded bg-[#102a4a] text-tertiary-fixed border border-[#1b3f66]">6 AVAILABLE</span>
+</div>
+<!-- Layers List with Opacity Controls -->
+<div class="p-3 max-h-[360px] overflow-y-auto space-y-2.5 text-xs">
+<!-- Layer 1: NDVI (Sentinel-2 / Landsat-9) -->
+<div class="bg-[#0b1f38]/70 border border-[#193556] rounded-lg p-2.5">
+<div class="flex items-center justify-between">
+<label class="flex items-center gap-2 cursor-pointer font-medium text-white">
+<input checked="" class="w-3.5 h-3.5 rounded bg-[#071426] border-[#294c77] text-[#005bbe] focus:ring-0 cursor-pointer" id="check-ndvi" type="checkbox">
+<span class="">Sentinel-2 NDVI Vigor</span>
+</label>
+<span class="text-[9px] font-data-mono text-emerald-400 bg-emerald-950/60 border border-emerald-800/60 px-1.5 py-0.5 rounded">10m · 5-Day</span>
+</div>
+<div class="mt-2 flex items-center gap-2 text-[10px] text-[#86a7cc]">
+<span class="">Opacity</span>
+<input class="flex-1 h-1 bg-[#163354] rounded-lg appearance-none cursor-pointer accent-[#005bbe]" id="slider-ndvi" max="100" min="0" type="range" value="85">
+<span class="font-data-mono text-white w-7 text-right" id="label-ndvi-op">85%</span>
+</div>
+</div>
+<!-- Layer 2: SMAP L4 Root-Zone Moisture -->
+<div class="bg-[#0b1f38]/70 border border-[#193556] rounded-lg p-2.5">
+<div class="flex items-center justify-between">
+<label class="flex items-center gap-2 cursor-pointer font-medium text-white">
+<input checked="" class="w-3.5 h-3.5 rounded bg-[#071426] border-[#294c77] text-[#005bbe] focus:ring-0 cursor-pointer" id="check-smap" type="checkbox">
+<span class="">SMAP L4 Root-Zone Soil (m³/m³)</span>
+</label>
+<span class="text-[9px] font-data-mono text-blue-400 bg-blue-950/60 border border-blue-800/60 px-1.5 py-0.5 rounded">1km · SPL4</span>
+</div>
+<div class="mt-2 flex items-center gap-2 text-[10px] text-[#86a7cc]">
+<span class="">Opacity</span>
+<input class="flex-1 h-1 bg-[#163354] rounded-lg appearance-none cursor-pointer accent-[#5b97fd]" id="slider-smap" max="100" min="0" type="range" value="75">
+<span class="font-data-mono text-white w-7 text-right" id="label-smap-op">75%</span>
+</div>
+</div>
+<!-- Layer 3: ECOSTRESS ET Index -->
+<div class="bg-[#0b1f38]/70 border border-[#193556] rounded-lg p-2.5">
+<div class="flex items-center justify-between">
+<label class="flex items-center gap-2 cursor-pointer font-medium text-white">
+<input checked="" class="w-3.5 h-3.5 rounded bg-[#071426] border-[#294c77] text-[#005bbe] focus:ring-0 cursor-pointer" id="check-ecostress" type="checkbox">
+<span class="">ECOSTRESS Evap Stress (ESI)</span>
+</label>
+<span class="text-[9px] font-data-mono text-purple-400 bg-purple-950/60 border border-purple-800/60 px-1.5 py-0.5 rounded">70m · ISS</span>
+</div>
+<div class="mt-2 flex items-center gap-2 text-[10px] text-[#86a7cc]">
+<span class="">Opacity</span>
+<input class="flex-1 h-1 bg-[#163354] rounded-lg appearance-none cursor-pointer accent-[#a855f7]" id="slider-ecostress" max="100" min="0" type="range" value="60">
+<span class="font-data-mono text-white w-7 text-right" id="label-ecostress-op">60%</span>
+</div>
+</div>
+<!-- Layer 4: GPM IMERG Precipitation -->
+<div class="bg-[#0b1f38]/70 border border-[#193556] rounded-lg p-2.5">
+<div class="flex items-center justify-between">
+<label class="flex items-center gap-2 cursor-pointer font-medium text-white">
+<input class="w-3.5 h-3.5 rounded bg-[#071426] border-[#294c77] text-[#005bbe] focus:ring-0 cursor-pointer" id="check-gpm" type="checkbox">
+<span class="">GPM IMERG Precip Radar (30m)</span>
+</label>
+<span class="text-[9px] font-data-mono text-cyan-400 bg-cyan-950/60 border border-cyan-800/60 px-1.5 py-0.5 rounded">0.1° · Realtime</span>
+</div>
+<div class="mt-2 flex items-center gap-2 text-[10px] text-[#86a7cc]">
+<span class="">Opacity</span>
+<input class="flex-1 h-1 bg-[#163354] rounded-lg appearance-none cursor-pointer accent-cyan-400" max="100" min="0" type="range" value="50">
+<span class="font-data-mono text-white w-7 text-right">50%</span>
+</div>
+</div>
+<!-- Layer 5: Land Surface Temperature -->
+<div class="bg-[#0b1f38]/70 border border-[#193556] rounded-lg p-2.5">
+<div class="flex items-center justify-between">
+<label class="flex items-center gap-2 cursor-pointer font-medium text-white">
+<input class="w-3.5 h-3.5 rounded bg-[#071426] border-[#294c77] text-[#005bbe] focus:ring-0 cursor-pointer" id="check-lst" type="checkbox">
+<span class="">MODIS / Landsat Thermal LST</span>
+</label>
+<span class="text-[9px] font-data-mono text-amber-400 bg-amber-950/60 border border-amber-800/60 px-1.5 py-0.5 rounded">100m · Daily</span>
+</div>
+<div class="mt-2 flex items-center gap-2 text-[10px] text-[#86a7cc]">
+<span class="">Opacity</span>
+<input class="flex-1 h-1 bg-[#163354] rounded-lg appearance-none cursor-pointer accent-amber-500" max="100" min="0" type="range" value="70">
+<span class="font-data-mono text-white w-7 text-right">70%</span>
+</div>
+</div>
+<!-- Layer 6: SRTM 30m Digital Elevation Model -->
+<div class="bg-[#0b1f38]/70 border border-[#193556] rounded-lg p-2.5">
+<div class="flex items-center justify-between">
+<label class="flex items-center gap-2 cursor-pointer font-medium text-white">
+<input class="w-3.5 h-3.5 rounded bg-[#071426] border-[#294c77] text-[#005bbe] focus:ring-0 cursor-pointer" id="check-srtm" type="checkbox">
+<span class="">SRTM 30m Elevation Model</span>
+</label>
+<span class="text-[9px] font-data-mono text-slate-300 bg-slate-800/60 border border-slate-700/60 px-1.5 py-0.5 rounded">30m DEM</span>
+</div>
+<div class="mt-2 flex items-center gap-2 text-[10px] text-[#86a7cc]">
+<span class="">Opacity</span>
+<input class="flex-1 h-1 bg-[#163354] rounded-lg appearance-none cursor-pointer accent-slate-400" max="100" min="0" type="range" value="40">
+<span class="font-data-mono text-white w-7 text-right">40%</span>
+</div>
+</div>
+</div>
+</div>
+<!-- ========================================================================= -->
+<!-- 4. INTERACTIVE DATASET LEGENDS & COLOR RAMP BAR (FLOATING BOTTOM-LEFT) -->
+<!-- ========================================================================= -->
+<div class="absolute bottom-28 left-4 z-20 flex flex-col gap-2">
+<div class="bg-[#071426]/90 backdrop-blur-md border border-[#1a385f] rounded-xl p-3 shadow-2xl text-on-surface w-80">
+<div class="flex items-center justify-between text-xs mb-1.5">
+<span class="font-semibold text-white flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-tertiary-fixed">palette</span>
+              Color Palette Ramp
+            </span>
+<div class="flex items-center gap-1 font-data-mono text-[10px]">
+<button class="px-1.5 py-0.5 rounded bg-[#005bbe] text-white" id="ramp-btn-ag">Ag-Green</button>
+<button class="px-1.5 py-0.5 rounded bg-[#10243e] text-[#86a5cc] hover:text-white" id="ramp-btn-viridis">Viridis</button>
+<button class="px-1.5 py-0.5 rounded bg-[#10243e] text-[#86a5cc] hover:text-white" id="ramp-btn-turbo">Turbo</button>
+</div>
+</div>
+<!-- Color Bar Ramp Gradient -->
+<div class="w-full h-3 rounded ag-green-ramp shadow-inner border border-white/10 relative" id="active-color-bar"></div>
+<!-- Legend Axis Labels -->
+<div class="flex justify-between font-data-mono text-[10px] text-[#8ab1da] mt-1.5">
+<span class="">0.00 (Water / Bare)</span>
+<span class="">0.40 (Sparse)</span>
+<span class="">0.72 (Target)</span>
+<span class="">1.00 (Peak Canopy)</span>
+</div>
+<!-- SMAP Secondary Indicator -->
+<div class="mt-2.5 pt-2 border-t border-[#173252] flex items-center justify-between text-[11px]">
+<span class="text-[#8ab1da]">Root Moisture Threshold:</span>
+<div class="flex items-center gap-1.5 font-data-mono text-tertiary-fixed">
+<span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+<span class="">0.31 m³/m³ (Adequate)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- ========================================================================= -->
+<!-- 5. LOCATION-SPECIFIC INFORMATION DRAWER / INSPECTION FLYOUT (RIGHT SIDE) -->
+<!-- ========================================================================= -->
+<div class="absolute top-0 right-0 bottom-0 w-96 bg-[#071426]/95 backdrop-blur-xl border-l border-[#1a385f] shadow-2xl z-30 flex flex-col transition-transform duration-300 transform translate-x-0" id="inspector-drawer">
+<!-- Drawer Header -->
+<div class="px-4 py-3 bg-[#0a1e38] border-b border-[#1b3658] flex items-center justify-between shrink-0">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-tertiary-fixed animate-pulse"></span>
+<div>
+<div class="font-title-md text-sm font-bold text-white">Field Pixel Diagnostic</div>
+<div class="text-[10px] font-data-mono text-[#82a4cb]">L2A GRANULE INSPECTOR</div>
+</div>
+</div>
+<button class="w-7 h-7 rounded hover:bg-[#132c4a] text-[#8cb0d8] hover:text-white flex items-center justify-center transition-colors" id="close-drawer-btn">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</div>
+<!-- Scrollable Telemetry Details -->
+<div class="flex-1 overflow-y-auto p-4 space-y-3.5 text-xs">
+<!-- Parcel Identity Card -->
+<div class="bg-[#0b1f38] border border-[#1b395e] rounded-xl p-3">
+<div class="flex items-center justify-between mb-2">
+<span class="font-data-mono text-[11px] font-bold text-white px-2 py-0.5 rounded bg-[#102742] border border-[#21436e]">
+                PARCEL: RPR-FIELD-04
+              </span>
+<span class="text-[11px] font-semibold text-tertiary-fixed bg-emerald-950/70 border border-emerald-800/80 px-2 py-0.5 rounded">
+                Verified Active
+              </span>
+</div>
+<div class="grid grid-cols-2 gap-2 text-[11px]">
+<div>
+<span class="text-[#7899be] block">Target Acreage:</span>
+<span class="text-white font-medium">4.85 Hectares (12.0 Acres)</span>
+</div>
+<div>
+<span class="text-[#7899be] block">Crop Cycle:</span>
+<span class="text-white font-medium">Early Rabi (Maize + Mustard)</span>
+</div>
+<div>
+<span class="text-[#7899be] block">Soil Class:</span>
+<span class="text-white font-medium">Teesta Silt Alluvium</span>
+</div>
+<div>
+<span class="text-[#7899be] block">Irrigation Mode:</span>
+<span class="text-white font-medium">Shallow Tube-Well (STW)</span>
+</div>
+</div>
+</div>
+<!-- Real-Time Multispectral Telemetry Grid -->
+<div class="grid grid-cols-2 gap-2.5">
+<!-- NDVI Vigor -->
+<div class="bg-[#0b1f38] border border-[#1b395e] rounded-xl p-2.5">
+<div class="flex items-center justify-between text-[#7899be] mb-1">
+<span class="">NDVI Vigor</span>
+<span class="material-symbols-outlined text-[16px] text-tertiary-fixed">eco</span>
+</div>
+<div class="text-xl font-bold font-data-mono text-tertiary-fixed">0.72</div>
+<div class="text-[10px] text-emerald-400 mt-0.5">Healthy Vigorous Canopy</div>
+</div>
+<!-- Root-zone Soil Moisture -->
+<div class="bg-[#0b1f38] border border-[#1b395e] rounded-xl p-2.5">
+<div class="flex items-center justify-between text-[#7899be] mb-1">
+<span class="">SMAP Moisture</span>
+<span class="material-symbols-outlined text-[16px] text-[#5b97fd]">water_drop</span>
+</div>
+<div class="text-xl font-bold font-data-mono text-[#5b97fd]">0.31 <span class="text-xs text-[#8ab1da]">m³/m³</span></div>
+<div class="text-[10px] text-blue-300 mt-0.5">+4.2% vs 10-Yr Baseline</div>
+</div>
+<!-- Daily Evapotranspiration -->
+<div class="bg-[#0b1f38] border border-[#1b395e] rounded-xl p-2.5">
+<div class="flex items-center justify-between text-[#7899be] mb-1">
+<span class="">ECOSTRESS ETa</span>
+<span class="material-symbols-outlined text-[16px] text-purple-400">speed</span>
+</div>
+<div class="text-lg font-bold font-data-mono text-white">4.82 <span class="text-xs text-[#8ab1da]">mm/d</span></div>
+<div class="text-[10px] text-[#8ab1da] mt-0.5">Stress Ratio: 0.88 (Nominal)</div>
+</div>
+<!-- 72h GPM Precip Sum -->
+<div class="bg-[#0b1f38] border border-[#1b395e] rounded-xl p-2.5">
+<div class="flex items-center justify-between text-[#7899be] mb-1">
+<span class="">72h Rain Accum</span>
+<span class="material-symbols-outlined text-[16px] text-cyan-400">rainy</span>
+</div>
+<div class="text-lg font-bold font-data-mono text-white">12.6 <span class="text-xs text-[#8ab1da]">mm</span></div>
+<div class="text-[10px] text-cyan-300 mt-0.5">Zero Flood Hazard</div>
+</div>
+</div>
+<!-- Phenology 12-Month Sparkline Curve -->
+<div class="bg-[#0b1f38] border border-[#1b395e] rounded-xl p-3">
+<div class="flex items-center justify-between text-xs mb-1.5">
+<span class="font-medium text-white">12-Month NDVI Phenology Curve</span>
+<span class="text-[10px] font-data-mono text-tertiary-fixed">Peak: Rabi Nov-Dec</span>
+</div>
+<svg class="w-full h-12 text-[#005bbe]" fill="none" viewBox="0 0 320 50">
+<path d="M0,42 Q35,46 70,30 T140,16 T210,38 T280,11 T320,8" fill="none" stroke="#38e09e" stroke-linecap="round" stroke-width="2.5"></path>
+<path d="M0,42 Q35,46 70,30 T140,16 T210,38 T280,11 T320,8 L320,50 L0,50 Z" fill="rgba(56, 224, 158, 0.12)"></path>
+<circle cx="280" cy="11" fill="#ffffff" r="4.5" stroke="#38e09e" stroke-width="2"></circle>
+</svg>
+<div class="flex justify-between font-data-mono text-[9px] text-[#7193bc] mt-1">
+<span class="">Jan (Rabi)</span>
+<span class="">May (Kharif-1)</span>
+<span class="">Aug (Kharif-2)</span>
+<span class="">Nov (Current)</span>
+</div>
+</div>
+<!-- Sensor Granule Metadata Table -->
+<div class="bg-[#09182d] border border-[#173559] rounded-xl p-3 font-data-mono text-[11px] space-y-1.5">
+<div class="text-[#8cb0d8] font-bold text-xs uppercase tracking-wider mb-1 font-title-md">Granule Provenance</div>
+<div class="flex justify-between text-[#8cb0d8]">
+<span class="">GRANULE ID:</span>
+<span class="text-white text-[10px]">S2B_MSIL2A_20241112T0420</span>
+</div>
+<div class="flex justify-between text-[#8cb0d8]">
+<span class="">CLOUD COVER:</span>
+<span class="text-emerald-400">1.2% Cirrus Clear</span>
+</div>
+<div class="flex justify-between text-[#8cb0d8]">
+<span class="">SOLAR ZENITH:</span>
+<span class="text-white">41.8°</span>
+</div>
+<div class="flex justify-between text-[#8cb0d8]">
+<span class="">DAAC REPOSITORY:</span>
+<span class="text-secondary-fixed">LP DAAC / USGS EROS</span>
+</div>
+<div class="flex justify-between text-[#8cb0d8]">
+<span class="">PROCESSING:</span>
+<span class="text-white">NASA VEDA Pipeline v2.4</span>
+</div>
+</div>
+<!-- Bilingual Agricultural Advisory Card -->
+<div class="bg-[#0b2444] border border-[#214979] rounded-xl p-3">
+<div class="flex items-center gap-1.5 text-tertiary-fixed font-semibold text-xs mb-1">
+<span class="material-symbols-outlined text-[16px]">psychology_alt</span>
+<span class="">Crop Advisory Action (রংপুর কৃষি নির্দেশনা)</span>
+</div>
+<p class="text-[11px] text-[#d6e3f5] leading-relaxed">
+              সয়েল ময়েশ্চার পর্যাপ্ত থাকায় এই সপ্তাহে ভুট্টার জমিতে অতিরিক্ত সেচের প্রয়োজন নেই। অনুকূল তাপমাত্রা ও সৌর বিকিরণ সরিষার পরাগায়নের জন্য আদর্শ।
+            </p>
+</div>
+</div>
+<!-- Drawer Footer Export Action -->
+<div class="p-3 bg-[#0a1e38] border-t border-[#1b3658] flex items-center justify-between shrink-0">
+<a class="text-[11px] text-[#86aee0] hover:text-white flex items-center gap-1" href="https://earthdata.nasa.gov" target="_blank">
+<span class="">NASA Earthdata DOI</span>
+<span class="material-symbols-outlined text-[13px]">open_in_new</span>
+</a>
+<button class="px-3 py-1.5 bg-[#005bbe] hover:bg-[#0b6de0] text-white text-xs font-semibold rounded-lg flex items-center gap-1 transition-all">
+<span class="material-symbols-outlined text-[14px]">download</span>
+<span class="">Export GeoJSON</span>
+</button>
+</div>
+</div>
+</div>
+<!-- ========================================================================= -->
+<!-- 3. SATELLITE OBSERVATION TIMELINE & CHRONOLOGY SCRUBBER (BOTTOM BAR) -->
+<!-- ========================================================================= -->
+<div class="absolute bottom-3 left-4 right-4 z-20 bg-[#071426]/95 backdrop-blur-md border border-[#1b3860] rounded-xl px-4 py-2.5 shadow-2xl">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-2">
+<!-- Left: Playback Controller & Selected Date -->
+<div class="flex items-center gap-3">
+<button class="w-8 h-8 rounded-full bg-[#005bbe] hover:bg-[#0070ea] text-white flex items-center justify-center transition-all shadow-md shrink-0" id="timeline-play-btn">
+<span class="material-symbols-outlined text-[20px]" id="play-icon">play_arrow</span>
+</button>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-title-md text-xs font-bold text-white">Decadal Multi-Sensor Chronology</span>
+<span class="font-data-mono text-[10px] bg-[#122846] text-[#8cb4e6] border border-[#224876] px-1.5 py-0.5 rounded">2014 – 2024</span>
+</div>
+<div class="text-[11px] text-[#85a8d2]">
+              Overpass: <strong class="text-white font-semibold">12 Nov 2024 (Sentinel-2 MSI Level-2A)</strong>
+</div>
+</div>
+</div>
+<!-- Center: Seasonal Agro Cycle Markers -->
+<div class="flex items-center gap-1.5 self-center">
+<button class="px-2 py-0.5 rounded text-[10px] font-medium bg-[#0f2440] text-[#7d9fc7] hover:text-white transition-colors">Kharif-1 (Aus / Jute)</button>
+<button class="px-2 py-0.5 rounded text-[10px] font-medium bg-[#0f2440] text-[#7d9fc7] hover:text-white transition-colors">Kharif-2 (Aman Rice)</button>
+<button class="px-2.5 py-0.5 rounded text-[10px] font-bold bg-[#005bbe] text-white border border-[#3f8efc]/50">Rabi (Wheat, Mustard, Boro)</button>
+</div>
+<!-- Right: Overpass Step Granule Controls -->
+<div class="hidden lg:flex items-center gap-2 text-xs font-data-mono text-[#8cb0d8]">
+<button class="p-1 rounded bg-[#0f2440] hover:bg-[#16355d] text-white" title="Previous 5-day overpass">
+<span class="material-symbols-outlined text-[16px]">chevron_left</span>
+</button>
+<span class="text-white font-semibold">Granule: 2024-11-12</span>
+<button class="p-1 rounded bg-[#0f2440] hover:bg-[#16355d] text-white" title="Next 5-day overpass">
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Scrubber Track & Decadal Milestones -->
+<div class="mt-2 w-full">
+<!-- Colored Season Spectrum Bar -->
+<div class="w-full h-1.5 rounded-full bg-[#112745] flex overflow-hidden mb-1">
+<div class="w-[20%] bg-[#21436e]" title="2014-2016 Baseline"></div>
+<div class="w-[25%] bg-[#005bbe]/60" title="2016-2019 Moderate ENSO"></div>
+<div class="w-[25%] bg-[#38e09e]/40" title="2019-2022 La Niña Wet"></div>
+<div class="w-[30%] bg-[#38e09e]" title="2022-2024 Active Sensor Orbit"></div>
+</div>
+<input class="w-full h-1.5 bg-[#173559] rounded-lg appearance-none cursor-pointer accent-[#38e09e]" id="timeline-slider" max="2024" min="2014" step="0.1" type="range" value="2024">
+<div class="flex justify-between font-data-mono text-[9px] text-[#7196c2] mt-0.5">
+<span class="">2014</span>
+<span class="">2016</span>
+<span class="">2018</span>
+<span class="">2020</span>
+<span class="">2022</span>
+<span class="text-tertiary-fixed font-bold">2024 (Now)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Micro-interactions Script -->
+<script>
+    (function() {
+      // Toggle Inspector Drawer
+      const drawer = document.getElementById('inspector-drawer');
+      const toggleDrawerBtn = document.getElementById('toggle-drawer-btn');
+      const closeDrawerBtn = document.getElementById('close-drawer-btn');
+      const targetPolygon = document.getElementById('target-polygon');
+
+      function openDrawer() {
+        drawer.classList.remove('translate-x-full');
+        drawer.classList.add('translate-x-0');
+      }
+
+      function closeDrawer() {
+        drawer.classList.remove('translate-x-0');
+        drawer.classList.add('translate-x-full');
+      }
+
+      if (toggleDrawerBtn) toggleDrawerBtn.addEventListener('click', () => {
+        if (drawer.classList.contains('translate-x-0')) closeDrawer();
+        else openDrawer();
+      });
+
+      if (closeDrawerBtn) closeDrawerBtn.addEventListener('click', closeDrawer);
+      if (targetPolygon) targetPolygon.addEventListener('click', openDrawer);
+
+      // Timeline Play / Pause Toggle
+      const playBtn = document.getElementById('timeline-play-btn');
+      const playIcon = document.getElementById('play-icon');
+      const timelineSlider = document.getElementById('timeline-slider');
+      let isPlaying = false;
+      let playInterval = null;
+
+      if (playBtn) {
+        playBtn.addEventListener('click', function() {
+          isPlaying = !isPlaying;
+          if (isPlaying) {
+            playIcon.textContent = 'pause';
+            playInterval = setInterval(() => {
+              let val = parseFloat(timelineSlider.value);
+              val += 0.2;
+              if (val > 2024) val = 2014;
+              timelineSlider.value = val;
+            }, 300);
+          } else {
+            playIcon.textContent = 'play_arrow';
+            clearInterval(playInterval);
+          }
+        });
+      }
+
+      // Layer Opacity Realtime Binding
+      const bindSlider = (sliderId, rectId, labelId) => {
+        const slider = document.getElementById(sliderId);
+        const rect = document.getElementById(rectId);
+        const label = document.getElementById(labelId);
+        if (slider && rect && label) {
+          slider.addEventListener('input', (e) => {
+            const val = e.target.value;
+            rect.style.opacity = (val / 100).toString();
+            label.textContent = val + '%';
+          });
+        }
+      };
+
+      bindSlider('slider-ndvi', 'layer-ndvi-rect', 'label-ndvi-op');
+      bindSlider('slider-smap', 'layer-smap-rect', 'label-smap-op');
+      bindSlider('slider-ecostress', 'layer-ecostress-rect', 'label-ecostress-op');
+
+      // Layer Toggle Checkboxes
+      const bindToggle = (checkId, rectId) => {
+        const check = document.getElementById(checkId);
+        const rect = document.getElementById(rectId);
+        if (check && rect) {
+          check.addEventListener('change', (e) => {
+            rect.style.display = e.target.checked ? 'block' : 'none';
+          });
+        }
+      };
+
+      bindToggle('check-ndvi', 'layer-ndvi-rect');
+      bindToggle('check-smap', 'layer-smap-rect');
+      bindToggle('check-ecostress', 'layer-ecostress-rect');
+
+      // Palette Ramp Switcher
+      const activeColorBar = document.getElementById('active-color-bar');
+      const btnAg = document.getElementById('ramp-btn-ag');
+      const btnViridis = document.getElementById('ramp-btn-viridis');
+      const btnTurbo = document.getElementById('ramp-btn-turbo');
+
+      const rampButtons = [
+        { btn: btnAg, className: 'ag-green-ramp' },
+        { btn: btnViridis, className: 'viridis-ramp' },
+        { btn: btnTurbo, className: 'turbo-ramp' }
+      ];
+
+      rampButtons.forEach(item => {
+        if (item.btn) {
+          item.btn.addEventListener('click', () => {
+            rampButtons.forEach(b => {
+              b.btn.className = 'px-1.5 py-0.5 rounded bg-[#10243e] text-[#86a5cc] hover:text-white';
+            });
+            item.btn.className = 'px-1.5 py-0.5 rounded bg-[#005bbe] text-white';
+            activeColorBar.className = 'w-full h-3 rounded shadow-inner border border-white/10 relative ' + item.className;
+          });
+        }
+      });
+
+      // Quick Spectrogram Mode Switcher
+      const modeButtons = ['btn-mode-ndvi', 'btn-mode-smap', 'btn-mode-thermal', 'btn-mode-rgb'];
+      modeButtons.forEach(id => {
+        const b = document.getElementById(id);
+        if (b) {
+          b.addEventListener('click', () => {
+            modeButtons.forEach(otherId => {
+              const other = document.getElementById(otherId);
+              if (other) other.className = 'px-2.5 py-1 rounded text-[#94a3b8] hover:text-white hover:bg-[#122b4a] text-xs font-medium transition-all flex items-center gap-1';
+            });
+            b.className = 'px-2.5 py-1 rounded bg-[#005bbe] text-white text-xs font-semibold shadow-sm transition-all flex items-center gap-1';
+          });
+        }
+      });
+    })();
+  </script>
+
+
+</body></html>

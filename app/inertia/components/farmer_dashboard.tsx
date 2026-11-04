@@ -6,7 +6,6 @@ import FarmWorkspace from './farm_workspace'
 import Icon from './icon'
 import LocationMap from './location_map'
 import RotationPlans, { type RotationPlan } from './rotation_plans'
-import { demoRotations } from '../lib/demo_rotations'
 
 type WaterLevel = 'low' | 'medium' | 'high'
 type Farm = { farm_id: string; name: string; district_id: string }
@@ -30,18 +29,31 @@ type Analysis = {
     }>
   }
   plans: RotationPlan[]
+  conditionalSystems: Array<{
+    systemId: number
+    name: string
+    systemType: string
+    missingEvidence: string[]
+  }>
+  researchIdeas: Array<{
+    name: string
+    systemType: string
+    components: string[]
+    missingEvidence: string[]
+  }>
   planning: { status: string; message: string }
   contextNote: string
   source: { reportingYear: number | null } | null
 }
 const choices = [
-  { level: 'high', title: 'High', text: 'Plenty of water. Irrigation is easily available.' },
+  { level: 'high', title: 'Plenty', text: 'Irrigation is usually available.', icon: 'rain' },
   {
     level: 'medium',
-    title: 'Medium',
-    text: 'Water is available but limited. Irrigation needs planning.',
+    title: 'Some',
+    text: 'Water is limited and needs planning.',
+    icon: 'water',
   },
-  { level: 'low', title: 'Low', text: 'Water is scarce. Conservation matters most.' },
+  { level: 'low', title: 'Scarce', text: 'Saving water matters most.', icon: 'sun' },
 ] as const
 const phases = [
   'Analyzing local water patterns…',
@@ -442,11 +454,8 @@ export default function FarmerDashboard({
       >
         <div className="modal-box w-[calc(100%-2rem)] max-w-2xl rounded-2xl p-6 sm:p-8">
           <p className="agri-eyebrow text-info mb-3">A LITTLE KNOWLEDGE FROM YOUR FIELD</p>
-          <span className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-info/10 text-info">
-            <Icon name="water" size={26} />
-          </span>
           <h2 id="water-title" className="text-2xl font-semibold">
-            How is water availability on your farm?
+            Which picture matches your farm?
           </h2>
           <p id="water-description" className="mt-2 text-base-content/70">
             Choose what feels closest. You can change this later.
@@ -459,8 +468,13 @@ export default function FarmerDashboard({
                 className={`card water-choice cursor-pointer border-2 p-4 transition-colors hover:border-info ${choice === item.level ? 'border-info bg-info/5' : 'border-base-300 bg-base-100'}`}
                 data-selected={choice === item.level}
               >
-                <span className="mb-4 flex items-center justify-between text-info">
-                  <Icon name="water" size={30} />
+                <span className="water-choice-picture text-info" data-level={item.level}>
+                  <Icon name={item.icon} size={32} />
+                  <span aria-hidden="true">
+                    <i />
+                    <i />
+                    <i />
+                  </span>
                   <input
                     type="radio"
                     name="water-availability"
@@ -470,7 +484,7 @@ export default function FarmerDashboard({
                     className="radio radio-info size-6 min-h-6 shrink-0 p-0"
                   />
                 </span>
-                <span className="text-lg font-semibold">{item.title}</span>
+                <span className="text-lg font-semibold">{item.title} water</span>
                 <span className="water-choice-meter" aria-hidden="true">
                   {[0, 1, 2].map((index) => (
                     <i
@@ -493,7 +507,13 @@ export default function FarmerDashboard({
             <Icon name="arrow" />
           </button>
           <form method="dialog" className="mt-2">
-            <button className="btn btn-ghost min-h-12 w-full">Not now</button>
+            <button
+              type="button"
+              className="btn btn-ghost min-h-12 w-full"
+              onClick={() => void analyze(null)}
+            >
+              Not now
+            </button>
           </form>
           <p className="mt-3 text-center text-xs text-base-content/65">
             Your choice is a planning preference, not a measured water supply.
@@ -606,9 +626,6 @@ export default function FarmerDashboard({
             </div>
           </div>
         )}
-      {!busy && !analysis?.plans.length && (
-        <RotationPlans key="demo-preview" plans={demoRotations} />
-      )}
       {busy && (
         <div
           className="card outlook-processing border border-base-300 bg-base-100"
@@ -767,12 +784,113 @@ export default function FarmerDashboard({
               </div>
             </div>
           )}
-          <div className="order-3">
-            <WaterChart water={water} />
-          </div>
-          <div className="order-4">
-            <SeasonalRisks water={water} />
-          </div>
+          <details className="collapse collapse-arrow order-1 border border-base-300 bg-base-100">
+            <summary className="collapse-title">
+              <span className="flex items-center gap-3 font-semibold">
+                <Icon name="layers" /> Integrated farming options
+              </span>
+              <span className="block text-sm font-normal text-base-content/65">
+                Open to screen combined crop and farm systems
+              </span>
+            </summary>
+            <div className="collapse-content space-y-3">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <h2 className="text-lg font-semibold">Integrated system screening</h2>
+                <span className="badge badge-info badge-outline">Automatic</span>
+              </div>
+              <p className="text-sm text-base-content/70">
+                ORBIT screens systems using this farm’s district, season, NASA climate evidence,
+                soil information, irrigation and crop history. Field conditions that cannot be
+                measured from those records are requested separately.
+              </p>
+              {!analysis.conditionalSystems?.length && !analysis.researchIdeas?.length && (
+                <div className="alert alert-info alert-soft" role="status">
+                  No reviewed integrated package currently matches the available farm data. Add soil
+                  and location details or import a reviewed local package to enable a
+                  recommendation.
+                </div>
+              )}
+            </div>
+          </details>
+          {!!analysis.conditionalSystems?.length && (
+            <section className="card card-border order-1 bg-base-100">
+              <div className="card-body">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <h2 className="card-title">Integrated options requiring verification</h2>
+                  <span className="badge badge-warning badge-outline">Not ranked</span>
+                </div>
+                <p className="text-sm text-base-content/70">
+                  These source-backed systems are not recommendations until their missing farm
+                  checks are confirmed.
+                </p>
+                <div className="grid gap-3 md:grid-cols-2">
+                  {analysis.conditionalSystems.map((system) => (
+                    <article
+                      className="rounded-box border border-base-300 p-4"
+                      key={system.systemId}
+                    >
+                      <h3 className="font-semibold">{system.name}</h3>
+                      <p className="text-xs text-base-content/65">
+                        {system.systemType.replaceAll('_', ' ')}
+                      </p>
+                      <p className="mt-2 text-sm">Missing: {system.missingEvidence.join('; ')}</p>
+                    </article>
+                  ))}
+                </div>
+              </div>
+            </section>
+          )}
+          {!!analysis.researchIdeas?.length && (
+            <details className="collapse collapse-arrow order-1 border border-base-300 bg-base-100">
+              <summary className="collapse-title font-semibold">
+                Ideas to research · not recommendations
+              </summary>
+              <div className="collapse-content">
+                <div className="alert alert-warning alert-soft mb-4" role="status">
+                  Generated combinations have not passed compatibility, output or economic checks.
+                </div>
+                <div className="grid gap-3 md:grid-cols-2">
+                  {analysis.researchIdeas.map((idea) => (
+                    <article className="rounded-box border border-base-300 p-4" key={idea.name}>
+                      <h3 className="font-semibold">{idea.name}</h3>
+                      <p className="text-xs text-base-content/65">
+                        {idea.systemType.replaceAll('_', ' ')}
+                      </p>
+                      <p className="mt-2 text-sm text-base-content/75">
+                        Needs: {idea.missingEvidence.join('; ')}
+                      </p>
+                    </article>
+                  ))}
+                </div>
+              </div>
+            </details>
+          )}
+          <details className="collapse collapse-arrow order-3 border border-base-300 bg-base-100">
+            <summary className="collapse-title">
+              <span className="flex items-center gap-3 font-semibold">
+                <Icon name="calendar" /> Explore monthly water
+              </span>
+              <span className="block text-sm font-normal text-base-content/65">
+                Tap to view the 12-month outlook
+              </span>
+            </summary>
+            <div className="collapse-content">
+              <WaterChart water={water} />
+            </div>
+          </details>
+          <details className="collapse collapse-arrow order-4 border border-base-300 bg-base-100">
+            <summary className="collapse-title">
+              <span className="flex items-center gap-3 font-semibold">
+                <Icon name="shield" /> View seasonal risks
+              </span>
+              <span className="block text-sm font-normal text-base-content/65">
+                Rain, dry spells, irrigation and soil
+              </span>
+            </summary>
+            <div className="collapse-content">
+              <SeasonalRisks water={water} />
+            </div>
+          </details>
         </div>
       )}
       {!busy && !analysis && !error && (
@@ -797,13 +915,13 @@ export default function FarmerDashboard({
           className="collapse collapse-arrow border border-base-300 bg-base-100"
         >
           <summary className="collapse-title text-lg font-semibold">
-            Set priorities · extra details are optional
+            Farm setup & integrated farming
           </summary>
           <div className="collapse-content">
             <p className="mb-4 text-sm text-base-content/70">
-              Only priorities are required. Open “Add extra details” if you want to include
-              irrigation, soil tests or previous crops. Then refresh your farms and generate
-              rotations above.
+              Save your priorities, configure integrated farming options, or add optional soil,
+              irrigation and crop-history details. Then refresh your farms and generate rotations
+              above.
             </p>
             <FarmWorkspace catalog={catalog} />
           </div>

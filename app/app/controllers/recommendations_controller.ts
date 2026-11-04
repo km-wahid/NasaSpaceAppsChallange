@@ -65,9 +65,10 @@ export default class RecommendationsController {
     const crops = await db
       .from('rotation_recommendation_items as item')
       .join('crops as crop', 'crop.crop_id', 'item.crop_id')
+      .leftJoin('farming_systems as system', 'system.farming_system_id', 'item.farming_system_id')
       .where('item.recommendation_id', choice.recommendation_id)
       .select(
-        'crop.crop_name as name',
+        db.knexRawQuery('COALESCE(system.name, crop.crop_name) as name'),
         'item.planting_date as plantingDate',
         'item.harvest_date as harvestDate'
       )
@@ -111,9 +112,20 @@ export default class RecommendationsController {
         .from('rotation_recommendation_items as item')
         .join('crops as crop', 'crop.crop_id', 'item.crop_id')
         .join('seasons as season', 'season.season_id', 'item.season_id')
+        .leftJoin('farming_systems as system', 'system.farming_system_id', 'item.farming_system_id')
         .where('item.recommendation_id', recommendation.recommendation_id)
-        .select('item.*', 'crop.crop_name', 'season.season_name')
+        .select(
+          'item.*',
+          'crop.crop_name',
+          'season.season_name',
+          'system.name as farming_system_name'
+        )
         .orderBy('position')
+      for (const item of recommendation.items)
+        item.components = await db
+          .from('rotation_recommendation_item_components')
+          .where('recommendation_item_id', item.recommendation_item_id)
+          .orderBy('planting_or_start_date')
       recommendation.explanations = await db
         .from('recommendation_explanations')
         .where('recommendation_id', recommendation.recommendation_id)

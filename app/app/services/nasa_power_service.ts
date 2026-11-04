@@ -12,6 +12,7 @@ const parameters = [
   'WS10M',
 ] as const
 const percentile = (values: number[], fraction: number) => {
+  if (!values.length) return null
   const sorted = [...values].sort((a, b) => a - b)
   const index = (sorted.length - 1) * fraction
   const lower = Math.floor(index)
@@ -19,11 +20,145 @@ const percentile = (values: number[], fraction: number) => {
   return sorted[lower] + (sorted[upper] - sorted[lower]) * (index - lower)
 }
 
+type DailyObservation = {
+  observation_date: string | Date | { toISODate?: () => string | null }
+  t2m_c: number | string | null
+  t2m_min_c: number | string | null
+  t2m_max_c: number | string | null
+  precipitation_mm: number | string | null
+}
+
+/** Historical screening features only; none of these values is a field measurement or forecast. */
+export function deriveSeasonFeatures(
+  observations: DailyObservation[],
+  months: number[],
+  seasonName: string,
+  dryDayThresholdMm = 1
+) {
+  const byYear = new Map<
+    number,
+    { rain: Array<number | null>; mean: number[]; minimum: number[]; maximum: number[] }
+  >()
+  for (const observation of observations) {
+    const rawDate = observation.observation_date
+    const isoDate =
+      rawDate instanceof Date
+        ? rawDate.toISOString().slice(0, 10)
+        : typeof rawDate === 'object'
+          ? rawDate.toISODate?.()
+          : String(rawDate).slice(0, 10)
+    const date = new Date(`${isoDate}T00:00:00Z`)
+    if (Number.isNaN(date.getTime())) continue
+    const month = date.getUTCMonth() + 1
+    if (!months.includes(month)) continue
+    const seasonYear =
+      seasonName === 'Rabi' && month <= 3 ? date.getUTCFullYear() - 1 : date.getUTCFullYear()
+    const row = byYear.get(seasonYear) ?? { rain: [], mean: [], minimum: [], maximum: [] }
+    row.rain.push(
+      observation.precipitation_mm === null ? null : Number(observation.precipitation_mm)
+    )
+    if (observation.t2m_c !== null) row.mean.push(Number(observation.t2m_c))
+    if (observation.t2m_min_c !== null) row.minimum.push(Number(observation.t2m_min_c))
+    if (observation.t2m_max_c !== null) row.maximum.push(Number(observation.t2m_max_c))
+    byYear.set(seasonYear, row)
+  }
+  const completeYears = [...byYear.values()].filter(
+    (row) => row.rain.some((value) => value !== null) && row.mean.length
+  )
+  if (!completeYears.length) return null
+  const rainTotals = completeYears.map((row) =>
+    row.rain.reduce<number>((sum, value) => sum + (value ?? 0), 0)
+  )
+  const drySpells = completeYears.map((row) => {
+    let longest = 0
+    let current = 0
+    for (const rain of row.rain) {
+      current = rain !== null && rain < dryDayThresholdMm ? current + 1 : 0
+      longest = Math.max(longest, current)
+    }
+    return longest
+  })
+  const maximumThreeDayRain = completeYears.map((row) => {
+    let maximum = 0
+    for (let index = 0; index < row.rain.length; index++) {
+      const window = row.rain.slice(index, index + 3)
+      if (window.length === 3 && window.every((value) => value !== null))
+        maximum = Math.max(
+          maximum,
+          window.reduce<number>((sum, value) => sum + value!, 0)
+        )
+    }
+    return maximum
+  })
+  const temperatures = completeYears.flatMap((row) => row.mean)
+  const minimumTemperatures = completeYears.flatMap((row) => row.minimum)
+  const maximumTemperatures = completeYears.flatMap((row) => row.maximum)
+  const rainMean = rainTotals.reduce((sum, value) => sum + value, 0) / rainTotals.length
+  const rainDeviation = Math.sqrt(
+    rainTotals.reduce((sum, value) => sum + (value - rainMean) ** 2, 0) / rainTotals.length
+  )
+  const observedDays = completeYears.reduce(
+    (sum, row) => sum + row.rain.filter((value) => value !== null).length,
+    0
+  )
+
+  return {
+    rainP25Mm: percentile(rainTotals, 0.25),
+    rainMedianMm: percentile(rainTotals, 0.5),
+    rainP75Mm: percentile(rainTotals, 0.75),
+    rainfallCoefficientOfVariation: rainMean ? rainDeviation / rainMean : null,
+    longestDrySpellP90Days: percentile(drySpells, 0.9),
+    maximumThreeDayRainP95Mm: percentile(maximumThreeDayRain, 0.95),
+    meanTemperatureC: temperatures.reduce((sum, value) => sum + value, 0) / temperatures.length,
+    minimumTemperatureC: minimumTemperatures.length ? Math.min(...minimumTemperatures) : null,
+    maximumTemperatureC: maximumTemperatures.length ? Math.max(...maximumTemperatures) : null,
+    temperatureP05C: percentile(temperatures, 0.05),
+    temperatureP95C: percentile(temperatures, 0.95),
+    observationCount: observedDays,
+    coveragePercent: Math.min(
+      100,
+      (100 * observedDays) / (completeYears.length * months.length * 30.4375)
+    ),
+    featureMethodVersion: 'power-seasonal-v2',
+    dryDayThresholdMm,
+  }
+}
+
 type PowerResponse = {
   properties: { parameter: Record<(typeof parameters)[number], Record<string, number>> }
   header?: Record<string, unknown>
   geometry?: Record<string, unknown>
 }
+
+const deriveAllSeasonFeatures = (
+  observations: DailyObservation[],
+  seasons: Array<{ season_id: number | string; season_name: string }>,
+  seasonMonths: Record<string, number[]>,
+  dryDayThresholdMm: number
+) =>
+  Object.fromEntries(
+    seasons.flatMap((season) => {
+      const months = seasonMonths[season.season_name]
+      if (!months) return []
+      const derived = deriveSeasonFeatures(
+        observations,
+        months,
+        season.season_name,
+        dryDayThresholdMm
+      )
+      return derived
+        ? [[season.season_id, { seasonName: season.season_name, ...derived }] as const]
+        : []
+    })
+  )
+
+export const hasCurrentSeasonFeatures = (
+  features: Record<string, any> | null | undefined,
+  seasonIds: Array<number | string>
+) =>
+  seasonIds.every(
+    (seasonId) => features?.[String(seasonId)]?.featureMethodVersion === 'power-seasonal-v2'
+  )
 
 export async function refreshNasaProfile(farmId: number, userId: number) {
   const farm = await db.from('farms').where({ farm_id: farmId, user_id: userId }).first()
@@ -62,7 +197,51 @@ export async function refreshNasaProfile(farmId: number, userId: number) {
       ])
       .orderBy('calculated_at', 'desc')
       .first()
-    if (profile) return profile
+    const storedFeatures =
+      profile && typeof profile.feature_values === 'string'
+        ? JSON.parse(profile.feature_values)
+        : profile?.feature_values
+    if (
+      profile &&
+      hasCurrentSeasonFeatures(
+        storedFeatures,
+        seasons.map((season) => season.season_id)
+      )
+    )
+      return profile
+
+    const cachedObservations = await db
+      .from('environmental_observations')
+      .where('fetch_id', cached.fetch_id)
+      .select('observation_date', 't2m_c', 't2m_min_c', 't2m_max_c', 'precipitation_mm')
+    if (cachedObservations.length) {
+      const features = deriveAllSeasonFeatures(
+        cachedObservations,
+        seasons,
+        version.scoring_config.seasonMonths as Record<string, number[]>,
+        Number(version.scoring_config.dryDayThresholdMm ?? 1)
+      )
+      const [refreshed] = await db
+        .table('farm_environment_profiles')
+        .insert({
+          farm_id: farmId,
+          baseline_start_year: new Date(cached.start_date).getUTCFullYear(),
+          baseline_end_year: new Date(cached.end_date).getUTCFullYear(),
+          data_coverage_percent: Math.min(
+            100,
+            (100 * cachedObservations.length) /
+              ((new Date(cached.end_date).getUTCFullYear() -
+                new Date(cached.start_date).getUTCFullYear() +
+                1) *
+                365 +
+                2)
+          ),
+          feature_values: JSON.stringify(features),
+          source_fetch_ids: JSON.stringify([cached.fetch_id]),
+        })
+        .returning('*')
+      return refreshed
+    }
   }
 
   const [fetchRow] = await db
@@ -126,36 +305,12 @@ export async function refreshNasaProfile(farmId: number, userId: number) {
         })
     })
 
-    const seasonMonths = version.scoring_config.seasonMonths as Record<string, number[]>
-    const features: Record<string, unknown> = {}
-    for (const season of seasons) {
-      const months = seasonMonths[season.season_name]
-      if (!months) continue
-      const yearly = new Map<number, { rain: number; temperatures: number[] }>()
-      for (const observation of observations) {
-        const date = new Date(`${observation.observation_date}T00:00:00Z`)
-        const month = date.getUTCMonth() + 1
-        if (!months.includes(month)) continue
-        const seasonYear =
-          season.season_name === 'Rabi' && month <= 3
-            ? date.getUTCFullYear() - 1
-            : date.getUTCFullYear()
-        const row = yearly.get(seasonYear) ?? { rain: 0, temperatures: [] }
-        row.rain += Number(observation.precipitation_mm ?? 0)
-        row.temperatures.push(Number(observation.t2m_c))
-        yearly.set(seasonYear, row)
-      }
-      const rows = [...yearly.values()].filter((row) => row.temperatures.length)
-      const rains = rows.map((row) => row.rain)
-      const temperatures = rows.flatMap((row) => row.temperatures)
-      features[season.season_id] = {
-        seasonName: season.season_name,
-        rainP25Mm: percentile(rains, 0.25),
-        rainMedianMm: percentile(rains, 0.5),
-        rainP75Mm: percentile(rains, 0.75),
-        meanTemperatureC: temperatures.reduce((sum, value) => sum + value, 0) / temperatures.length,
-      }
-    }
+    const features = deriveAllSeasonFeatures(
+      observations,
+      seasons,
+      version.scoring_config.seasonMonths as Record<string, number[]>,
+      Number(version.scoring_config.dryDayThresholdMm ?? 1)
+    )
     const coverage = (100 * observations.length) / ((endYear - startYear + 1) * 365 + 2)
     const [profile] = await db
       .table('farm_environment_profiles')

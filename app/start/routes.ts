@@ -16,9 +16,21 @@ const EnvironmentController = () => import('#controllers/environment_controller'
 const RecommendationsController = () => import('#controllers/recommendations_controller')
 
 router.on('/').renderInertia('home', {}).as('home')
+router.on('/mission').renderInertia('mission', {}).as('mission')
+router.on('/explorer').renderInertia('explorer', {}).as('explorer')
+router.on('/explorer/map').renderInertia('explorer_map', {}).as('explorer.map')
 router.on('/planner').renderInertia('planner', {}).as('planner')
-router.on('/sources').renderInertia('sources', {}).as('sources')
+router.on('/compare').renderInertia('compare', {}).as('compare')
+router.get('/sources', ({ response }) => response.redirect('/explorer')).as('sources')
 router.get('/api/v1/catalog', [() => import('#controllers/catalog_controller'), 'index'])
+router.get('/api/v1/climate-history', [
+  () => import('#controllers/climate_history_controller'),
+  'show',
+])
+router.get('/api/v1/regional-climate-map', [
+  () => import('#controllers/regional_climate_controller'),
+  'show',
+])
 router.post('/api/v1/crop-rotation/analyze', [
   () => import('#controllers/farmer_analysis_controller'),
   'analyze',
@@ -41,6 +53,7 @@ router
 router
   .group(() => {
     router.on('/farms').renderInertia('farms', {}).as('farms')
+    router.get('/dashboard', ({ response }) => response.redirect('/farms')).as('dashboard')
     router.post('logout', [controllers.Session, 'destroy'])
     router.get('api/v1/location', [() => import('#controllers/location_controller'), 'show'])
     router.put('api/v1/location', [() => import('#controllers/location_controller'), 'update'])
@@ -49,6 +62,7 @@ router
     router.post('api/v1/farms', [FarmsController, 'store'])
     router.get('api/v1/farms/:id', [FarmsController, 'show'])
     router.put('api/v1/farms/:id/details', [FarmsController, 'details'])
+    router.put('api/v1/farms/:id/capabilities', [FarmsController, 'capabilities'])
     router.get('api/v1/farms/:id/inputs', [FarmsController, 'inputs'])
     router.put('api/v1/farms/:id/preferences', [FarmsController, 'preferences'])
     router.put('api/v1/farms/:id/soil', [FarmsController, 'soil'])

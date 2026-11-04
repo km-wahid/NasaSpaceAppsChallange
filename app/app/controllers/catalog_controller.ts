@@ -53,11 +53,17 @@ export default class CatalogController {
             .orderBy('c.crop_name'),
           db
             .from('district_soil_profiles')
-            .where({ district_id: district.district_id, batch_id: batch.batch_id })
+            .where({
+              district_id: district.district_id,
+              batch_id: batch.batch_id,
+            })
             .first(),
           db
             .from('district_risk_assessments')
-            .where({ district_id: district.district_id, batch_id: batch.batch_id })
+            .where({
+              district_id: district.district_id,
+              batch_id: batch.batch_id,
+            })
             .first(),
           db
             .from('district_season_climate as climate')
@@ -66,8 +72,16 @@ export default class CatalogController {
             .where('climate.batch_id', batch.batch_id)
             .select('s.season_name', 'climate.rainfall_mm')
             .orderBy('s.season_id'),
+          db
+            .from('district_season_climate as climate')
+            .join('districts as d', 'd.district_id', 'climate.district_id')
+            .where('climate.batch_id', batch.batch_id)
+            .select('d.district_name')
+            .avg('climate.rainfall_mm as mean_rainfall_mm')
+            .groupBy('d.district_id', 'd.district_name')
+            .orderBy('d.district_name'),
         ])
-      : [[], null, null, []]
+      : [[], null, null, [], []]
     return response.ok({
       districts,
       divisions,
@@ -79,6 +93,7 @@ export default class CatalogController {
       soil: reference[1],
       risk: reference[2],
       climate: reference[3],
+      districtClimate: reference[4],
       source: batch
         ? {
             filename: batch.source_filename,

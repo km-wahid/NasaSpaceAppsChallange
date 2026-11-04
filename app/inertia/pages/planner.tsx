@@ -1,29 +1,30 @@
 import { Head } from '@inertiajs/react'
 import DataBrowser from '../components/data_browser'
 import type { InertiaProps } from '../types'
+import Icon from '../components/icon'
+import { useLocale } from '../lib/i18n'
 
 export default function Planner({ user }: InertiaProps) {
+  const { t } = useLocale()
   return (
-    <div className="site-page planner-page">
-      <Head title="Crop rotation recommendations" />
-      <div className="site-page-heading planner-heading">
-        <p className="agri-eyebrow text-primary">YOUR FIELD. YOUR FUTURE.</p>
-        <h1>Find your next crop rotation.</h1>
-        <p>
-          Tell us about your farm. Compare suitable crop sequences, see when to plant, and save the
-          plan you want to use.
-        </p>
+    <div className="oa-app-page">
+      <Head title={t('plannerTitle')} />
+      <div className="oa-page-header">
+        <div>
+          <p className="oa-kicker">
+            <Icon name="sprout" size={18} /> {t('plannerEyebrow')}
+          </p>
+          <h1>{t('plannerTitle')}</h1>
+          <p>{t('plannerBody')}</p>
+        </div>
+        <span className="badge badge-info badge-soft">
+          <Icon name="shield" size={15} /> DETERMINISTIC
+        </span>
       </div>
-      <ol className="planner-journey" aria-label="Planning journey">
-        <li>
-          <span>01</span> Find your district
-        </li>
-        <li>
-          <span>02</span> Set up your farm
-        </li>
-        <li>
-          <span>03</span> Choose your rotation
-        </li>
+      <ol className="steps steps-horizontal oa-planner-steps" aria-label="Planning journey">
+        <li className="step step-primary">{t('selectDistrict')}</li>
+        <li className="step">{t('soilWater')}</li>
+        <li className="step">{t('navCompare')}</li>
       </ol>
       <DataBrowser signedIn={Boolean(user)} />
     </div>

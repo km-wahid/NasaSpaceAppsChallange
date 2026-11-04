@@ -5,8 +5,13 @@ type ParamValue = string | number | bigint | boolean
 export type ScannedRoutes = {
   ALL: {
     'home': { paramsTuple?: []; params?: {} }
+    'mission': { paramsTuple?: []; params?: {} }
+    'explorer': { paramsTuple?: []; params?: {} }
+    'explorer.map': { paramsTuple?: []; params?: {} }
     'planner': { paramsTuple?: []; params?: {} }
     'sources': { paramsTuple?: []; params?: {} }
+    'dashboard': { paramsTuple?: []; params?: {} }
+    'compare': { paramsTuple?: []; params?: {} }
     'new_account.create': { paramsTuple?: []; params?: {} }
     'new_account.store': { paramsTuple?: []; params?: {} }
     'session.create': { paramsTuple?: []; params?: {} }
@@ -16,6 +21,8 @@ export type ScannedRoutes = {
     'farms.index': { paramsTuple?: []; params?: {} }
     'farms.store': { paramsTuple?: []; params?: {} }
     'farms.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'farms.details': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'farms.capabilities': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'farms.inputs': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'farms.preferences': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'farms.soil': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -24,12 +31,19 @@ export type ScannedRoutes = {
     'environment.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'environment.refresh': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'recommendations.store': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'recommendations.choice': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'recommendations.choose': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'recommendations.show': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'runId': ParamValue} }
   }
   GET: {
     'home': { paramsTuple?: []; params?: {} }
+    'mission': { paramsTuple?: []; params?: {} }
+    'explorer': { paramsTuple?: []; params?: {} }
+    'explorer.map': { paramsTuple?: []; params?: {} }
     'planner': { paramsTuple?: []; params?: {} }
     'sources': { paramsTuple?: []; params?: {} }
+    'dashboard': { paramsTuple?: []; params?: {} }
+    'compare': { paramsTuple?: []; params?: {} }
     'new_account.create': { paramsTuple?: []; params?: {} }
     'session.create': { paramsTuple?: []; params?: {} }
     'farms': { paramsTuple?: []; params?: {} }
@@ -38,12 +52,18 @@ export type ScannedRoutes = {
     'farms.inputs': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'farms.crops': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'environment.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'recommendations.choice': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'recommendations.show': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'runId': ParamValue} }
   }
   HEAD: {
     'home': { paramsTuple?: []; params?: {} }
+    'mission': { paramsTuple?: []; params?: {} }
+    'explorer': { paramsTuple?: []; params?: {} }
+    'explorer.map': { paramsTuple?: []; params?: {} }
     'planner': { paramsTuple?: []; params?: {} }
     'sources': { paramsTuple?: []; params?: {} }
+    'dashboard': { paramsTuple?: []; params?: {} }
+    'compare': { paramsTuple?: []; params?: {} }
     'new_account.create': { paramsTuple?: []; params?: {} }
     'session.create': { paramsTuple?: []; params?: {} }
     'farms': { paramsTuple?: []; params?: {} }
@@ -52,6 +72,7 @@ export type ScannedRoutes = {
     'farms.inputs': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'farms.crops': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'environment.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'recommendations.choice': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'recommendations.show': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'runId': ParamValue} }
   }
   POST: {
@@ -63,9 +84,12 @@ export type ScannedRoutes = {
     'recommendations.store': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   PUT: {
+    'farms.details': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'farms.capabilities': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'farms.preferences': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'farms.soil': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'farms.history': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'recommendations.choose': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
 }
 declare module '@adonisjs/core/types/http' {

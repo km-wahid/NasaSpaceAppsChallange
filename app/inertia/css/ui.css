@@ -1,6 +1,8 @@
 @layer theme, base, legacy, components, utilities;
 @import 'tailwindcss';
 @import './app.css' layer(legacy);
+@import './design.css' layer(components);
+@import 'leaflet/dist/leaflet.css';
 @plugin "daisyui" {
   themes: false;
 }
@@ -9,29 +11,29 @@
   default: true;
   prefersdark: false;
   color-scheme: light;
-  --color-base-100: #fcfff8;
-  --color-base-200: #edf5e8;
-  --color-base-300: #d2e2c9;
-  --color-base-content: #203c29;
-  --color-primary: #28683e;
+  --color-base-100: #f8fbf5;
+  --color-base-200: #eef5e9;
+  --color-base-300: #d7e5d4;
+  --color-base-content: #183329;
+  --color-primary: #1f6b45;
   --color-primary-content: #ffffff;
-  --color-secondary: #4b6540;
+  --color-secondary: #397a57;
   --color-secondary-content: #ffffff;
-  --color-accent: #dcebc5;
-  --color-accent-content: #203b2c;
-  --color-neutral: #193c29;
+  --color-accent: #6b963f;
+  --color-accent-content: #ffffff;
+  --color-neutral: #123226;
   --color-neutral-content: #ffffff;
-  --color-info: #32664f;
+  --color-info: #246bce;
   --color-info-content: #ffffff;
-  --color-success: #2c6b48;
+  --color-success: #3f8159;
   --color-success-content: #ffffff;
-  --color-warning: #795319;
+  --color-warning: #a77b54;
   --color-warning-content: #ffffff;
-  --color-error: #a63e35;
+  --color-error: #ba1a1a;
   --color-error-content: #ffffff;
-  --radius-selector: 0.5rem;
-  --radius-field: 0.75rem;
-  --radius-box: 1rem;
+  --radius-selector: 0.25rem;
+  --radius-field: 0.25rem;
+  --radius-box: 0.5rem;
   --size-selector: 0.25rem;
   --size-field: 0.25rem;
   --border: 1px;
@@ -52,6 +54,10 @@
   animation: farmer-dashboard-enter 280ms ease-out;
 }
 @media (prefers-reduced-motion: reduce) {
+  .site-shell,
+  .site-shell *,
+  .site-shell *::before,
+  .site-shell *::after,
   .farmer-flow,
   .farmer-flow *,
   .farmer-flow *::before,
@@ -62,11 +68,92 @@
   }
 }
 
+.plan-snapshot {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+.plan-snapshot > div {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 2px 10px;
+  min-height: 76px;
+  padding: 14px;
+  border: 1px solid var(--color-base-300);
+  border-radius: var(--radius-box);
+  background: var(--color-base-200);
+}
+.plan-snapshot > div > span {
+  grid-row: 1 / 3;
+}
+.plan-snapshot small {
+  color: color-mix(in oklch, var(--color-base-content) 66%, transparent);
+  font-size: 12px;
+}
+.plan-snapshot strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.plan-actions,
+.plan-explanation {
+  border-radius: var(--radius-box);
+}
+.plan-actions .collapse-title,
+.plan-explanation .collapse-title {
+  min-height: 56px;
+}
+.rotation-alternative-facts {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  overflow-x: auto;
+}
+.rotation-alternative-facts > span {
+  display: grid;
+  min-width: 150px;
+  gap: 2px;
+  padding: 10px;
+  border-radius: var(--radius-field);
+  background: var(--color-base-200);
+}
+.rotation-alternative-facts small {
+  color: color-mix(in oklch, var(--color-base-content) 70%, transparent);
+  font-size: 11px;
+}
+
+@media (max-width: 640px) {
+  .plan-snapshot {
+    grid-template-columns: 1fr;
+  }
+  .plan-snapshot > div {
+    min-height: 64px;
+  }
+  .rotation-alternatives > div:last-child {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 8px;
+  }
+  .rotation-alternatives .rotation-plan-card {
+    min-width: min(84vw, 310px);
+    scroll-snap-align: start;
+  }
+}
+
 /* Public site and application share one agricultural identity. */
 .site-shell {
   --site-width: 1240px;
   min-height: 100svh;
-  font-size: 15px;
+  font-family: 'Noto Sans Bengali', 'Hind Siliguri', Inter, system-ui, sans-serif;
+  font-size: 16px;
+}
+.site-shell .btn,
+.site-shell button,
+.site-shell select,
+.site-shell input:not([type='radio']):not([type='checkbox']) {
+  min-height: 48px;
 }
 .site-announcement {
   display: flex;
@@ -877,6 +964,734 @@
   }
   .auth-landscape {
     display: none;
+  }
+}
+
+/* Visual-first farmer experience */
+.farm-scene {
+  --scene-sky: color-mix(in oklch, var(--color-info) 18%, var(--color-base-100));
+  --scene-sky-low: color-mix(in oklch, var(--color-accent) 42%, var(--color-base-100));
+  --scene-sun: color-mix(in oklch, var(--color-warning) 75%, white);
+  --scene-cloud: color-mix(in oklch, var(--color-base-100) 88%, transparent);
+  --scene-hill: color-mix(in oklch, var(--color-primary) 54%, var(--color-base-200));
+  --scene-field: var(--color-primary);
+  --scene-field-light: color-mix(in oklch, var(--color-primary) 60%, var(--color-accent));
+  --scene-soil: color-mix(in oklch, var(--color-warning) 30%, var(--color-base-200));
+  --scene-row: color-mix(in oklch, var(--color-warning) 36%, var(--color-base-100));
+  --scene-plant: var(--color-neutral);
+  --scene-leaf: var(--color-primary);
+  --scene-leaf-light: color-mix(in oklch, var(--color-primary) 55%, var(--color-accent));
+  --scene-roof: var(--color-neutral);
+  --scene-hut: color-mix(in oklch, var(--color-warning) 48%, var(--color-base-100));
+  --scene-door: var(--color-neutral);
+  --scene-water: color-mix(in oklch, var(--color-info) 70%, var(--color-base-100));
+  --scene-water-line: var(--color-info-content);
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 28px;
+}
+.farm-scene > svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.farm-scene-badge {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border: 1px solid color-mix(in oklch, var(--color-base-content) 12%, transparent);
+  border-radius: 15px;
+  color: var(--color-primary);
+  background: color-mix(in oklch, var(--color-base-100) 88%, transparent);
+  backdrop-filter: blur(10px);
+}
+.farm-scene-sun {
+  transform-origin: 590px 106px;
+  animation: scene-sun 8s ease-in-out infinite;
+}
+.farm-scene-cloud {
+  animation: scene-cloud 12s ease-in-out infinite alternate;
+}
+.farm-scene-plants > g {
+  transform-box: fill-box;
+  transform-origin: bottom center;
+  animation: scene-plant 3.4s ease-in-out infinite alternate;
+}
+.farm-scene-plants > g:nth-child(2n) {
+  animation-delay: -1.7s;
+}
+.farm-scene-water path:last-child {
+  animation: scene-water 2.6s ease-in-out infinite alternate;
+}
+@keyframes scene-sun {
+  50% {
+    transform: scale(1.07);
+  }
+}
+@keyframes scene-cloud {
+  to {
+    transform: translateX(34px);
+  }
+}
+@keyframes scene-plant {
+  to {
+    transform: rotate(2deg);
+  }
+}
+@keyframes scene-water {
+  to {
+    transform: translateX(10px);
+  }
+}
+
+.agri-hero {
+  min-height: 620px;
+  background: var(--color-neutral);
+}
+.agri-hero-content {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(380px, 1.1fr);
+  align-items: center;
+  gap: clamp(38px, 6vw, 88px);
+  min-height: 620px;
+}
+.agri-hero-copy {
+  min-width: 0;
+}
+.agri-hero-scene {
+  box-shadow: 0 28px 70px #071c1344;
+  transform: rotate(1.5deg);
+}
+.agri-hero-scene::after {
+  content: '';
+  position: absolute;
+  inset: 12px;
+  border: 1px solid #ffffff40;
+  border-radius: 20px;
+  pointer-events: none;
+}
+
+/* The home hero tells one short story, then rests so the main action stays calm. */
+.agri-hero-copy .agri-eyebrow,
+.agri-hero-copy h1,
+.agri-hero-copy > p,
+.agri-hero-copy .agri-hero-actions {
+  animation: home-copy-enter 240ms ease-out both;
+}
+.agri-hero-copy h1 {
+  animation-delay: 60ms;
+}
+.agri-hero-copy > p {
+  animation-delay: 110ms;
+}
+.agri-hero-copy .agri-hero-actions {
+  animation-delay: 160ms;
+}
+.agri-hero-copy .agri-hero-reassurance {
+  animation-delay: 210ms;
+}
+.agri-hero-scene {
+  animation: home-scene-enter 300ms ease-out 80ms both;
+}
+.agri-hero-scene .farm-scene-sun {
+  animation: home-sun-settle 300ms ease-out 180ms both;
+}
+.agri-hero-scene .farm-scene-cloud {
+  animation: home-cloud-enter 300ms ease-out 130ms both;
+}
+.agri-hero-scene .farm-scene-plants > g {
+  animation: home-plant-grow 260ms ease-out both;
+}
+.agri-hero-scene .farm-scene-plants > g:nth-child(1) {
+  animation-delay: 170ms;
+}
+.agri-hero-scene .farm-scene-plants > g:nth-child(2) {
+  animation-delay: 200ms;
+}
+.agri-hero-scene .farm-scene-plants > g:nth-child(3) {
+  animation-delay: 230ms;
+}
+.agri-hero-scene .farm-scene-plants > g:nth-child(4) {
+  animation-delay: 260ms;
+}
+.agri-hero-scene .farm-scene-plants > g:nth-child(5) {
+  animation-delay: 290ms;
+}
+.agri-hero-scene .farm-scene-water path:last-child {
+  animation: home-water-draw 300ms ease-out 260ms both;
+}
+.agri-start-button svg {
+  transition: transform 200ms ease-out;
+}
+.agri-start-button:hover svg {
+  transform: translateX(4px);
+}
+.agri-how-visual .farm-scene-sun,
+.agri-how-visual .farm-scene-cloud,
+.agri-how-visual .farm-scene-plants > g,
+.agri-how-visual .farm-scene-water path:last-child {
+  animation: none;
+}
+@keyframes home-copy-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+@keyframes home-scene-enter {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
+}
+@keyframes home-sun-settle {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.75);
+  }
+}
+@keyframes home-cloud-enter {
+  from {
+    opacity: 0;
+    transform: translateX(-22px);
+  }
+}
+@keyframes home-plant-grow {
+  from {
+    opacity: 0;
+    transform: scaleY(0.25);
+  }
+}
+@keyframes home-water-draw {
+  from {
+    opacity: 0;
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+  }
+}
+.agri-how-visual {
+  display: grid;
+  align-content: center;
+  gap: 16px;
+  padding: clamp(24px, 4vw, 46px);
+  background: var(--color-neutral);
+}
+.agri-visual-legend {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.agri-visual-legend span {
+  display: grid;
+  justify-items: center;
+  gap: 7px;
+  padding: 12px 6px;
+  color: var(--color-neutral-content);
+  font-size: 11px;
+  text-align: center;
+}
+
+.location-intro {
+  display: grid;
+  grid-template-rows: minmax(260px, 1fr) auto;
+  gap: 0;
+  padding: 24px;
+  background: var(--color-neutral);
+}
+.location-intro::after {
+  display: none;
+}
+.location-intro-scene {
+  align-self: center;
+}
+.location-intro-copy {
+  z-index: 1;
+  height: auto;
+  margin-top: -60px;
+  padding: 28px;
+  border-radius: 20px;
+  color: var(--color-neutral-content);
+  background: color-mix(in oklch, var(--color-neutral) 90%, transparent);
+  backdrop-filter: blur(10px);
+}
+
+.planner-journey li {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 112px;
+  padding: 16px;
+  border: 1px solid var(--color-base-300);
+  border-radius: 18px;
+  background: var(--color-base-100);
+  text-align: center;
+}
+.planner-journey li > span {
+  width: 42px;
+  height: 42px;
+  border: 0;
+  background: var(--color-base-200);
+}
+
+.water-choice-picture {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 82px;
+  padding: 14px;
+  margin-bottom: 14px;
+  border-radius: 15px;
+  background: var(--color-base-200);
+}
+.water-choice-picture > span {
+  display: flex;
+  align-items: end;
+  gap: 4px;
+  height: 34px;
+}
+.water-choice-picture > span i {
+  display: block;
+  width: 9px;
+  border-radius: 8px 8px 2px 2px;
+  background: var(--color-info);
+}
+.water-choice-picture > span i:nth-child(1) {
+  height: 12px;
+}
+.water-choice-picture > span i:nth-child(2) {
+  height: 22px;
+}
+.water-choice-picture > span i:nth-child(3) {
+  height: 32px;
+}
+.water-choice-picture[data-level='low'] > span i:nth-child(n + 2),
+.water-choice-picture[data-level='medium'] > span i:nth-child(3) {
+  opacity: 0.16;
+}
+
+.workspace-page-banner {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(320px, 1fr);
+  align-items: center;
+  gap: clamp(28px, 5vw, 70px);
+  padding: clamp(28px, 4vw, 52px);
+  color: var(--color-base-content);
+  background: var(--color-base-100);
+  border: 1px solid var(--color-base-300);
+}
+.workspace-page-banner::before {
+  display: none;
+}
+.workspace-page-banner h1 {
+  color: var(--color-base-content);
+}
+.workspace-page-banner .agri-eyebrow {
+  color: var(--color-primary);
+}
+.workspace-page-banner > div > p:last-of-type {
+  color: var(--color-base-content);
+  opacity: 0.72;
+}
+.workspace-banner-note {
+  color: var(--color-primary);
+}
+
+.source-pipeline > div {
+  flex-direction: column;
+  justify-content: center;
+  min-height: 128px;
+  padding: 18px;
+  border: 1px solid var(--color-base-300);
+  border-radius: 18px;
+  background: var(--color-base-100);
+  text-align: center;
+}
+.source-pipeline-icon {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  color: var(--color-primary);
+  background: var(--color-base-200);
+}
+.source-pipeline > div > svg {
+  position: absolute;
+  margin-left: calc(25% - 4px);
+}
+.source-takeaway {
+  min-height: 52px;
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--color-base-content);
+}
+
+.auth-landscape {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 30px;
+  padding: clamp(32px, 5vw, 70px);
+  background: var(--color-neutral);
+}
+.auth-landscape::before {
+  display: none;
+}
+.auth-landscape > div {
+  position: static;
+  max-width: 520px;
+}
+.auth-landscape > .farm-scene {
+  align-self: end;
+}
+
+.saved-farm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 12px;
+}
+.saved-farm-card {
+  position: relative;
+  display: grid;
+  justify-items: start;
+  gap: 5px;
+  min-height: 135px;
+  padding: 18px;
+  border: 2px solid var(--color-base-300);
+  color: var(--color-base-content);
+  background: var(--color-base-100);
+  text-align: left;
+}
+.saved-farm-card > span {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  margin-bottom: 5px;
+  border-radius: 13px;
+  color: var(--color-primary);
+  background: var(--color-base-200);
+}
+.saved-farm-card > small {
+  opacity: 0.68;
+}
+.saved-farm-card > svg {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  color: var(--color-success);
+}
+.saved-farm-card[data-selected='true'] {
+  border-color: var(--color-primary);
+  background: color-mix(in oklch, var(--color-primary) 5%, var(--color-base-100));
+}
+.priority-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.priority-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.priority-control {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+  border: 1px solid var(--color-base-300);
+  border-radius: 16px;
+  background: var(--color-base-100);
+}
+.priority-control-heading,
+.priority-control-heading > span {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.priority-control-heading > span {
+  color: var(--color-primary);
+  font-weight: 650;
+}
+.farm-workspace .priority-control input[type='range'] {
+  min-height: 24px;
+  padding: 0;
+  border: 0;
+  accent-color: var(--color-primary);
+}
+.priority-total {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 15px;
+  border-radius: 12px;
+  color: var(--color-warning);
+  background: color-mix(in oklch, var(--color-warning) 9%, var(--color-base-100));
+}
+.priority-total.is-ready {
+  color: var(--color-success);
+  background: color-mix(in oklch, var(--color-success) 9%, var(--color-base-100));
+}
+
+@media (max-width: 900px) {
+  .agri-hero-content {
+    grid-template-columns: 1fr 0.85fr;
+    gap: 28px;
+  }
+  .workspace-page-banner {
+    grid-template-columns: 1fr 0.8fr;
+  }
+}
+@media (max-width: 760px) {
+  .agri-hero {
+    min-height: 0;
+  }
+  .agri-hero-content {
+    grid-template-columns: 1fr;
+    min-height: 0;
+    padding: 48px 20px;
+  }
+  .agri-hero h1 {
+    font-size: clamp(43px, 13vw, 60px);
+  }
+  .agri-hero-scene {
+    transform: none;
+  }
+  .agri-context-strip {
+    grid-template-columns: 1fr 1fr;
+  }
+  .agri-context-intro {
+    grid-column: 1 / -1;
+  }
+  .agri-how-section {
+    grid-template-columns: 1fr;
+  }
+  .agri-visual-legend {
+    grid-template-columns: 1fr;
+  }
+  .agri-visual-legend span {
+    grid-template-columns: 24px 1fr;
+    justify-items: start;
+    text-align: left;
+  }
+  .location-intro {
+    min-height: 0;
+    padding: 18px;
+  }
+  .location-intro-copy {
+    margin-top: -35px;
+    padding: 22px;
+  }
+  .planner-journey li {
+    align-items: center;
+    min-height: 96px;
+    padding: 10px 5px;
+  }
+  .workspace-page-banner {
+    grid-template-columns: 1fr;
+  }
+  .source-pipeline > div > svg {
+    display: none;
+  }
+  .priority-grid {
+    grid-template-columns: 1fr;
+  }
+  .auth-page {
+    max-width: 540px;
+  }
+  .auth-landscape {
+    display: grid;
+    min-height: 0;
+    margin-bottom: 20px;
+    padding: 24px;
+    border-radius: 24px;
+  }
+  .auth-landscape > div {
+    display: none;
+  }
+  .water-choice {
+    position: relative;
+    display: grid;
+    grid-template-columns: 58px 1fr 28px;
+    min-height: 0;
+    padding: 10px 12px;
+    gap: 3px 12px;
+  }
+  .water-choice-picture {
+    grid-column: 1;
+    grid-row: 1 / 3;
+    min-height: 58px;
+    margin: 0 !important;
+    padding: 10px;
+  }
+  .water-choice-picture > span {
+    display: none;
+  }
+  .water-choice-picture > input {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+  }
+  .water-choice > span:nth-child(2) {
+    grid-column: 2;
+    font-size: 16px;
+  }
+  .water-choice > .water-choice-meter {
+    display: none;
+  }
+  .water-choice > span:last-child {
+    grid-column: 2 / 4;
+    margin: 0;
+    font-size: 11px;
+  }
+}
+
+/* Compact crop-calendar detail: show the decision first, evidence on demand. */
+.rotation-calendar-heading,
+.crop-detail-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+.crop-detail-heading {
+  justify-content: start;
+}
+.crop-detail-heading > div {
+  flex: 1;
+}
+.crop-detail-heading p,
+.crop-fact p {
+  color: var(--color-base-content);
+  font-size: 11px;
+  opacity: 0.64;
+}
+.crop-detail-heading h3 {
+  margin-top: 2px;
+  font-size: 24px;
+  font-weight: 650;
+  line-height: 1.15;
+}
+.crop-fact-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 18px;
+}
+.crop-fact {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid var(--color-base-300);
+  border-radius: 14px;
+  background: var(--color-base-100);
+}
+.crop-fact > span {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 auto;
+  border-radius: 12px;
+  color: var(--color-primary);
+  background: var(--color-base-200);
+}
+.crop-fact > div {
+  min-width: 0;
+  flex: 1;
+}
+.crop-fact strong {
+  display: block;
+  margin-top: 3px;
+  font-size: 14px;
+  line-height: 1.35;
+}
+.crop-evidence {
+  margin-top: 16px;
+  border: 1px solid var(--color-base-300);
+  background: var(--color-base-100);
+}
+.crop-evidence .collapse-title {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  padding-right: 44px;
+  font-size: 13px;
+}
+.crop-evidence .collapse-title > span {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--color-primary);
+  font-weight: 650;
+}
+.crop-evidence .collapse-title > strong {
+  overflow: hidden;
+  color: var(--color-base-content);
+  font-weight: 550;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.crop-evidence .collapse-content {
+  display: grid;
+  grid-template-columns: minmax(190px, 0.7fr) 1fr;
+  align-items: center;
+  gap: 18px;
+  color: var(--color-base-content);
+  font-size: 12px;
+  line-height: 1.6;
+}
+.crop-date-route {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 10px;
+}
+.crop-date-route > span {
+  display: grid;
+  gap: 2px;
+}
+.crop-date-route small {
+  opacity: 0.62;
+}
+.crop-date-route i {
+  height: 2px;
+  background: var(--color-primary);
+}
+
+@media (max-width: 640px) {
+  .rotation-calendar-heading {
+    align-items: start;
+  }
+  .rotation-calendar-heading .badge {
+    margin-top: 3px;
+  }
+  .crop-fact-grid {
+    grid-template-columns: 1fr;
+  }
+  .crop-fact {
+    padding: 12px;
+  }
+  .crop-evidence .collapse-title {
+    grid-template-columns: 1fr;
+    gap: 3px;
+  }
+  .crop-evidence .collapse-title > strong {
+    padding-left: 25px;
+    font-size: 12px;
+  }
+  .crop-evidence .collapse-content {
+    grid-template-columns: 1fr;
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -1826,5 +2641,193 @@
   }
   .crop-plan-empty {
     flex-direction: column;
+  }
+}
+
+/* Keep the visual-first layouts authoritative over the legacy page refinements above. */
+.planner-journey li {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 112px;
+  padding: 16px;
+  border: 1px solid var(--color-base-300);
+  border-radius: 18px;
+  background: var(--color-base-100);
+  text-align: center;
+}
+.planner-journey li > span {
+  width: 42px;
+  height: 42px;
+  border: 0;
+  background: var(--color-base-200);
+}
+.location-intro {
+  display: grid;
+  grid-template-rows: minmax(260px, 1fr) auto;
+  gap: 0;
+  padding: 24px;
+  background: var(--color-neutral);
+}
+.location-intro::after {
+  display: none;
+}
+.location-intro-scene {
+  align-self: center;
+}
+.location-intro-copy {
+  z-index: 1;
+  height: auto;
+  margin-top: -60px;
+  padding: 28px;
+  border-radius: 20px;
+  color: var(--color-neutral-content);
+  background: color-mix(in oklch, var(--color-neutral) 90%, transparent);
+  backdrop-filter: blur(10px);
+}
+.local-guide-intro::before {
+  background: var(--color-neutral);
+}
+.water-choice-picture {
+  position: static !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 82px;
+  margin: 0 0 14px !important;
+  padding: 14px;
+  border-radius: 15px;
+  background: var(--color-base-200);
+}
+.water-choice-picture > svg {
+  display: block !important;
+}
+.workspace-page-banner {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(320px, 1fr);
+  align-items: center;
+  gap: clamp(28px, 5vw, 70px);
+  min-height: 0;
+  padding: clamp(28px, 4vw, 52px);
+  color: var(--color-base-content);
+  background: var(--color-base-100);
+  border: 1px solid var(--color-base-300);
+}
+.workspace-page-banner::before {
+  display: none;
+}
+.workspace-page-banner h1 {
+  color: var(--color-base-content);
+}
+.workspace-page-banner .agri-eyebrow {
+  color: var(--color-primary);
+}
+.workspace-page-banner > div > p:last-of-type {
+  color: var(--color-base-content);
+  opacity: 0.72;
+}
+.workspace-banner-note {
+  color: var(--color-primary);
+}
+.source-pipeline > div {
+  flex-direction: column;
+  justify-content: center;
+  min-height: 128px;
+  padding: 18px;
+  border: 1px solid var(--color-base-300);
+  border-radius: 18px;
+  background: var(--color-base-100);
+  text-align: center;
+}
+.source-pipeline-icon {
+  margin: 0 !important;
+}
+.source-pipeline-icon > svg {
+  display: block;
+  margin: 0;
+}
+.auth-landscape {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 30px;
+  padding: clamp(32px, 5vw, 70px);
+  background: var(--color-neutral);
+}
+.auth-landscape::before {
+  display: none;
+}
+.auth-landscape > div {
+  position: static;
+  max-width: 520px;
+}
+
+@media (max-width: 760px) {
+  .location-intro {
+    min-height: 0;
+    padding: 18px;
+  }
+  .location-intro-copy {
+    margin-top: -35px;
+    padding: 22px;
+  }
+  .planner-journey li {
+    align-items: center;
+    min-height: 96px;
+    padding: 10px 5px;
+  }
+  .workspace-page-banner {
+    grid-template-columns: 1fr;
+    padding: 30px 24px;
+  }
+  .priority-grid {
+    grid-template-columns: 1fr;
+  }
+  .auth-page {
+    max-width: 540px;
+  }
+  .auth-landscape {
+    display: grid;
+    min-height: 0;
+    margin-bottom: 20px;
+    padding: 24px;
+    border-radius: 24px;
+  }
+  .auth-landscape > div {
+    display: none;
+  }
+  .water-choice {
+    position: relative;
+    display: grid;
+    grid-template-columns: 58px 1fr 28px;
+    min-height: 0;
+    padding: 10px 12px;
+    gap: 3px 12px;
+  }
+  .water-choice-picture {
+    grid-column: 1;
+    grid-row: 1 / 3;
+    min-height: 58px;
+    margin: 0 !important;
+    padding: 10px;
+  }
+  .water-choice-picture > span {
+    display: none;
+  }
+  .water-choice-picture > input {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+  }
+  .water-choice > span:nth-child(2) {
+    grid-column: 2;
+    font-size: 16px;
+  }
+  .water-choice > .water-choice-meter {
+    display: none;
+  }
+  .water-choice > span:last-child {
+    grid-column: 2 / 4;
+    margin: 0;
+    font-size: 11px;
   }
 }

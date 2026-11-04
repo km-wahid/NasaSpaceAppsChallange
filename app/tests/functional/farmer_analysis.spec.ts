@@ -107,8 +107,9 @@ test.group('farmer analysis endpoint', (group) => {
       assert.equal(payload.water.label, 'Moderate')
       assert.equal(payload.water.series[6].level, 'Moderate')
       assert.isNull(payload.water.series[0].index)
-      assert.deepEqual(payload.plans, [])
-      assert.equal(payload.planning.status, 'needs-farm')
+      assert.lengthOf(payload.plans, 3)
+      assert.isTrue(payload.plans.every((plan: any) => plan.preview))
+      assert.equal(payload.planning.status, 'district-preview')
       await new LocationController().update(context(first.id, { districtId: district.district_id }))
       await new LocationController().update(
         context(second.id, { districtId: district.district_id })
@@ -192,6 +193,73 @@ test.group('farmer analysis endpoint', (group) => {
         .where('farm_id', minimalFarm.farm_id)
         .firstOrFail()
       assert.equal(minimalPreferences.soil_weight_bp, 2500)
+      const farmsController = new FarmsController()
+      await farmsController.capabilities(
+        context(first.id, {
+          answers: [
+            { key: 'integrated_farming_interest', value: true },
+            { key: 'water_depth_cm', value: 12 },
+          ],
+        })
+      )
+      assert.equal(status, 200)
+      assert.equal(payload.length, 2)
+      assert.isTrue(
+        payload.find((answer: any) => answer.capability_key === 'integrated_farming_interest')
+          .boolean_value
+      )
+      await farmsController.capabilities(
+        context(second.id, { answers: [{ key: 'integrated_farming_interest', value: true }] })
+      )
+      assert.equal(status, 404)
+      await farmsController.capabilities(
+        context(first.id, { answers: [{ key: 'not_a_capability', value: true }] })
+      )
+      assert.equal(status, 422)
+      const [systemSource] = await db
+        .table('data_sources')
+        .insert({
+          name: 'Integrated fixture',
+          organization: 'Test only',
+          citation: 'Test fixture only',
+          url: 'https://example.invalid/integrated-fixture',
+        })
+        .returning('source_id')
+      const aman = await db.from('crops').where('crop_name', 'Aman').firstOrFail()
+      const lentil = await db.from('crops').where('crop_name', 'Lentil').firstOrFail()
+      const [system] = await db
+        .table('farming_systems')
+        .insert({
+          name: 'Fixture Aman and lentil',
+          system_type: 'intercrop',
+          timing_pattern: 'relay',
+          spatial_pattern: 'strip',
+          primary_crop_id: aman.crop_id,
+          season_id: season.season_id,
+          source_id: systemSource.source_id,
+          reviewed_at: '2026-01-01',
+          management_note: 'Test fixture only.',
+        })
+        .returning('farming_system_id')
+      await db.table('farming_system_components').multiInsert(
+        [
+          { crop: aman, role: 'primary', offset: 0, duration: 100 },
+          { crop: lentil, role: 'companion', offset: 20, duration: 70 },
+        ].map(({ crop, role, offset, duration }) => ({
+          farming_system_id: system.farming_system_id,
+          crop_id: crop.crop_id,
+          role,
+          start_offset_days: offset,
+          duration_days: duration,
+          area_share_percent: 50,
+          expected_output_per_hectare: 1,
+          output_unit: 'tonnes',
+          market_price_bdt_per_unit: 100,
+          variable_cost_bdt_per_hectare: 20,
+          annualized_setup_cost_bdt_per_hectare: 0,
+          economic_source_id: systemSource.source_id,
+        }))
+      )
       await controller.analyze(
         context(first.id, { districtId: district.district_id, farmId: minimalFarm.farm_id })
       )
@@ -199,6 +267,13 @@ test.group('farmer analysis endpoint', (group) => {
       assert.equal(payload.water.label, 'Not provided')
       assert.equal(payload.planning.status, 'ready')
       assert.lengthOf(payload.plans, 3)
+      assert.equal(payload.conditionalSystems[0].name, 'Fixture Aman and lentil')
+      assert.include(payload.conditionalSystems[0].missingEvidence.join(' '), 'NASA POWER')
+      assert.include(
+        payload.conditionalSystems[0].missingEvidence.join(' '),
+        'farmer interest confirmation'
+      )
+      assert.isAtMost(payload.researchIdeas.length, 20)
       assert.isTrue(payload.plans.every((plan: any) => plan.fit === 'Season-based guidance'))
       assert.isTrue(
         payload.plans.some((plan: any) =>

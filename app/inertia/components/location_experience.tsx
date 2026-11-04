@@ -7,7 +7,7 @@ import {
   type UserLocation,
 } from '../lib/location'
 import Icon from './icon'
-import landscape from '../assets/farm-landscape.jpg'
+import FarmScene from './farm_scene'
 
 type LocationState =
   | 'idle'
@@ -233,7 +233,7 @@ export default function LocationExperience({
       aria-labelledby={`${id}-heading`}
     >
       <div className="location-intro">
-        <img src={landscape} alt="" className="location-intro-photo" />
+        <FarmScene scene="location" className="location-intro-scene" />
         <div className="location-intro-copy">
           <span className="agri-eyebrow">
             <Icon name="leaf" size={18} /> A LOCAL START
@@ -243,10 +243,7 @@ export default function LocationExperience({
             <br />
             has a <em>story.</em>
           </h3>
-          <p>
-            Let’s start with yours. Your district connects the bigger Earth picture with your next
-            growing season.
-          </p>
+          <p>Your district connects local seasons to your crop plan.</p>
           <div className="location-intro-features">
             <span>
               <Icon name="sun" size={18} /> Seasonal context

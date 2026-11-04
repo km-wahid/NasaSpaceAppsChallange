@@ -116,4 +116,42 @@ test.group('rotation engine', () => {
     })
     assert.equal(result.rejectionCounts.MINIMUM_BREAK, 1)
   })
+
+  test('checks every crop in an integrated system transition', ({ assert }) => {
+    const result = recommendRotations({
+      slots: [
+        {
+          season: 'Rabi',
+          candidates: [
+            crop(1, '2026-11-01', '2026-11-10', {
+              cropIds: [1, 2],
+              cropFamilies: ['Poaceae', 'Fabaceae'],
+            }),
+          ],
+        },
+        { season: 'Kharif 1', candidates: [crop(3, '2027-03-01', '2027-03-10')] },
+      ],
+      weights: { climate: 20, water: 20, soil: 20, resilience: 20, economic: 20 },
+      availableWaterMm: [500, 500],
+      farmAreaHa: 1,
+      minimumTurnaroundDays: 5,
+      minimumDistinctCrops: 2,
+      allowAdjacentRepeat: false,
+      history: [{ cropId: null, landUse: 'fallow' }],
+      rules: [
+        {
+          fromCropId: 2,
+          toCropId: 3,
+          type: 'forbidden',
+          compatibility: 0,
+          soilAdjustment: 0,
+          minimumBreakSeasons: 0,
+          reason: 'reviewed incompatibility',
+        },
+      ],
+    })
+
+    assert.equal(result.recommendations.length, 0)
+    assert.equal(result.rejectionCounts.FORBIDDEN_TRANSITION, 1)
+  })
 })

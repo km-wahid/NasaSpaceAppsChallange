@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import { Head } from '@inertiajs/react'
 import { Link } from '@adonisjs/inertia/react'
 import Icon from './icon'
-import landscape from '../assets/farm-landscape.jpg'
+import FarmScene from './farm_scene'
 
 export default function AuthFrame({
   title,
@@ -19,19 +19,17 @@ export default function AuthFrame({
     <div className="auth-page">
       <Head title={signup ? 'Create account' : 'Log in'} />
       <aside className="auth-landscape">
-        <img src={landscape} alt="Open green farmland in soft evening light" />
         <div>
           <Icon name="leaf" size={36} />
-          <p className="agri-eyebrow">A LITTLE PERSPECTIVE GOES A LONG WAY</p>
+          <p className="agri-eyebrow">YOUR FARM, KEPT TOGETHER</p>
           <h2>
             Your field.
             <br />
             Your future.
           </h2>
-          <p>
-            Keep your farm information together. Make room for a more thoughtful growing season.
-          </p>
+          <p>Save your farm. Return to your plan anytime.</p>
         </div>
+        <FarmScene scene="auth" />
       </aside>
       <div className="auth-card">
         <span className="agri-icon-box">

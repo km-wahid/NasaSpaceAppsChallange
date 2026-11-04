@@ -1,0 +1,6 @@
+composition/node_modules/
+composition/.hyperframes/
+composition/.hyperframes-*/
+composition/.claude/
+composition/.agents/
+*.mp4

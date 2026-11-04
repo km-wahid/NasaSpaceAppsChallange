@@ -2,6 +2,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
 import {
   buildWaterOutlook,
+  presentDistrictRotationPreviews,
   presentRotationPlans,
   nextPlanningSeason,
   type WaterLevel,
@@ -115,12 +116,60 @@ export default class FarmerAnalysisController {
         .from('user_locations')
         .where({ user_id: auth.user.id, district_id: district.district_id })
         .update({ water_availability: input.waterAvailability })
-    let plans: ReturnType<typeof presentRotationPlans> = []
+    let plans:
+      ReturnType<typeof presentRotationPlans> | ReturnType<typeof presentDistrictRotationPreviews> =
+      []
+    let conditionalSystems: Array<Record<string, unknown>> = []
+    let researchIdeas: Array<Record<string, unknown>> = []
     let planning = {
       status: 'needs-farm',
       message: auth.user
         ? 'Choose or add your farm to build rotations that fit its soil, history and water supply.'
         : 'Sign in and add your farm to build rotations that fit its soil, history and water supply.',
+    }
+    if (!farm && version) {
+      const nextSeason = nextPlanningSeason(version.scoring_config?.seasonMonths ?? {})
+      if (nextSeason) {
+        const [references, statistics] = await Promise.all([
+          db
+            .from('crop_calendar_windows as calendar')
+            .join('crops as crop', 'crop.crop_id', 'calendar.crop_id')
+            .join('seasons as season', 'season.season_id', 'calendar.season_id')
+            .join('crop_requirements as requirement', 'requirement.crop_id', 'crop.crop_id')
+            .whereNull('calendar.district_id')
+            .select(
+              'crop.crop_id',
+              'crop.crop_name',
+              'requirement.botanical_family',
+              'season.season_name',
+              'calendar.sowing_start_month',
+              'calendar.sowing_start_day',
+              'calendar.duration_min_days',
+              'calendar.duration_max_days',
+              'requirement.water_requirement_mm',
+              'requirement.crop_soil_effect_points',
+              'requirement.source_id as soil_effect_source_id',
+              'requirement.reference_details'
+            ),
+          batch
+            ? db
+                .from('district_crop_statistics')
+                .where({ district_id: district.district_id, batch_id: batch.batch_id })
+                .select('crop_id', 'area_acres', 'reported_yield_metric_tonnes_per_hectare')
+            : Promise.resolve([]),
+        ])
+        const local = new Map(statistics.map((row) => [String(row.crop_id), row]))
+        plans = presentDistrictRotationPreviews(
+          references.map((row) => ({ ...row, ...local.get(String(row.crop_id)) })),
+          district.district_name,
+          nextSeason
+        )
+        if (plans.length)
+          planning = {
+            status: 'district-preview',
+            message: `Three seasonal previews ranked with ${district.district_name} crop records. Add a farm to check soil, irrigation and crop history.`,
+          }
+      }
     }
     if (farm) {
       try {
@@ -135,6 +184,8 @@ export default class FarmerAnalysisController {
           allowIncompleteFarm: true,
         })
         plans = presentRotationPlans(result.recommendations, result.runId, result.missingChecks)
+        conditionalSystems = result.conditionalSystems
+        researchIdeas = result.researchIdeas
         planning = {
           status: plans.length ? 'ready' : 'no-feasible-plans',
           message: plans.length
@@ -162,6 +213,8 @@ export default class FarmerAnalysisController {
       },
       water,
       plans,
+      conditionalSystems,
+      researchIdeas,
       planning,
       contextNote:
         'Historical district references and your water choice guide this outlook. Rotations use measured farm inputs and a cached environmental profile; this is not a forecast.',

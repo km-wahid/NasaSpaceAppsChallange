@@ -5,6 +5,7 @@ import Icon from './icon'
 export type RotationPlan = {
   id: string
   demo?: boolean
+  preview?: boolean
   runId?: string
   rank?: number
   label: string
@@ -12,6 +13,7 @@ export type RotationPlan = {
   fit: string
   soilHealth?: string
   soilNote?: string
+  combinedGrossMarginBdt?: number | null
   crops: Array<{
     id: number
     name: string
@@ -24,6 +26,24 @@ export type RotationPlan = {
     soilContribution?: string
     soilSourceId?: string
     soilNote?: string
+    system?: {
+      id: number
+      type: string
+      timingPattern: string
+      spatialPattern: string
+      evidenceStatus: 'eligible'
+      managementNote: string
+      components: Array<{
+        type: string
+        name: string
+        role: string
+        startDate: string
+        endDate: string
+        outputPerHa: number
+        outputUnit: string
+        grossMarginPerHa: number
+      }>
+    }
   }>
   reasons: Array<{ kind: string; title: string; text: string }>
   tradeoffs: Array<{ kind: string; text: string }>
@@ -34,6 +54,12 @@ const monthLabel = (date: string) =>
   new Date(`${date.slice(0, 10)}T00:00:00Z`).toLocaleDateString('en', {
     month: 'short',
     year: 'numeric',
+    timeZone: 'UTC',
+  })
+const dayLabel = (date: string) =>
+  new Date(`${date.slice(0, 10)}T00:00:00Z`).toLocaleDateString('en', {
+    day: 'numeric',
+    month: 'short',
     timeZone: 'UTC',
   })
 
@@ -100,7 +126,9 @@ export default function RotationPlans({
     const text = [
       plan.demo
         ? 'DEMO ONLY — SAMPLE CROP ROTATION, NOT PLANTING ADVICE'
-        : 'CROP ROTATION PLANNING GUIDE',
+        : plan.preview
+          ? 'DISTRICT CROP ROTATION PREVIEW — FARM CONDITIONS NOT YET CHECKED'
+          : 'CROP ROTATION PLANNING GUIDE',
       plan.label,
       'A decision-support plan, not a yield guarantee or record of crops planted.',
       '',
@@ -111,6 +139,16 @@ export default function RotationPlans({
         `Soil: ${item.soilContribution ?? 'Soil evidence unavailable'}`,
         `Why: ${item.reason}`,
         `Next: ${item.nextCrop}`,
+        ...(item.system
+          ? [
+              `Integrated system: ${item.system.type.replaceAll('_', ' ')} (${item.system.spatialPattern.replaceAll('_', ' ')}, ${item.system.timingPattern.replaceAll('_', ' ')})`,
+              ...item.system.components.map(
+                (component) =>
+                  `${component.name}: ${component.startDate} to ${component.endDate}; ${component.outputPerHa} ${component.outputUnit}/ha; BDT ${component.grossMarginPerHa}/ha gross margin`
+              ),
+              `Management: ${item.system.managementNote}`,
+            ]
+          : []),
         '',
       ]),
       'WHY THIS ROTATION',
@@ -124,7 +162,11 @@ export default function RotationPlans({
     const url = URL.createObjectURL(new Blob([text], { type: 'text/plain;charset=utf-8' }))
     const link = document.createElement('a')
     link.href = url
-    link.download = plan.demo ? 'sample-crop-rotation.txt' : 'crop-rotation-plan.txt'
+    link.download = plan.demo
+      ? 'sample-crop-rotation.txt'
+      : plan.preview
+        ? 'district-crop-preview.txt'
+        : 'crop-rotation-plan.txt'
     link.click()
     window.setTimeout(() => URL.revokeObjectURL(url), 1000)
   }
@@ -146,41 +188,92 @@ export default function RotationPlans({
       <div className="card border-2 border-primary/25 bg-base-100">
         <div className="card-body gap-4 p-5 sm:p-7">
           <p className="agri-eyebrow text-primary">
-            {plan.demo ? 'EXPLORE CROP ROTATIONS' : 'YOUR CROP ROTATION RECOMMENDATIONS'}
+            {plan.demo
+              ? 'EXPLORE CROP ROTATIONS'
+              : plan.preview
+                ? 'YOUR DISTRICT CROP PREVIEWS'
+                : 'YOUR CROP ROTATION RECOMMENDATIONS'}
           </p>
           {plan.demo && <span className="badge badge-ghost badge-sm">Sample plan</span>}
+          {plan.preview && (
+            <span className="badge badge-info badge-outline">Local data preview</span>
+          )}
           <h2 className="text-2xl font-semibold">
             {plans.length} rotation {plans.length === 1 ? 'plan' : 'plans'} to explore
           </h2>
           <p className="text-sm text-base-content/75">
             {plan.demo
               ? 'Explore growing months, water needs and soil-health notes.'
-              : 'Compared using your saved priorities. Review the calendar and trade-offs, then choose a rotation for your farm.'}
+              : plan.preview
+                ? 'Ranked with the selected district’s crop records and reviewed seasonal calendars. Add a farm for field-level checks.'
+                : 'Compared using your saved priorities. Review the calendar and trade-offs, then choose a rotation for your farm.'}
           </p>
+          <div className="plan-snapshot" aria-label="Rotation at a glance">
+            <div>
+              <span className="text-info">
+                <Icon name="water" size={23} />
+              </span>
+              <small>Water</small>
+              <strong>{waterLabels[plan.waterDemand]}</strong>
+            </div>
+            <div>
+              <span className="text-primary">
+                <Icon name="soil" size={23} />
+              </span>
+              <small>Soil</small>
+              <strong>{plan.soilHealth ?? 'Review needed'}</strong>
+            </div>
+            <div>
+              <span className="text-warning">
+                <Icon name="calendar" size={23} />
+              </span>
+              <small>Seasons</small>
+              <strong>{plan.crops.length} crops</strong>
+            </div>
+          </div>
           <div className="flex flex-wrap gap-3">
-            <button
-              type="button"
-              className="btn btn-primary min-h-12"
-              disabled={plan.demo || !farmId || !plan.runId || saving || isSaved}
-              onClick={() => void useRotation()}
-            >
-              <Icon name={isSaved ? 'check' : 'leaf'} />
-              {plan.demo
-                ? 'Sample only · cannot apply'
-                : saving
+            {plan.demo ? (
+              <a className="btn btn-primary min-h-12" href="/planner">
+                Plan for my district <Icon name="arrow" />
+              </a>
+            ) : plan.preview ? (
+              <a className="btn btn-primary min-h-12" href="/farms">
+                Personalize with my farm <Icon name="arrow" />
+              </a>
+            ) : (
+              <button
+                type="button"
+                className="btn btn-primary min-h-12"
+                disabled={!farmId || !plan.runId || saving || isSaved}
+                onClick={() => void useRotation()}
+              >
+                <Icon name={isSaved ? 'check' : 'leaf'} />
+                {saving
                   ? 'Saving your rotation…'
                   : isSaved
                     ? 'Rotation saved to your farm'
                     : `Use this rotation · ${plan.label}`}
-            </button>
-            <a className="btn btn-outline min-h-12" href="#rotation-alternatives">
-              Compare rotation plans
-            </a>
-            <button type="button" className="btn btn-ghost min-h-12" onClick={downloadPlan}>
-              {plan.demo ? 'Download sample preview' : 'Download planting guide'}
-              <Icon name="arrow" />
-            </button>
+              </button>
+            )}
           </div>
+          <details className="collapse collapse-arrow plan-actions border border-base-300 bg-base-200">
+            <summary className="collapse-title font-semibold">More plan actions</summary>
+            <div className="collapse-content flex flex-wrap gap-3">
+              <a
+                className="btn btn-outline min-h-12"
+                href={
+                  farmId && plan.runId
+                    ? `/compare?farmId=${farmId}&runId=${plan.runId}`
+                    : '#rotation-alternatives'
+                }
+              >
+                Compare rotations
+              </a>
+              <button type="button" className="btn btn-ghost min-h-12" onClick={downloadPlan}>
+                Download guide <Icon name="arrow" />
+              </button>
+            </div>
+          </details>
           {!farmId && !plan.demo && (
             <p className="text-xs text-base-content/65">
               Sign in and generate plans for a saved farm to save your choice.
@@ -209,45 +302,53 @@ export default function RotationPlans({
       </div>
       <div className="card rotation-calendar border border-base-300 bg-base-100">
         <div className="card-body gap-6 p-5 sm:p-8">
-          <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="rotation-calendar-heading">
             <div>
               <p className="agri-eyebrow text-primary">
-                <Icon name="leaf" size={16} /> YOUR GROWING CALENDAR
+                <Icon name="calendar" size={16} /> YOUR GROWING CALENDAR
               </p>
-              <h2 className="mt-1 text-2xl font-semibold">{plan.label} · Crop rotation</h2>
+              <h2
+                className="mt-1 text-2xl font-semibold"
+                aria-label={`${plan.label} · Crop rotation`}
+              >
+                {plan.label}
+              </h2>
             </div>
-            <span className="badge badge-success badge-outline">{plan.fit}</span>
+            <span className="badge badge-success badge-outline">
+              {plan.demo ? 'Seasonal preview' : plan.fit}
+            </span>
           </div>
           <p className="text-sm text-base-content/75">
             {plan.demo
-              ? 'Tap a crop to explore its growing period, water needs and soil contribution.'
-              : 'Tap a crop to explore it. Planting and harvest months come from the farm’s scheduled plan, including time for land preparation.'}
+              ? 'Choose a crop to see its season, water need and place in the rotation.'
+              : 'Choose a crop to see its scheduled season, water need and place in the rotation.'}
           </p>
-          <div className="rotation-sequence" aria-label="Crop sequence">
-            {plan.crops.map((item, i) => (
-              <button
-                key={`${item.id}-${i}`}
-                type="button"
-                className="btn btn-ghost rotation-sequence-crop"
-                data-tone={i % 3}
-                aria-pressed={i === cropIndex}
-                onClick={() => setCropIndex(i)}
-              >
-                <span className="rotation-crop-icon">
-                  <Icon name="leaf" size={22} />
-                </span>
-                <span>
-                  <small>SEASON {i + 1}</small>
-                  <strong>{item.name}</strong>
-                  <small>
-                    {monthLabel(item.plantingDate)} → {monthLabel(item.harvestDate)}
-                  </small>
-                  <small>{item.soilContribution ?? 'Soil evidence unavailable'}</small>
-                </span>
-                {i < plan.crops.length - 1 && <Icon name="arrow" size={16} />}
-              </button>
-            ))}
-          </div>
+          {plan.crops.length > 1 && (
+            <div className="rotation-sequence" aria-label="Crop sequence">
+              {plan.crops.map((item, i) => (
+                <button
+                  key={`${item.id}-${i}`}
+                  type="button"
+                  className="btn btn-ghost rotation-sequence-crop"
+                  data-tone={i % 3}
+                  aria-pressed={i === cropIndex}
+                  onClick={() => setCropIndex(i)}
+                >
+                  <span className="rotation-crop-icon">
+                    <Icon name="sprout" size={22} />
+                  </span>
+                  <span>
+                    <small>SEASON {i + 1}</small>
+                    <strong>{item.name}</strong>
+                    <small>
+                      {monthLabel(item.plantingDate)} → {monthLabel(item.harvestDate)}
+                    </small>
+                  </span>
+                  {i < plan.crops.length - 1 && <Icon name="arrow" size={16} />}
+                </button>
+              ))}
+            </div>
+          )}
           <div
             className="rotation-month-grid overflow-x-auto rounded-xl border border-base-300 p-4"
             tabIndex={0}
@@ -298,137 +399,213 @@ export default function RotationPlans({
           </div>
           {crop && (
             <div className="rotation-crop-detail rounded-xl bg-base-200 p-5" aria-live="polite">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <h3 className="flex items-center gap-2 text-xl font-semibold">
-                  <Icon name="leaf" />
-                  {crop.name}
-                </h3>
+              <div className="crop-detail-heading">
+                <span className="rotation-crop-icon">
+                  <Icon name="sprout" size={24} />
+                </span>
+                <div>
+                  <p>Selected crop</p>
+                  <h3>{crop.name}</h3>
+                </div>
                 <span className="badge badge-outline">{crop.condition}</span>
               </div>
-              <div className="mt-4 grid gap-4 sm:grid-cols-3">
-                <div>
-                  <p className="text-xs text-base-content/65">Growing period</p>
-                  <p className="mt-1 font-medium">
-                    {monthLabel(crop.plantingDate)} → {monthLabel(crop.harvestDate)}
-                  </p>
-                  <p className="mt-2 text-xs text-base-content/70">
-                    Plant: {crop.plantingDate.slice(0, 10)}
-                    <br />
-                    Harvest: {crop.harvestDate.slice(0, 10)}
-                  </p>
+              <div className="crop-fact-grid">
+                <div className="crop-fact">
+                  <span>
+                    <Icon name="calendar" />
+                  </span>
+                  <div>
+                    <p>Growing season</p>
+                    <strong>
+                      {monthLabel(crop.plantingDate)} → {monthLabel(crop.harvestDate)}
+                    </strong>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-xs text-base-content/65">Water need</p>
-                  <p className="mt-1 font-medium">{waterLabels[crop.waterNeed]}</p>
-                  {crop.waterNeed !== 'unknown' && (
-                    <progress
-                      className="progress progress-info mt-2 w-full max-w-32"
-                      value={{ low: 30, medium: 60, high: 90 }[crop.waterNeed]}
-                      max={100}
-                      aria-label={`${crop.name} water need: ${waterLabels[crop.waterNeed]}`}
-                      aria-valuetext={waterLabels[crop.waterNeed]}
-                    />
-                  )}
+                <div className="crop-fact">
+                  <span>
+                    <Icon name="water" />
+                  </span>
+                  <div>
+                    <p>Water need</p>
+                    <strong>{waterLabels[crop.waterNeed]}</strong>
+                    {crop.waterNeed !== 'unknown' && (
+                      <progress
+                        className="progress progress-info mt-2 w-full"
+                        value={{ low: 30, medium: 60, high: 90 }[crop.waterNeed]}
+                        max={100}
+                        aria-label={`${crop.name} water need: ${waterLabels[crop.waterNeed]}`}
+                        aria-valuetext={waterLabels[crop.waterNeed]}
+                      />
+                    )}
+                  </div>
                 </div>
-                <div>
-                  <p className="text-xs text-base-content/65">Next crop</p>
-                  <p className="mt-1 font-medium">{crop.nextCrop}</p>
+                <div className="crop-fact">
+                  <span>
+                    <Icon name="arrow" />
+                  </span>
+                  <div>
+                    <p>Next crop</p>
+                    <strong>{crop.nextCrop}</strong>
+                  </div>
                 </div>
               </div>
               <p className="crop-selection-reason mt-4 text-sm text-base-content/80">
                 <Icon name="info" size={18} />
                 {crop.reason}
               </p>
-              <p className="mt-3 text-sm font-medium text-primary">
-                Soil contribution: {crop.soilContribution ?? 'Soil evidence unavailable'}
-              </p>
-              <p className="mt-1 text-xs text-base-content/70">
-                {crop.soilNote ??
-                  'Potential reference effect, not a guarantee of improved field soil.'}
-                {crop.soilSourceId && (
-                  <>
-                    {' '}
-                    <a className="link" href="/sources">
-                      View agricultural sources
-                    </a>
-                  </>
-                )}
-              </p>
+              {crop.system && (
+                <div className="card card-border mt-4 bg-base-100">
+                  <div className="card-body gap-3 p-4">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <h4 className="card-title text-base">Integrated farming system</h4>
+                      <span className="badge badge-success badge-outline">Source-backed</span>
+                    </div>
+                    <p className="text-sm text-base-content/75">
+                      {crop.system.spatialPattern.replaceAll('_', ' ')} ·{' '}
+                      {crop.system.timingPattern.replaceAll('_', ' ')}
+                    </p>
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      {crop.system.components.map((component) => (
+                        <div
+                          key={`${component.type}-${component.name}`}
+                          className="rounded-box border border-base-300 p-3"
+                        >
+                          <p className="font-semibold">{component.name}</p>
+                          <p className="text-xs text-base-content/65">
+                            {component.role} · {component.startDate} to {component.endDate}
+                          </p>
+                          <p className="mt-2 text-sm">
+                            Expected output: {component.outputPerHa.toLocaleString()}{' '}
+                            {component.outputUnit}/ha
+                          </p>
+                          <p className="text-sm">
+                            Gross margin: BDT {component.grossMarginPerHa.toLocaleString()}/ha
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-xs text-base-content/70">{crop.system.managementNote}</p>
+                  </div>
+                </div>
+              )}
+              <details className="collapse collapse-arrow crop-evidence">
+                <summary className="collapse-title">
+                  <span>
+                    <Icon name="soil" size={18} /> Soil role
+                  </span>
+                  <strong>{crop.soilContribution ?? 'Evidence unavailable'}</strong>
+                </summary>
+                <div className="collapse-content">
+                  <div className="crop-date-route" aria-label="Exact growing dates">
+                    <span>
+                      <small>Plant</small>
+                      <strong>{dayLabel(crop.plantingDate)}</strong>
+                    </span>
+                    <i aria-hidden="true" />
+                    <span>
+                      <small>Harvest</small>
+                      <strong>{dayLabel(crop.harvestDate)}</strong>
+                    </span>
+                  </div>
+                  <p>
+                    {crop.soilNote ??
+                      'Potential reference effect, not a guarantee of improved field soil.'}
+                    {crop.soilSourceId && (
+                      <>
+                        {' '}
+                        <a className="link" href="/sources">
+                          View agricultural sources
+                        </a>
+                      </>
+                    )}
+                  </p>
+                </div>
+              </details>
             </div>
           )}
         </div>
       </div>
-      <div className="grid gap-6 lg:grid-cols-2">
-        <div className="card crop-demand-card border border-base-300 bg-base-100">
-          <div className="card-body p-6">
-            <span className="agri-icon-box">
-              <Icon name="water" size={24} />
-            </span>
-            <h2 className="text-xl font-semibold">Crop water demand</h2>
-            <p className="text-sm text-base-content/65">
-              Relative demand for this rotation, not an irrigation estimate.
-            </p>
-            <div className="mt-3 space-y-5">
-              {plan.crops.map((item, i) => (
-                <div key={i}>
-                  <div className="mb-2 flex justify-between text-sm">
-                    <span>{item.name}</span>
-                    <span>{waterLabels[item.waterNeed]}</span>
+      <details className="collapse collapse-arrow plan-explanation border border-base-300 bg-base-100">
+        <summary className="collapse-title">
+          <span className="flex items-center gap-3 font-semibold">
+            <Icon name="info" /> Why this plan fits
+          </span>
+          <span className="block text-sm font-normal text-base-content/65">
+            Water, soil and trade-offs
+          </span>
+        </summary>
+        <div className="collapse-content grid gap-6 lg:grid-cols-2">
+          <div className="crop-demand-card rounded-box bg-base-200">
+            <div className="p-6">
+              <span className="agri-icon-box">
+                <Icon name="water" size={24} />
+              </span>
+              <h2 className="text-xl font-semibold">Crop water demand</h2>
+              <p className="text-sm text-base-content/65">
+                Relative demand for this rotation, not an irrigation estimate.
+              </p>
+              <div className="mt-3 space-y-5">
+                {plan.crops.map((item, i) => (
+                  <div key={i}>
+                    <div className="mb-2 flex justify-between text-sm">
+                      <span>{item.name}</span>
+                      <span>{waterLabels[item.waterNeed]}</span>
+                    </div>
+                    {item.waterNeed !== 'unknown' && (
+                      <progress
+                        className="progress progress-info w-full"
+                        value={{ low: 30, medium: 60, high: 90 }[item.waterNeed]}
+                        max={100}
+                        aria-label={`${item.name}: ${waterLabels[item.waterNeed]} water demand`}
+                        aria-valuetext={waterLabels[item.waterNeed]}
+                      />
+                    )}
                   </div>
-                  {item.waterNeed !== 'unknown' && (
-                    <progress
-                      className="progress progress-info w-full"
-                      value={{ low: 30, medium: 60, high: 90 }[item.waterNeed]}
-                      max={100}
-                      aria-label={`${item.name}: ${waterLabels[item.waterNeed]} water demand`}
-                      aria-valuetext={waterLabels[item.waterNeed]}
-                    />
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-        <div className="card rotation-reasons-card border border-base-300 bg-base-100">
-          <div className="card-body p-6">
-            <h2 className="text-xl font-semibold">Why this rotation?</h2>
-            <div className="mt-2 grid gap-4 sm:grid-cols-2">
-              {plan.reasons.map((reason) => (
-                <div key={reason.kind} className="rotation-reason rounded-xl bg-base-200 p-4">
-                  <span className="text-primary">
-                    <Icon
-                      name={
-                        reason.kind === 'water'
-                          ? 'water'
-                          : reason.kind === 'climate'
-                            ? 'sun'
-                            : 'leaf'
-                      }
-                    />
-                  </span>
-                  <h3 className="mt-2 font-semibold">{reason.title}</h3>
-                  <p className="mt-1 text-sm text-base-content/75">{reason.text}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-      {plan.tradeoffs.filter((item) => item.kind !== 'reason').length > 0 && (
-        <div className="alert alert-warning alert-soft items-start">
-          <Icon name="info" />
-          <div>
-            <h3 className="font-semibold">Keep in mind</h3>
-            <ul className="mt-2 list-disc space-y-1 pl-4 text-sm">
-              {plan.tradeoffs
-                .filter((item) => item.kind !== 'reason')
-                .map((item, i) => (
-                  <li key={i}>{item.text}</li>
                 ))}
-            </ul>
+              </div>
+            </div>
           </div>
+          <div className="rotation-reasons-card rounded-box bg-base-200">
+            <div className="p-6">
+              <h2 className="text-xl font-semibold">Why this rotation?</h2>
+              <div className="mt-2 grid gap-4 sm:grid-cols-2">
+                {plan.reasons.map((reason) => (
+                  <div key={reason.kind} className="rotation-reason rounded-xl bg-base-200 p-4">
+                    <span className="text-primary">
+                      <Icon
+                        name={
+                          reason.kind === 'water'
+                            ? 'water'
+                            : reason.kind === 'climate'
+                              ? 'sun'
+                              : 'leaf'
+                        }
+                      />
+                    </span>
+                    <h3 className="mt-2 font-semibold">{reason.title}</h3>
+                    <p className="mt-1 text-sm text-base-content/75">{reason.text}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          {plan.tradeoffs.filter((item) => item.kind !== 'reason').length > 0 && (
+            <div className="alert alert-warning alert-soft items-start lg:col-span-2">
+              <Icon name="info" />
+              <div>
+                <h3 className="font-semibold">Keep in mind</h3>
+                <ul className="mt-2 list-disc space-y-1 pl-4 text-sm">
+                  {plan.tradeoffs
+                    .filter((item) => item.kind !== 'reason')
+                    .map((item, i) => (
+                      <li key={i}>{item.text}</li>
+                    ))}
+                </ul>
+              </div>
+            </div>
+          )}
         </div>
-      )}
+      </details>
       <div id="rotation-alternatives" className="rotation-alternatives scroll-mt-32">
         <p className="agri-eyebrow text-primary mb-2">YOUR FARM. MORE THAN ONE PATH.</p>
         <h2 className="text-xl font-semibold">Explore other rotation plans</h2>
@@ -467,26 +644,20 @@ export default function RotationPlans({
               <span className="mt-2 text-sm font-semibold text-primary">
                 Soil: {item.soilHealth ?? 'Soil evidence unavailable'}
               </span>
-              {item.soilNote && (
-                <span className="mt-1 text-xs text-base-content/70">{item.soilNote}</span>
-              )}
-              <span className="my-4 space-y-3">
+              <span className="rotation-alternative-facts">
                 {item.crops.map((listedCrop, position) => (
-                  <span
-                    key={`${listedCrop.id}-${position}`}
-                    className="block border-l-2 border-primary/30 pl-3"
-                  >
-                    <strong className="block text-sm">{listedCrop.name}</strong>
-                    <span className="block text-sm text-base-content/75">
+                  <span key={`${listedCrop.id}-${position}`}>
+                    <strong>{listedCrop.name}</strong>
+                    <small>
                       {monthLabel(listedCrop.plantingDate)} → {monthLabel(listedCrop.harvestDate)}
-                    </span>
-                    <span className="block text-xs text-primary">
-                      {listedCrop.soilContribution ?? 'Soil evidence unavailable'}
-                    </span>
+                    </small>
+                    <small>{listedCrop.soilContribution ?? 'Soil evidence unavailable'}</small>
                   </span>
                 ))}
               </span>
-              <span className="mt-3 text-sm text-base-content/70">{item.fit}</span>
+              <span className="mt-3 text-sm text-base-content/70">
+                {item.crops.length} crops · {item.fit}
+              </span>
             </button>
           ))}
         </div>

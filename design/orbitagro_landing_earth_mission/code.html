@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "inverse-primary": "#bbc7e0", "error-container": "#ffdad6", "on-tertiary": "#ffffff", "secondary-fixed-dim": "#acc7ff", "inverse-on-surface": "#eff1ee", "on-secondary": "#ffffff", "on-error-container": "#93000a", "on-surface-variant": "#44474c", "tertiary": "#000000", "surface-tint": "#535f74", "on-secondary-fixed-variant": "#004491", "primary-fixed": "#d7e3fc", "tertiary-fixed": "#a4f3c6", "surface-dim": "#d8dbd8", "surface-container-highest": "#e1e3e0", "on-secondary-container": "#002f68", "on-primary-container": "#78849b", "secondary": "#005bbe", "surface-bright": "#f8faf7", "tertiary-fixed-dim": "#89d7ab", "background": "#f8faf7", "outline-variant": "#c5c6cd", "on-error": "#ffffff", "outline": "#75777d", "on-primary-fixed-variant": "#3b475c", "error": "#ba1a1a", "inverse-surface": "#2e312f", "primary-fixed-dim": "#bbc7e0", "secondary-container": "#5b97fd", "tertiary-container": "#002112", "primary": "#000000", "on-secondary-fixed": "#001a40", "surface-variant": "#e1e3e0", "on-primary-fixed": "#0f1c2e", "surface": "#f8faf7", "on-primary": "#ffffff", "secondary-fixed": "#d7e2ff", "surface-container-low": "#f2f4f1", "on-tertiary-container": "#45926c", "surface-container-lowest": "#ffffff", "on-tertiary-fixed-variant": "#005234", "surface-container-high": "#e7e9e6", "on-background": "#191c1b", "surface-container": "#eceeeb", "on-tertiary-fixed": "#002112", "primary-container": "#0f1c2e", "on-surface": "#191c1b" }, "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, "spacing": { "gutter-mobile": "0.75rem", "gutter": "1.5rem", "space-xl": "2.5rem", "margin-mobile": "1rem", "space-sm": "0.5rem", "space-md": "1rem", "space-lg": "1.5rem", "margin": "2rem", "space-xs": "0.25rem" }, "fontFamily": { "body-sm": ["Inter"], "body-md": ["Inter"], "data-mono": ["Inter"], "headline-sm": ["Manrope"], "headline-md": ["Manrope"], "label-md": ["Inter"], "display-hero": ["Manrope"], "headline-lg-mobile": ["Manrope"], "display-hero-mobile": ["Manrope"], "label-sm": ["Inter"], "label-lg": ["Inter"], "body-lg": ["Inter"], "title-md": ["Manrope"], "headline-lg": ["Manrope"] }, "fontSize": { "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }], "body-md": ["15px", { "lineHeight": "22px", "fontWeight": "400" }], "data-mono": ["13px", { "lineHeight": "16px", "fontWeight": "500" }], "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }], "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }], "label-md": ["12px", { "lineHeight": "16px", "fontWeight": "500" }], "display-hero": ["48px", { "lineHeight": "56px", "fontWeight": "700" }], "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "600" }], "display-hero-mobile": ["32px", { "lineHeight": "40px", "fontWeight": "700" }], "label-sm": ["11px", { "lineHeight": "14px", "fontWeight": "600" }], "label-lg": ["14px", { "lineHeight": "20px", "fontWeight": "600" }], "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }], "title-md": ["16px", { "lineHeight": "24px", "fontWeight": "600" }], "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "700" }] } } } };</script></head><body class="bg-surface font-body-md text-on-surface antialiased"><header class="fixed top-0 w-full z-50 bg-primary-container shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="w-full px-gutter"><div class="h-24 flex flex-col justify-between py-space-xs"><div class="flex items-center justify-between gap-gutter border-b border-on-surface-variant/20 pb-space-xs"><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-sm"><img alt="OrbitAgro Brand Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1W-5R0ewf4VmwT61Ipg5HjcKGZIPdL5NQXmOLsR8WUus8De_D3iWb4105hX_atWM3uVRaqiGWXpauUWmNnmgPoWoUyp5Q7iHo8T88C6qwP95LozRRsv_fBra4rwaTuPjZVtvnT7oRWB4hqwEXDv8Je1UW9j3zjm0j1BUdSXhZEMgGVoNpHNYOjRxgikoPbXBuaBOzSiXs1w6i_4n3IM8YIUmSzZuiNI0PQi9BVgrsVPOQ"/><div class="flex flex-col"><span class="font-title-md text-title-md text-on-primary tracking-tight font-bold">OrbitAgro</span><span class="font-label-sm text-label-sm text-secondary-container uppercase tracking-wider">NASA EO Intelligence</span></div></div><div class="hidden xl:flex items-center px-space-sm py-space-xs rounded bg-surface-container-highest/10 text-primary-fixed font-label-sm text-label-sm">NASA Earth Observations Partner</div></div><div class="hidden lg:flex items-center gap-space-md text-primary-fixed"><div class="flex items-center gap-space-xs"><span class="font-label-md text-label-md text-primary-fixed-dim">Current Zone:</span><span class="font-data-mono text-data-mono font-medium text-on-primary">Rangpur Division, Bangladesh (25.7439° N, 89.2752° E)</span></div><div class="flex items-center gap-space-xs px-space-sm py-space-xs rounded bg-secondary/20 text-secondary-fixed font-label-sm text-label-sm"><span class="w-2 h-2 rounded-full bg-secondary-container animate-pulse"></span><span>Sentinel-2 / Landsat-9: In Sync</span></div></div><div class="flex items-center gap-space-lg"><div class="flex items-center bg-surface-container-highest/15 rounded p-space-xs gap-space-xs"><button class="px-space-sm py-space-xs rounded font-label-sm text-label-sm bg-secondary text-on-secondary font-semibold" type="button">English</button><button class="px-space-sm py-space-xs rounded font-label-sm text-label-sm text-primary-fixed hover:text-on-primary" type="button">বাংলা</button></div><div class="flex items-center gap-space-sm"><div class="text-right hidden sm:block"><div class="font-label-md text-label-md text-on-primary font-semibold">Md. Rafiqul Islam</div><div class="font-label-sm text-label-sm text-primary-fixed-dim">Agro-Lead • ID: RPR-FIELD-04</div></div><img alt="Profile" class="w-8 h-8 rounded-full object-cover ring-2 ring-secondary/50" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMShH6_6l5tlma21DNnioSA2_32uVBxc0AS1kuCyBo__-daCfSfE7fzwnY7hpy8YIsptlQg_JJ5XryBtiVKZGjRDKWQjXBrwl_nv6hP7a53inrqSbdk0wPG89_feMy_Iaxb1JykaUxvricPUzvKXBmB3fiFpQCftaUZOCk1Bkl5KCYNl_apQ_WoEHoXhd8eWZcVaYaI4qPLwe_3MbgdJljDZ2FwRZlMHHIJ7N0A4LC"/></div></div></div><div class="flex items-center justify-between"><nav class="flex items-center gap-space-lg" data-active-classes="text-secondary-fixed border-b-2 border-secondary-container font-semibold"><a class="font-label-md text-label-md py-space-xs text-primary-fixed-dim hover:text-on-primary transition-colors" data-path="landing-and-mission" href="#">Landing &amp; Mission</a><a class="font-label-md text-label-md py-space-xs text-primary-fixed-dim hover:text-on-primary transition-colors" data-path="farmer-dashboard" href="#">Farmer Dashboard</a><a class="font-label-md text-label-md py-space-xs text-primary-fixed-dim hover:text-on-primary transition-colors" data-path="earth-observation-explorer" href="#">Earth Observation Explorer</a><a class="font-label-md text-label-md py-space-xs text-primary-fixed-dim hover:text-on-primary transition-colors" data-path="crop-rotation-advisor" href="#">Crop Rotation Advisor</a><a class="font-label-md text-label-md py-space-xs text-primary-fixed-dim hover:text-on-primary transition-colors" data-path="strategy-comparison" href="#">Strategy Comparison</a></nav><div class="hidden md:block font-label-sm text-label-sm text-on-primary-container truncate max-w-md">NASA Earth observation decision support demonstration. Illustrative data for Rangpur, Bangladesh.</div></div></div></div></header><main class="w-full pt-24 bg-surface min-h-screen"><div class="flex flex-col w-full">
+<!-- SECTION 1: HERO VIEWPORT -->
+<section class="relative w-full bg-primary-container text-on-primary overflow-hidden shadow-xl">
+<!-- Orbital Grid & Telemetry Vector Background -->
+<div class="absolute inset-0 pointer-events-none opacity-20">
+<svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<pattern height="48" id="orbital-grid" patternunits="userSpaceOnUse" width="48">
+<path class="text-secondary-fixed-dim" d="M 48 0 L 0 0 0 48" fill="none" stroke="currentColor" stroke-width="0.5"></path>
+<circle class="text-secondary-container" cx="24" cy="24" fill="currentColor" r="0.75"></circle>
+</pattern>
+</defs>
+<rect fill="url(#orbital-grid)" height="100%" width="100%"></rect>
+</svg>
+</div>
+<div class="relative w-full px-gutter py-space-xl lg:py-28 flex flex-col gap-space-xl max-w-7xl mx-auto">
+<!-- Upper Status Badge & Coordinates Matrix -->
+<div class="flex flex-wrap items-center justify-between gap-space-md">
+<div class="inline-flex items-center gap-space-sm px-space-md py-space-xs rounded bg-surface-container-highest/15 text-primary-fixed">
+<span class="w-2.5 h-2.5 rounded-full bg-secondary-container animate-ping"></span>
+<span class="font-label-sm text-label-sm tracking-wide uppercase font-semibold">NASA Earth Observation Initiative • নাসা ভূ-উপগ্রহ কৃষি পর্যবেক্ষণ</span>
+</div>
+<div class="flex items-center gap-space-md text-on-primary-container font-data-mono text-data-mono">
+<span class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-secondary-fixed-dim text-base">satellite_alt</span>
+            EO-CONSTELLATION: PASS #4812
+          </span>
+<span class="hidden sm:inline">|</span>
+<span class="hidden sm:inline">RANGPUR B-BOX: [25.74°N, 89.27°E]</span>
+</div>
+</div>
+<!-- Main Asymmetric Headline & Visualization Split -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-xl items-center">
+<!-- Editorial Framing Left Column -->
+<div class="lg:col-span-7 flex flex-col gap-space-lg">
+<div class="flex flex-col gap-space-sm">
+<h1 class="font-display-hero text-display-hero tracking-tight text-on-primary leading-none">
+              Understand Your Land. <br class="hidden sm:inline"/>
+<span class="text-secondary-fixed">Adapt Your Farming.</span> <br/>
+              Grow Resilience.
+            </h1>
+<p class="font-headline-sm text-headline-sm text-secondary-fixed-dim font-medium">
+              আপনার জমি বুঝুন, জলবায়ু সহনশীল ফসল ফলান।
+            </p>
+</div>
+<p class="font-body-lg text-body-lg text-primary-fixed-dim max-w-2xl">
+            Explore NASA Earth observations and discover crop rotation strategies designed around your local climate, soil dynamics, and farming priorities in Rangpur Division and the greater alluvial plains of Bangladesh.
+          </p>
+<!-- Dual Primary / Ghost Calls to Action -->
+<div class="flex flex-wrap items-center gap-space-md pt-space-xs">
+<a class="inline-flex items-center justify-center gap-space-sm px-6 py-3.5 rounded bg-secondary hover:bg-secondary/90 text-on-secondary font-label-lg text-label-lg transition-transform active:scale-95 shadow-md" href="#">
+<span class="material-symbols-outlined text-lg">travel_explore</span>
+<span>Explore Your Farm (খামার বিশ্লেষণ শুরু করুন)</span>
+</a>
+<a class="inline-flex items-center justify-center gap-space-sm px-6 py-3.5 rounded bg-surface-container-highest/15 hover:bg-surface-container-highest/25 text-primary-fixed font-label-lg text-label-lg transition-colors" href="#pipeline-section">
+<span class="material-symbols-outlined text-lg">dataset</span>
+<span>Explore NASA Datasets (নাসা উপাত্ত দেখুন)</span>
+</a>
+</div>
+<!-- Epistemic Grounding Note -->
+<div class="flex items-center gap-space-sm text-on-primary-container font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-base text-secondary-container">verified</span>
+<span>Calibrated with BARI (Bangladesh Agricultural Research Institute) telemetry models</span>
+</div>
+</div>
+<!-- High-Tech Geospatial Canvas / Radar HUD Panel -->
+<div class="lg:col-span-5 relative">
+<div class="relative w-full rounded-xl bg-surface-container-lowest/5 p-space-md shadow-2xl backdrop-blur-md">
+<!-- HUD Scanner Frame Header -->
+<div class="flex items-center justify-between pb-space-sm mb-space-sm">
+<div class="flex items-center gap-space-xs">
+<span class="w-2 h-2 rounded-full bg-tertiary-fixed"></span>
+<span class="font-data-mono text-data-mono text-primary-fixed font-bold uppercase tracking-wider">TEESTA RADAR SWEEP // ACTIVE</span>
+</div>
+<span class="font-label-sm text-label-sm text-secondary-fixed-dim">RESOLUTION: 10M²</span>
+</div>
+<!-- Visual Imagery HUD Container -->
+<div class="relative w-full h-80 rounded overflow-hidden bg-primary-container">
+<img class="w-full h-full object-cover opacity-80" data-alt="Satellite earth observation radar map over the agricultural landscape of Rangpur Bangladesh with false-color spectral NDVI vegetation contours in foliar green, SMAP soil moisture heat signatures in deep space navy and cyan, agricultural field parcels along Teesta river delta, sharp scientific telemetry graphics." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDEHYIuuO-JvX5YGDKpCS_uGM-_NsCKooFFgS3jR34LuFUAppMXF5OpwXS741HLdfb3WbuzushGSe4GUljlsBPK0dAAFh33khboFDeYAKUx-5dYfWPOgGohFxogvZlOoNQgf8D3UbEw5ogQicQiAyG86FumyCLHJ0N-snAo4f6hqEQ2kxZhfrkGvZ9ZdxGIl_uuZ_CSHJkO2QPtZceTywOSQo5wSqMYlJKHW9b4FBa4"/>
+<!-- Orbital Sweep Vector Overlay -->
+<div class="absolute inset-0 bg-gradient-to-t from-primary-container via-transparent to-transparent"></div>
+<!-- HUD Target Overlays -->
+<div class="absolute top-4 left-4 p-space-xs rounded bg-primary-container/80 backdrop-blur font-data-mono text-label-sm text-primary-fixed">
+<div>POLY: RPR-PARCEL-884</div>
+<div class="text-tertiary-fixed font-bold">NDVI: 0.71 [HIGH VIGOR]</div>
+</div>
+<div class="absolute bottom-4 right-4 p-space-xs rounded bg-primary-container/80 backdrop-blur font-data-mono text-label-sm text-right text-primary-fixed">
+<div>SMAP: 0.38 m³/m³</div>
+<div class="text-secondary-fixed">SURF-TEMP: 28.2°C</div>
+</div>
+<!-- Reticle Crosshair -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 pointer-events-none flex items-center justify-center">
+<div class="w-12 h-12 rounded-full bg-secondary/20 flex items-center justify-center animate-pulse">
+<div class="w-2 h-2 rounded-full bg-secondary-container"></div>
+</div>
+</div>
+</div>
+<!-- Layer Switcher Footnote Controls -->
+<div class="grid grid-cols-3 gap-space-xs mt-space-sm pt-space-xs text-center font-label-sm text-label-sm">
+<button class="py-1 px-2 rounded bg-secondary text-on-secondary font-medium" type="button">NDVI Vigor</button>
+<button class="py-1 px-2 rounded bg-surface-container-highest/20 text-primary-fixed hover:bg-surface-container-highest/30" type="button">SMAP Moisture</button>
+<button class="py-1 px-2 rounded bg-surface-container-highest/20 text-primary-fixed hover:bg-surface-container-highest/30" type="button">Thermal IR</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Live NASA Satellite Telemetry Bar -->
+<div class="w-full rounded-lg bg-surface-container-lowest/10 backdrop-blur-md p-space-md grid grid-cols-2 lg:grid-cols-4 gap-space-md">
+<!-- Sensor 1: GPM -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-space-xs text-on-primary-container font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-sm text-secondary-fixed">rainy</span>
+<span>GPM IMERG Precip</span>
+</div>
+<div class="flex items-baseline gap-space-xs">
+<span class="font-headline-md text-headline-md font-bold text-on-primary">3.2</span>
+<span class="font-label-md text-label-md text-primary-fixed-dim">mm / 24h</span>
+</div>
+<span class="font-data-mono text-label-sm text-secondary-fixed-dim">Status: Normal Pre-Monsoon</span>
+</div>
+<!-- Sensor 2: SMAP -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-space-xs text-on-primary-container font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-sm text-secondary-fixed">water_drop</span>
+<span>SMAP Soil Moisture</span>
+</div>
+<div class="flex items-baseline gap-space-xs">
+<span class="font-headline-md text-headline-md font-bold text-on-primary">0.34</span>
+<span class="font-label-md text-label-md text-primary-fixed-dim">m³/m³</span>
+</div>
+<span class="font-data-mono text-label-sm text-tertiary-fixed">Optimal Topsoil Satiation</span>
+</div>
+<!-- Sensor 3: MODIS NDVI -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-space-xs text-on-primary-container font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-sm text-secondary-fixed">yard</span>
+<span>MODIS / Sentinel NDVI</span>
+</div>
+<div class="flex items-baseline gap-space-xs">
+<span class="font-headline-md text-headline-md font-bold text-on-primary">0.68</span>
+<span class="font-label-md text-label-md text-primary-fixed-dim">Index (0-1)</span>
+</div>
+<span class="font-data-mono text-label-sm text-tertiary-fixed">Healthy Foliar Canopy</span>
+</div>
+<!-- Sensor 4: ECOSTRESS -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-space-xs text-on-primary-container font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-sm text-secondary-fixed">thermostat</span>
+<span>ECOSTRESS Thermal</span>
+</div>
+<div class="flex items-baseline gap-space-xs">
+<span class="font-headline-md text-headline-md font-bold text-on-primary">29.4</span>
+<span class="font-label-md text-label-md text-primary-fixed-dim">°C Surface</span>
+</div>
+<span class="font-data-mono text-label-sm text-secondary-fixed-dim">Evapotranspiration Balanced</span>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 2: ARCHITECTURAL DATA PIPELINE FLOW -->
+<section class="w-full bg-surface py-space-xl px-gutter max-w-7xl mx-auto flex flex-col gap-space-xl" id="pipeline-section">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-space-md">
+<div class="flex flex-col gap-space-xs max-w-2xl">
+<div class="inline-flex items-center gap-space-xs text-secondary font-label-sm text-label-sm font-semibold uppercase tracking-wider">
+<span class="material-symbols-outlined text-sm">hub</span>
+<span>End-to-End Computational Pipeline</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface font-bold tracking-tight">
+          How Raw Orbital Data Becomes Seed-Level Guidance
+        </h2>
+<p class="font-body-md text-body-md text-on-surface-variant">
+          From NASA's low-Earth orbit constellation to actionable crop rotations suited for Rangpur's char lands and silt plains.
+        </p>
+</div>
+<div class="p-space-sm rounded bg-surface-container font-data-mono text-label-sm text-on-surface-variant flex items-center gap-space-sm self-start md:self-auto">
+<span class="material-symbols-outlined text-base text-secondary">sync</span>
+<span>Pipeline Latency: ~3.8 hrs post-pass</span>
+</div>
+</div>
+<!-- 4-Stage Bento Flow -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-space-md">
+<!-- Stage 1: Satellites -->
+<div class="rounded-xl bg-surface-container-lowest p-space-md shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between gap-space-md">
+<div class="flex flex-col gap-space-sm">
+<div class="w-10 h-10 rounded bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed">
+<span class="material-symbols-outlined text-xl">satellite</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-secondary font-bold">01 // OBSERVATION</span>
+<span class="font-data-mono text-label-sm text-on-surface-variant">6 CONSTELLATIONS</span>
+</div>
+<h3 class="font-title-md text-title-md text-on-surface font-semibold">NASA Sensor Capture</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+            Continuous radiometric polling via GPM (Rain), SMAP (Moisture), ECOSTRESS (Evapotranspiration), Landsat-9, MODIS, and NASA POWER meteorological archives.
+          </p>
+</div>
+<div class="pt-space-sm bg-surface-container-low rounded p-space-xs text-on-surface-variant font-data-mono text-label-sm">
+          Bands: SWIR, TIR, SAR, Optic
+        </div>
+</div>
+<!-- Stage 2: Geospatial Engine -->
+<div class="rounded-xl bg-surface-container-lowest p-space-md shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between gap-space-md">
+<div class="flex flex-col gap-space-sm">
+<div class="w-10 h-10 rounded bg-primary-fixed flex items-center justify-center text-on-primary-fixed">
+<span class="material-symbols-outlined text-xl">memory</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-secondary font-bold">02 // PROCESSING</span>
+<span class="font-data-mono text-label-sm text-on-surface-variant">DOWNSCALED</span>
+</div>
+<h3 class="font-title-md text-title-md text-on-surface font-semibold">Geospatial Processing</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+            Atmospheric correction, cloud masking, and spatial harmonic downscaling to translate 1km regional grid cells into parcel-level 10m agricultural polygons.
+          </p>
+</div>
+<div class="pt-space-sm bg-surface-container-low rounded p-space-xs text-on-surface-variant font-data-mono text-label-sm">
+          Spatial Res: 10m x 10m Mesh
+        </div>
+</div>
+<!-- Stage 3: Agronomic Calibration -->
+<div class="rounded-xl bg-surface-container-lowest p-space-md shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between gap-space-md">
+<div class="flex flex-col gap-space-sm">
+<div class="w-10 h-10 rounded bg-tertiary-fixed flex items-center justify-center text-on-tertiary-fixed">
+<span class="material-symbols-outlined text-xl">compost</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-secondary font-bold">03 // CALIBRATION</span>
+<span class="font-data-mono text-label-sm text-on-surface-variant">BARI / DAE BASIS</span>
+</div>
+<h3 class="font-title-md text-title-md text-on-surface font-semibold">Agronomic Calibration</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+            Cross-referencing telemetry with Rangpur Division silt and alluvial loam profiles, seasonal river char hydro-dynamics, and BARI regional cultivar benchmarks.
+          </p>
+</div>
+<div class="pt-space-sm bg-surface-container-low rounded p-space-xs text-on-surface-variant font-data-mono text-label-sm">
+          Soil: Rangpur Old Himalayan
+        </div>
+</div>
+<!-- Stage 4: Actionable Rotation -->
+<div class="rounded-xl bg-surface-container-lowest p-space-md shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between gap-space-md">
+<div class="flex flex-col gap-space-sm">
+<div class="w-10 h-10 rounded bg-secondary-container flex items-center justify-center text-on-secondary-container">
+<span class="material-symbols-outlined text-xl">alt_route</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-secondary font-bold">04 // SYNTHESIS</span>
+<span class="font-data-mono text-label-sm text-on-surface-variant">DECISION HUDS</span>
+</div>
+<h3 class="font-title-md text-title-md text-on-surface font-semibold">Adaptive Recommendations</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+            Synthesized multi-season rotation schedules with explicit soil nutrition recharge balances, pest risk indexes, and groundwater pumping mitigation.
+          </p>
+</div>
+<div class="pt-space-sm bg-surface-container-low rounded p-space-xs text-on-surface-variant font-data-mono text-label-sm">
+          Output: Explainable Cycles
+        </div>
+</div>
+</div>
+</section>
+<!-- SECTION 3: ENVIRONMENTAL CHALLENGES IN RANGPUR DIVISION -->
+<section class="w-full bg-surface-container-low py-space-xl px-gutter">
+<div class="max-w-7xl mx-auto flex flex-col gap-space-xl">
+<!-- Section Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-space-md">
+<div class="flex flex-col gap-space-xs max-w-2xl">
+<div class="inline-flex items-center gap-space-xs text-error font-label-sm text-label-sm font-semibold uppercase tracking-wider">
+<span class="material-symbols-outlined text-sm">warning</span>
+<span>Target Agro-Ecological Vulnerabilities</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface font-bold tracking-tight">
+            Grounded Realities: Rangpur’s Environmental Pressures
+          </h2>
+<p class="font-body-md text-body-md text-on-surface-variant">
+            The Northern agricultural engine faces distinct hydrological volatility. Satellites identify these critical pressure zones before crops fail.
+          </p>
+</div>
+<!-- Language toggle helper -->
+<div class="flex items-center gap-space-xs bg-surface-container rounded p-space-xs">
+<span class="material-symbols-outlined text-base text-on-surface-variant">translate</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Dual Context: Rangpur Field Assessment</span>
+</div>
+</div>
+<!-- 3 Vulnerability Interactive Cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-lg">
+<!-- Challenge Card 1: Teesta Flooding & Siltation -->
+<div class="rounded-xl bg-surface-container-lowest p-space-lg shadow-sm hover:shadow-md transition-all flex flex-col justify-between gap-space-md">
+<div class="flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<span class="px-space-sm py-space-xs rounded bg-secondary-fixed text-on-secondary-fixed-variant font-label-sm text-label-sm font-semibold">Hydrology &amp; Charlands</span>
+<span class="material-symbols-outlined text-secondary">flood</span>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Teesta River Basin Inundation</h3>
+<p class="font-label-sm text-label-sm text-secondary font-medium">তিস্তা অববাহিকার আকস্মিক বন্যা ও বালুচরের পলি জমা</p>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+              Seasonal upstream surges lead to abrupt flash-flooding, scouring fertile topsoil and blanketing active tillers in sterile coarse quartz silt. GPM + Landsat SAR flood-depth telemetry maps high-sand deposition zones.
+            </p>
+<!-- Telemetry Indicator Mini-box -->
+<div class="p-space-sm rounded bg-surface-container-low flex flex-col gap-1">
+<div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span>Flood Susceptibility Index</span>
+<span class="font-bold text-error">HIGH (78%)</span>
+</div>
+<div class="w-full bg-surface-container-highest rounded-full h-1.5 overflow-hidden">
+<div class="bg-error h-full rounded-full" style="width: 78%"></div>
+</div>
+</div>
+</div>
+<div class="font-label-sm text-label-sm text-secondary font-semibold flex items-center gap-space-xs">
+<span>Adaptive Rotation Solution: Char-maize &amp; Deep-root Mustard</span>
+<span class="material-symbols-outlined text-base">arrow_forward</span>
+</div>
+</div>
+<!-- Challenge Card 2: Groundwater Depletion & Boro Stress -->
+<div class="rounded-xl bg-surface-container-lowest p-space-lg shadow-sm hover:shadow-md transition-all flex flex-col justify-between gap-space-md">
+<div class="flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<span class="px-space-sm py-space-xs rounded bg-error-container text-on-error-container font-label-sm text-label-sm font-semibold">Aquifer Crisis</span>
+<span class="material-symbols-outlined text-error">water_loss</span>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Pre-Monsoon Aquifer Depletion</h3>
+<p class="font-label-sm text-label-sm text-secondary font-medium">বোরো ধানের ভূগর্ভস্থ পানির সংকট ও খরা চাপ</p>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+              Continuous Boro rice farming demands up to 3,000 liters of pumped groundwater per kilogram of yield. ECOSTRESS thermal measurements detect heat-induced root dehydration 8 days before canopy browning occurs.
+            </p>
+<!-- Telemetry Indicator Mini-box -->
+<div class="p-space-sm rounded bg-surface-container-low flex flex-col gap-1">
+<div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span>Aquifer Drawdown Delta</span>
+<span class="font-bold text-error">-1.4m / Season</span>
+</div>
+<div class="w-full bg-surface-container-highest rounded-full h-1.5 overflow-hidden">
+<div class="bg-secondary-container h-full rounded-full" style="width: 65%"></div>
+</div>
+</div>
+</div>
+<div class="font-label-sm text-label-sm text-secondary font-semibold flex items-center gap-space-xs">
+<span>Adaptive Rotation Solution: Short-Cycle Aus &amp; Lentil Insertion</span>
+<span class="material-symbols-outlined text-base">arrow_forward</span>
+</div>
+</div>
+<!-- Challenge Card 3: Soil Organic Carbon Depletion -->
+<div class="rounded-xl bg-surface-container-lowest p-space-lg shadow-sm hover:shadow-md transition-all flex flex-col justify-between gap-space-md">
+<div class="flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<span class="px-space-sm py-space-xs rounded bg-surface-container-highest text-on-surface-variant font-label-sm text-label-sm font-semibold">Pedological Health</span>
+<span class="material-symbols-outlined text-on-surface">science</span>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Monoculture SOC Depletion</h3>
+<p class="font-label-sm text-label-sm text-secondary font-medium">একক ধান চাষে মাটির জৈব পদার্থ হ্রাস</p>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+              Decades of Rice-Rice-Fallow patterns have reduced Soil Organic Carbon (SOC) below 1.1% across northern districts. Synthetic nitrogen dependencies surge while natural microbial biology degrades under flooded anaerobic conditions.
+            </p>
+<!-- Telemetry Indicator Mini-box -->
+<div class="p-space-sm rounded bg-surface-container-low flex flex-col gap-1">
+<div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span>Mean Organic Matter</span>
+<span class="font-bold text-error">1.08% (Critical &lt; 1.5%)</span>
+</div>
+<div class="w-full bg-surface-container-highest rounded-full h-1.5 overflow-hidden">
+<div class="bg-outline h-full rounded-full" style="width: 42%"></div>
+</div>
+</div>
+</div>
+<div class="font-label-sm text-label-sm text-secondary font-semibold flex items-center gap-space-xs">
+<span>Adaptive Rotation Solution: Mung Bean Green Manuring</span>
+<span class="material-symbols-outlined text-base">arrow_forward</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 4: 3-PILLAR CROP ROTATION INNOVATION -->
+<section class="w-full bg-surface py-space-xl px-gutter max-w-7xl mx-auto flex flex-col gap-space-xl">
+<div class="flex flex-col gap-space-xs max-w-3xl">
+<div class="inline-flex items-center gap-space-xs text-secondary font-label-sm text-label-sm font-semibold uppercase tracking-wider">
+<span class="material-symbols-outlined text-sm">cycle</span>
+<span>The Agronomic Architecture</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface font-bold tracking-tight">
+        The Three Pillars of Satellite-Guided Crop Rotation
+      </h2>
+<p class="font-body-md text-body-md text-on-surface-variant">
+        OrbitAgro doesn't just display NASA images—it synthesizes historical precipitation, evapotranspiration indices, and pedology into an actionable 3-phase crop strategy.
+      </p>
+</div>
+<!-- Editorial Pillars Grid with Images and Metrics -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-space-lg">
+<!-- Pillar 1 -->
+<div class="rounded-xl bg-surface-container-lowest p-space-md shadow-sm flex flex-col gap-space-md">
+<div class="w-full h-44 rounded overflow-hidden relative">
+<img class="w-full h-full object-cover" data-alt="Close up of lush green agricultural legume plants, blackgram and mung bean cover crops fixing biological nitrogen in fertile alluvial loam soil of Rangpur Bangladesh with bright morning sunlight and healthy foliage." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC7t1-uoN7MWzenRGireaNEndpynZaiZKV_ax0XUjwA4sDKujsSSf051iSeKhfYInF4eAikDdvcWYR1qHnqKiqGX7L8wxkArAZ1fdYKtjlvj-lDxt9iC0KjTkO8oBw0JXKmb2pNEYtgPOzIuKffvzdq1eJPl8coN9Uz4wYQqKL9IqKk5qEzRhsHJrQ9NUuM2PPXvik9AKqBTCqQEd9MBKbORb-EAJa4kH-IxClmClb_"/>
+<div class="absolute top-3 left-3 px-space-xs py-0.5 rounded bg-tertiary-container/90 text-tertiary-fixed font-data-mono text-label-sm">
+            PILLAR 01
+          </div>
+</div>
+<div class="flex flex-col gap-space-xs">
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">1. Soil Rejuvenation</h3>
+<p class="font-label-sm text-label-sm text-secondary font-medium">জৈব পুষ্টি পুনরুদ্ধার ও নাইট্রোজেন বৃদ্ধি</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+            Integrating short-season legumes (Mung bean / BARI Mug-6 and Blackgram) directly after the Rabi harvest. Biological nitrogen fixation fixes 35-50 kg N/ha, replenishing depleted micronutrients without excess synthetic urea.
+          </p>
+</div>
+<div class="pt-space-sm mt-auto bg-surface-container-low rounded p-space-sm flex flex-col gap-1">
+<div class="flex justify-between font-label-sm text-label-sm">
+<span class="text-on-surface-variant">Biological N-Fixation</span>
+<span class="font-bold text-tertiary-container">+42 kg N / Hectare</span>
+</div>
+<div class="flex justify-between font-label-sm text-label-sm">
+<span class="text-on-surface-variant">Synthetic Urea Offset</span>
+<span class="font-bold text-secondary">30% Reduction</span>
+</div>
+</div>
+</div>
+<!-- Pillar 2 -->
+<div class="rounded-xl bg-surface-container-lowest p-space-md shadow-sm flex flex-col gap-space-md">
+<div class="w-full h-44 rounded overflow-hidden relative">
+<img class="w-full h-full object-cover" data-alt="Golden ripe maize cobs and drought hardy mustard flowers blooming in field during northern Bangladesh dry season, clear sky with agricultural research monitoring stakes." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAsOMUaSD6BbFWpC4MdUnwIBzjidpOzpZr2g-L6rdDAeAtrhxl6zUFASWsghnt0SiKVhlZBmc7zzGsClxq4XqZvRU-eWOZQrOjqMvriRffnllbR94-Z6QvDqfWbeZRqaznP0q0JnWujCmAE6aWVIbAM8-OrE5mZNebfQfyUvN4tbVaclGwvmpgVEHKIOyrO5XrQSdTbwDD-YinFuNN6mJfBtyChhMd3qM7aLV8DNs33"/>
+<div class="absolute top-3 left-3 px-space-xs py-0.5 rounded bg-primary-container/90 text-primary-fixed font-data-mono text-label-sm">
+            PILLAR 02
+          </div>
+</div>
+<div class="flex flex-col gap-space-xs">
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">2. Climate-Proofing</h3>
+<p class="font-label-sm text-label-sm text-secondary font-medium">জলবায়ু-সহনশীল ও খরা-প্রতিরোধী নির্বাচন</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+            Rebalancing the calendar: moving away from water-greedy late Boro cycles into low-water early Aus and deep-taproot Maize. Satellite precipitation forecasts advise exact planting windows to avoid pre-monsoon heat domes.
+          </p>
+</div>
+<div class="pt-space-sm mt-auto bg-surface-container-low rounded p-space-sm flex flex-col gap-1">
+<div class="flex justify-between font-label-sm text-label-sm">
+<span class="text-on-surface-variant">Irrigation Water Saved</span>
+<span class="font-bold text-secondary">1.2M Liters / Acre</span>
+</div>
+<div class="flex justify-between font-label-sm text-label-sm">
+<span class="text-on-surface-variant">Thermal Heat Resilience</span>
+<span class="font-bold text-tertiary-container">+2.8°C Tolerance</span>
+</div>
+</div>
+</div>
+<!-- Pillar 3 -->
+<div class="rounded-xl bg-surface-container-lowest p-space-md shadow-sm flex flex-col gap-space-md">
+<div class="w-full h-44 rounded overflow-hidden relative">
+<img class="w-full h-full object-cover" data-alt="Bengali farmers in Rangpur smiling while inspecting varied seasonal harvest of grains, mustard seeds and legumes packed in jute sacks ready for regional market logistics." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjQF-e-wwYszZu-nIZJgU_b-XdUnjcjPP1ptu7R5oxybOxQbCOn7sg0oDPtgpwRLvaU7UC_Qs1Wk081FidfVhqU3Z2-wplKqyWCwN2vYtvaziGAPNtkI_M5mVRENT9mS4UesXbC26U-PzTm9Y-PleuZFJ88MnqOAMl6fdGbu90UojzJErZN18FpQic71DBUKC1xZVS0hZUlpun2pD0TLNDbmXT1zWa5wNitB0JOcl3"/>
+<div class="absolute top-3 left-3 px-space-xs py-0.5 rounded bg-secondary-container/90 text-on-secondary-container font-data-mono text-label-sm">
+            PILLAR 03
+          </div>
+</div>
+<div class="flex flex-col gap-space-xs">
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">3. Economic Stability</h3>
+<p class="font-label-sm text-label-sm text-secondary font-medium">বহুমুখী ফলন ও আর্থিক নিরাপত্তা</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+            Staggered harvesting protects farm families from localized market price crashes. Triple-crop sequences (Mustard - Boro/Aus - Aman or Maize - Legume - Aman) produce 3 cash inflections per year instead of a single fragile payoff.
+          </p>
+</div>
+<div class="pt-space-sm mt-auto bg-surface-container-low rounded p-space-sm flex flex-col gap-1">
+<div class="flex justify-between font-label-sm text-label-sm">
+<span class="text-on-surface-variant">Annual Net Return Delta</span>
+<span class="font-bold text-secondary">+28% vs. Monoculture</span>
+</div>
+<div class="flex justify-between font-label-sm text-label-sm">
+<span class="text-on-surface-variant">Market Price Risk Hedge</span>
+<span class="font-bold text-tertiary-container">3 Harvest Windows</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 5: SCIENTIFIC RIGOR, TRANSPARENCY, FAQ & CITATIONS -->
+<section class="w-full bg-surface-container-low py-space-xl px-gutter">
+<div class="max-w-7xl mx-auto flex flex-col gap-space-xl">
+<!-- Permanent Official Guidance & Limitation Banner -->
+<div class="rounded-xl bg-primary-container text-on-primary p-space-lg shadow-md flex flex-col md:flex-row items-start md:items-center gap-space-md">
+<div class="w-12 h-12 rounded bg-secondary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-2xl text-on-secondary">gavel</span>
+</div>
+<div class="flex flex-col gap-1">
+<span class="font-label-md text-label-md uppercase tracking-wider text-secondary-container font-bold">
+            Operational Protocol &amp; Advisory Boundaries
+          </span>
+<p class="font-body-sm text-body-sm text-primary-fixed-dim">
+            OrbitAgro provides decision-support insights based on open NASA Earth observations and local agricultural research. All recommendations are exploratory and must be reviewed with your local Sub-Assistant Agriculture Officer (SAAO) and Department of Agricultural Extension (DAE) personnel prior to capital seed investments. Data for Rangpur Division is for demonstration and regional validation.
+          </p>
+</div>
+</div>
+<!-- Grid: Scientific Methodology FAQs & Reference Citations -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-xl">
+<!-- Interactive Accordions -->
+<div class="lg:col-span-7 flex flex-col gap-space-md">
+<div class="flex flex-col gap-space-xs">
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Frequently Asked Questions &amp; Methodology</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Transparent validation standards explaining our satellite algorithms.</p>
+</div>
+<!-- FAQ Item 1 -->
+<div class="rounded-lg bg-surface-container-lowest p-space-md shadow-sm">
+<details class="group cursor-pointer">
+<summary class="flex justify-between items-center font-title-md text-title-md text-on-surface list-none font-semibold">
+<span>How are 1km satellite grids downscaled to individual 10m fields?</span>
+<span class="material-symbols-outlined group-open:rotate-180 transition-transform text-secondary">expand_more</span>
+</summary>
+<p class="font-body-sm text-body-sm text-on-surface-variant pt-space-sm mt-space-xs">
+                We combine coarse-resolution radiometer data (such as SMAP's 9km soil moisture) with high-resolution Sentinel-2 and Landsat-9 (10m - 30m) multispectral bands using a super-resolution random forest regression algorithm trained on local topography and drainage indexes.
+              </p>
+</details>
+</div>
+<!-- FAQ Item 2 -->
+<div class="rounded-lg bg-surface-container-lowest p-space-md shadow-sm">
+<details class="group cursor-pointer">
+<summary class="flex justify-between items-center font-title-md text-title-md text-on-surface list-none font-semibold">
+<span>How does the system account for persistent monsoon cloud cover?</span>
+<span class="material-symbols-outlined group-open:rotate-180 transition-transform text-secondary">expand_more</span>
+</summary>
+<p class="font-body-sm text-body-sm text-on-surface-variant pt-space-sm mt-space-xs">
+                During peak Kharif-2 monsoon storms when optical satellites cannot penetrate clouds, OrbitAgro automatically switches to active microwave Synthetic Aperture Radar (SAR) from Sentinel-1, which penetrates dense clouds and rain cells to measure ground inundation and crop geometry seamlessly.
+              </p>
+</details>
+</div>
+<!-- FAQ Item 3 -->
+<div class="rounded-lg bg-surface-container-lowest p-space-md shadow-sm">
+<details class="group cursor-pointer">
+<summary class="flex justify-between items-center font-title-md text-title-md text-on-surface list-none font-semibold">
+<span>Does OrbitAgro work for marginal farmers with no smartphones?</span>
+<span class="material-symbols-outlined group-open:rotate-180 transition-transform text-secondary">expand_more</span>
+</summary>
+<p class="font-body-sm text-body-sm text-on-surface-variant pt-space-sm mt-space-xs">
+                Yes. Regional dashboards are designed for Village Agriculture Extension Agents (SAAO) and Union Parishad Digital Centers. Summarized advisory bulletins are dispatched via low-bandwidth SMS and voice blasts in Bengali to registered cooperatives.
+              </p>
+</details>
+</div>
+</div>
+<!-- Rigor, Data Partners & Academic Citations Column -->
+<div class="lg:col-span-5 flex flex-col gap-space-md">
+<div class="rounded-xl bg-surface-container-lowest p-space-md shadow-sm flex flex-col gap-space-md">
+<h4 class="font-title-md text-title-md text-on-surface font-bold flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-secondary text-lg">science</span>
+<span>Open Science Data Sources</span>
+</h4>
+<div class="flex flex-col gap-space-sm font-label-sm text-label-sm">
+<div class="p-space-sm rounded bg-surface-container-low flex flex-col gap-0.5">
+<span class="font-semibold text-on-surface">NASA Earth Science Division / Earthdata</span>
+<span class="text-on-surface-variant font-data-mono">GPM IMERG V06 • SMAP L3 Radiometer • ECOSTRESS PT-JPL</span>
+</div>
+<div class="p-space-sm rounded bg-surface-container-low flex flex-col gap-0.5">
+<span class="font-semibold text-on-surface">Committee on Earth Observation Satellites (CEOS)</span>
+<span class="text-on-surface-variant font-data-mono">Card4L-compliant surface reflectance cross-calibrations</span>
+</div>
+<div class="p-space-sm rounded bg-surface-container-low flex flex-col gap-0.5">
+<span class="font-semibold text-on-surface">Bangladesh Agricultural Research Institute (BARI)</span>
+<span class="text-on-surface-variant font-data-mono">Tista Meander Floodplain Agro-Ecological Zone (AEZ-3) Profiles</span>
+</div>
+</div>
+<div class="pt-space-xs flex items-center justify-between font-data-mono text-label-sm text-on-surface-variant">
+<span>DOI: 10.5067/EARTHDATA/ORBITAGRO</span>
+<span class="text-secondary font-bold">CC-BY 4.0</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 6: IMPACT CONVERGENCE CALL-TO-ACTION -->
+<section class="w-full bg-surface-container-high py-space-xl px-gutter">
+<div class="max-w-4xl mx-auto rounded-2xl bg-surface-container-lowest p-space-xl shadow-md text-center flex flex-col items-center gap-space-md">
+<span class="px-space-md py-space-xs rounded bg-secondary-fixed text-on-secondary-fixed-variant font-label-sm text-label-sm font-bold uppercase tracking-wider">
+        Field Telemetry Demonstration
+      </span>
+<h2 class="font-headline-lg text-headline-lg text-on-surface font-bold tracking-tight">
+        Ready to Explore Crop Diagnostics in Your Region?
+      </h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-xl">
+        Access real-time vegetation indices, soil moisture anomalies, and algorithmic rotation planning tailored to your exact plot boundaries in northern Bangladesh.
+      </p>
+<div class="flex flex-wrap items-center justify-center gap-space-md pt-space-xs">
+<a class="px-6 py-3 rounded bg-secondary hover:bg-secondary/90 text-on-secondary font-label-lg text-label-lg transition-transform active:scale-95 shadow-md flex items-center gap-space-xs" href="#">
+<span class="material-symbols-outlined text-lg">dashboard</span>
+<span>Launch Farmer Dashboard</span>
+</a>
+<a class="px-6 py-3 rounded bg-surface-container hover:bg-surface-container-highest text-on-surface font-label-lg text-label-lg transition-colors flex items-center gap-space-xs" href="#">
+<span class="material-symbols-outlined text-lg">satellite_alt</span>
+<span>Open EO Explorer</span>
+</a>
+</div>
+</div>
+</section>
+</div></main><footer class="w-full bg-surface-container-low border-t border-outline-variant/30 py-space-lg mt-space-xl"><div class="w-full px-gutter flex flex-col md:flex-row items-center justify-between gap-space-md text-on-surface-variant font-label-sm text-label-sm"><div>NASA Earth observation decision support demonstration. Illustrative data for Rangpur, Bangladesh.</div><div class="flex items-center gap-space-md"><span>OrbitAgro Platform • Applied Sciences Agri-Telemetry</span><span>Sentinel-2 • Landsat-9 • MODIS Indices</span></div></div></footer></body></html>

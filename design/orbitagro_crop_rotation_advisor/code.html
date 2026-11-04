@@ -1,0 +1,1908 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="web_dashboard" name="shell-type" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+      rel="stylesheet"
+    />
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      @layer base {
+        html,
+        body {
+          margin: 0;
+          padding: 0;
+        }
+        body {
+          overscroll-behavior: none;
+        }
+        main > :first-child {
+          margin-top: 0 !important;
+        }
+        main > :last-child {
+          margin-bottom: 0 !important;
+        }
+      }
+      ::-webkit-scrollbar {
+        display: none;
+      }
+    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "inverse-primary": "#bbc7e0",
+              "error-container": "#ffdad6",
+              "on-tertiary": "#ffffff",
+              "secondary-fixed-dim": "#acc7ff",
+              "inverse-on-surface": "#eff1ee",
+              "on-secondary": "#ffffff",
+              "on-error-container": "#93000a",
+              "on-surface-variant": "#44474c",
+              tertiary: "#000000",
+              "surface-tint": "#535f74",
+              "on-secondary-fixed-variant": "#004491",
+              "primary-fixed": "#d7e3fc",
+              "tertiary-fixed": "#a4f3c6",
+              "surface-dim": "#d8dbd8",
+              "surface-container-highest": "#e1e3e0",
+              "on-secondary-container": "#002f68",
+              "on-primary-container": "#78849b",
+              secondary: "#005bbe",
+              "surface-bright": "#f8faf7",
+              "tertiary-fixed-dim": "#89d7ab",
+              background: "#f8faf7",
+              "outline-variant": "#c5c6cd",
+              "on-error": "#ffffff",
+              outline: "#75777d",
+              "on-primary-fixed-variant": "#3b475c",
+              error: "#ba1a1a",
+              "inverse-surface": "#2e312f",
+              "primary-fixed-dim": "#bbc7e0",
+              "secondary-container": "#5b97fd",
+              "tertiary-container": "#002112",
+              primary: "#000000",
+              "on-secondary-fixed": "#001a40",
+              "surface-variant": "#e1e3e0",
+              "on-primary-fixed": "#0f1c2e",
+              surface: "#f8faf7",
+              "on-primary": "#ffffff",
+              "secondary-fixed": "#d7e2ff",
+              "surface-container-low": "#f2f4f1",
+              "on-tertiary-container": "#45926c",
+              "surface-container-lowest": "#ffffff",
+              "on-tertiary-fixed-variant": "#005234",
+              "surface-container-high": "#e7e9e6",
+              "on-background": "#191c1b",
+              "surface-container": "#eceeeb",
+              "on-tertiary-fixed": "#002112",
+              "primary-container": "#0f1c2e",
+              "on-surface": "#191c1b",
+            },
+            borderRadius: {
+              DEFAULT: "0.125rem",
+              lg: "0.25rem",
+              xl: "0.5rem",
+              full: "0.75rem",
+            },
+            spacing: {
+              "gutter-mobile": "0.75rem",
+              gutter: "1.5rem",
+              "space-xl": "2.5rem",
+              "margin-mobile": "1rem",
+              "space-sm": "0.5rem",
+              "space-md": "1rem",
+              "space-lg": "1.5rem",
+              margin: "2rem",
+              "space-xs": "0.25rem",
+            },
+            fontFamily: {
+              "body-sm": ["Inter"],
+              "body-md": ["Inter"],
+              "data-mono": ["Inter"],
+              "headline-sm": ["Manrope"],
+              "headline-md": ["Manrope"],
+              "label-md": ["Inter"],
+              "display-hero": ["Manrope"],
+              "headline-lg-mobile": ["Manrope"],
+              "display-hero-mobile": ["Manrope"],
+              "label-sm": ["Inter"],
+              "label-lg": ["Inter"],
+              "body-lg": ["Inter"],
+              "title-md": ["Manrope"],
+              "headline-lg": ["Manrope"],
+            },
+            fontSize: {
+              "body-sm": ["13px", { lineHeight: "18px", fontWeight: "400" }],
+              "body-md": ["15px", { lineHeight: "22px", fontWeight: "400" }],
+              "data-mono": ["13px", { lineHeight: "16px", fontWeight: "500" }],
+              "headline-sm": [
+                "20px",
+                { lineHeight: "28px", fontWeight: "600" },
+              ],
+              "headline-md": [
+                "24px",
+                { lineHeight: "32px", fontWeight: "600" },
+              ],
+              "label-md": ["12px", { lineHeight: "16px", fontWeight: "500" }],
+              "display-hero": [
+                "48px",
+                { lineHeight: "56px", fontWeight: "700" },
+              ],
+              "headline-lg-mobile": [
+                "24px",
+                { lineHeight: "32px", fontWeight: "600" },
+              ],
+              "display-hero-mobile": [
+                "32px",
+                { lineHeight: "40px", fontWeight: "700" },
+              ],
+              "label-sm": ["11px", { lineHeight: "14px", fontWeight: "600" }],
+              "label-lg": ["14px", { lineHeight: "20px", fontWeight: "600" }],
+              "body-lg": ["18px", { lineHeight: "28px", fontWeight: "400" }],
+              "title-md": ["16px", { lineHeight: "24px", fontWeight: "600" }],
+              "headline-lg": [
+                "32px",
+                { lineHeight: "40px", fontWeight: "700" },
+              ],
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body class="bg-surface font-body-md text-on-surface antialiased">
+    <header
+      class="fixed top-0 w-full z-50 bg-primary-container shadow-[0_1px_8px_rgba(0,0,0,0.04)]"
+    >
+      <div class="w-full px-gutter">
+        <div class="h-24 flex flex-col justify-between py-space-xs">
+          <div
+            class="flex items-center justify-between gap-gutter border-b border-on-surface-variant/20 pb-space-xs"
+          >
+            <div class="flex items-center gap-space-md">
+              <div class="flex items-center gap-space-sm">
+                <img
+                  alt="OrbitAgro Brand Logo"
+                  class="h-8 w-auto object-contain"
+                  src="https://lh3.googleusercontent.com/aida/AEtjO1W-5R0ewf4VmwT61Ipg5HjcKGZIPdL5NQXmOLsR8WUus8De_D3iWb4105hX_atWM3uVRaqiGWXpauUWmNnmgPoWoUyp5Q7iHo8T88C6qwP95LozRRsv_fBra4rwaTuPjZVtvnT7oRWB4hqwEXDv8Je1UW9j3zjm0j1BUdSXhZEMgGVoNpHNYOjRxgikoPbXBuaBOzSiXs1w6i_4n3IM8YIUmSzZuiNI0PQi9BVgrsVPOQ"
+                />
+                <div class="flex flex-col">
+                  <span
+                    class="font-title-md text-title-md text-on-primary tracking-tight font-bold"
+                    >OrbitAgro</span
+                  ><span
+                    class="font-label-sm text-label-sm text-secondary-container uppercase tracking-wider"
+                    >NASA EO Intelligence</span
+                  >
+                </div>
+              </div>
+              <div
+                class="hidden xl:flex items-center px-space-sm py-space-xs rounded bg-surface-container-highest/10 text-primary-fixed font-label-sm text-label-sm"
+              >
+                NASA Earth Observations Partner
+              </div>
+            </div>
+            <div
+              class="hidden lg:flex items-center gap-space-md text-primary-fixed"
+            >
+              <div class="flex items-center gap-space-xs">
+                <span class="font-label-md text-label-md text-primary-fixed-dim"
+                  >Current Zone:</span
+                ><span
+                  class="font-data-mono text-data-mono font-medium text-on-primary"
+                  >Rangpur Division, Bangladesh (25.7439° N, 89.2752° E)</span
+                >
+              </div>
+              <div
+                class="flex items-center gap-space-xs px-space-sm py-space-xs rounded bg-secondary/20 text-secondary-fixed font-label-sm text-label-sm"
+              >
+                <span
+                  class="w-2 h-2 rounded-full bg-secondary-container animate-pulse"
+                ></span
+                ><span>Sentinel-2 / Landsat-9: In Sync</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-space-lg">
+              <div
+                class="flex items-center bg-surface-container-highest/15 rounded p-space-xs gap-space-xs"
+              >
+                <button
+                  class="px-space-sm py-space-xs rounded font-label-sm text-label-sm bg-secondary text-on-secondary font-semibold"
+                  type="button"
+                >
+                  English</button
+                ><button
+                  class="px-space-sm py-space-xs rounded font-label-sm text-label-sm text-primary-fixed hover:text-on-primary"
+                  type="button"
+                >
+                  বাংলা
+                </button>
+              </div>
+              <div class="flex items-center gap-space-sm">
+                <div class="text-right hidden sm:block">
+                  <div
+                    class="font-label-md text-label-md text-on-primary font-semibold"
+                  >
+                    Md. Rafiqul Islam
+                  </div>
+                  <div
+                    class="font-label-sm text-label-sm text-primary-fixed-dim"
+                  >
+                    Agro-Lead • ID: RPR-FIELD-04
+                  </div>
+                </div>
+                <img
+                  alt="Profile"
+                  class="w-8 h-8 rounded-full object-cover ring-2 ring-secondary/50"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMShH6_6l5tlma21DNnioSA2_32uVBxc0AS1kuCyBo__-daCfSfE7fzwnY7hpy8YIsptlQg_JJ5XryBtiVKZGjRDKWQjXBrwl_nv6hP7a53inrqSbdk0wPG89_feMy_Iaxb1JykaUxvricPUzvKXBmB3fiFpQCftaUZOCk1Bkl5KCYNl_apQ_WoEHoXhd8eWZcVaYaI4qPLwe_3MbgdJljDZ2FwRZlMHHIJ7N0A4LC"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <nav
+              class="flex items-center gap-space-lg"
+              data-active-classes="text-secondary-fixed border-b-2 border-secondary-container font-semibold"
+            >
+              <a
+                class="font-label-md text-label-md py-space-xs text-primary-fixed-dim hover:text-on-primary transition-colors"
+                data-path="landing-and-mission"
+                href="#"
+                >Landing &amp; Mission</a
+              ><a
+                class="font-label-md text-label-md py-space-xs text-primary-fixed-dim hover:text-on-primary transition-colors"
+                data-path="farmer-dashboard"
+                href="#"
+                >Farmer Dashboard</a
+              ><a
+                class="font-label-md text-label-md py-space-xs text-primary-fixed-dim hover:text-on-primary transition-colors"
+                data-path="earth-observation-explorer"
+                href="#"
+                >Earth Observation Explorer</a
+              ><a
+                aria-current="page"
+                class="py-space-xs transition-colors text-secondary-fixed border-b-2 border-secondary-container font-semibold"
+                data-path="crop-rotation-advisor"
+                href="#"
+                >Crop Rotation Advisor</a
+              ><a
+                class="font-label-md text-label-md py-space-xs text-primary-fixed-dim hover:text-on-primary transition-colors"
+                data-path="strategy-comparison"
+                href="#"
+                >Strategy Comparison</a
+              >
+            </nav>
+            <div
+              class="hidden md:block font-label-sm text-label-sm text-on-primary-container truncate max-w-md"
+            >
+              NASA Earth observation decision support demonstration.
+              Illustrative data for Rangpur, Bangladesh.
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <aside
+      class="fixed left-0 top-24 bottom-0 w-64 bg-surface-container-low border-r border-outline-variant/30 z-40 overflow-y-auto p-space-md"
+    >
+      <div class="mb-space-md px-space-xs">
+        <div
+          class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold"
+        >
+          Field Modules
+        </div>
+        <div class="font-body-sm text-body-sm text-outline">
+          Rangpur Sector Telemetry
+        </div>
+      </div>
+      <nav
+        class="flex flex-col gap-space-xs"
+        data-active-classes="bg-surface-container-highest text-secondary font-semibold rounded-lg"
+      >
+        <a
+          class="flex items-center gap-space-sm px-space-sm py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors font-label-md text-label-md"
+          data-path="farmer-dashboard"
+          href="#"
+          ><span class="material-symbols-outlined text-[18px]">grid_view</span
+          >Farmer Dashboard</a
+        ><a
+          class="flex items-center gap-space-sm px-space-sm py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors font-label-md text-label-md"
+          data-path="earth-observation-explorer"
+          href="#"
+          ><span class="material-symbols-outlined text-[18px]"
+            >satellite_alt</span
+          >EO Explorer</a
+        ><a
+          aria-current="page"
+          class="flex items-center gap-space-sm px-space-sm py-space-sm transition-colors bg-surface-container-highest text-secondary font-semibold rounded-lg"
+          data-path="crop-rotation-advisor"
+          href="#"
+          ><span class="material-symbols-outlined text-[18px]">eco</span
+          >Rotation Advisor</a
+        ><a
+          class="flex items-center gap-space-sm px-space-sm py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors font-label-md text-label-md"
+          data-path="strategy-comparison"
+          href="#"
+          ><span class="material-symbols-outlined text-[18px]"
+            >compare_arrows</span
+          >Strategy Compare</a
+        >
+      </nav>
+      <div
+        class="mt-space-lg p-space-sm rounded-xl bg-surface-container-lowest border border-outline-variant/40"
+      >
+        <div
+          class="flex items-center justify-between font-label-sm text-label-sm text-outline mb-space-xs"
+        >
+          <span>SATELLITE SYNC</span
+          ><span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+        </div>
+        <div class="font-body-sm text-body-sm text-on-surface font-medium">
+          Sentinel-2 MSI Level-2A
+        </div>
+        <div class="font-label-sm text-label-sm text-outline">
+          Next pass in ~4h 12m
+        </div>
+      </div>
+    </aside>
+    <div class="pl-64">
+      <main class="w-full pt-24 bg-surface min-h-screen px-gutter py-space-lg">
+        <div class="flex flex-col w-full">
+          <!-- Top Agro-Ecological Context & Parcel Telemetry HUD Banner -->
+          <div
+            class="bg-surface-container-lowest rounded-xl shadow-sm p-space-md mb-space-lg"
+          >
+            <div
+              class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md pb-space-md"
+            >
+              <div class="flex flex-wrap items-center gap-space-sm">
+                <span
+                  class="inline-flex items-center px-space-sm py-space-xs rounded bg-surface-container text-on-surface font-data-mono text-data-mono font-semibold"
+                >
+                  <span
+                    class="material-symbols-outlined text-[15px] mr-1 text-secondary"
+                    >explore</span
+                  >
+                  RPR-FIELD-04 • Pirgachha, Rangpur
+                </span>
+                <span
+                  class="inline-flex items-center px-space-sm py-space-xs rounded bg-surface-container text-on-surface-variant font-label-md text-label-md"
+                >
+                  AEZ-3: Tista Meander Floodplain (তিস্তা নদী প্লাবনভূমি)
+                </span>
+                <span
+                  class="inline-flex items-center px-space-sm py-space-xs rounded bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-semibold"
+                >
+                  <span
+                    class="w-1.5 h-1.5 rounded-full bg-on-tertiary-fixed mr-1.5 animate-pulse"
+                  ></span>
+                  NASA SMAP/GPM Synced
+                </span>
+              </div>
+              <div
+                class="flex items-center gap-space-xs text-on-surface-variant font-label-sm text-label-sm"
+              >
+                <span
+                  class="material-symbols-outlined text-[16px] text-secondary"
+                  >satellite_alt</span
+                >
+                <span>Re-assessed: Today 08:42 BST</span>
+                <span class="text-outline-variant">•</span>
+                <span>Resolution: 10m Multi-spectral</span>
+              </div>
+            </div>
+            <!-- Active Constraints & Farmer Targets Bento Bar -->
+            <div
+              class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-space-sm pt-space-xs"
+            >
+              <!-- Card 1 -->
+              <div
+                class="bg-surface-container-low p-space-sm rounded-lg flex flex-col justify-between"
+              >
+                <div class="flex items-center justify-between mb-space-xs">
+                  <span
+                    class="text-on-surface-variant font-label-sm text-label-sm"
+                    >Soil Organic Carbon (SOC)</span
+                  >
+                  <span class="material-symbols-outlined text-[16px] text-error"
+                    >trending_down</span
+                  >
+                </div>
+                <div class="flex items-baseline gap-space-xs">
+                  <span
+                    class="font-headline-sm text-headline-sm font-bold text-on-surface"
+                    >0.92%</span
+                  >
+                  <span
+                    class="text-on-surface-variant font-label-sm text-label-sm"
+                    >Critical (&lt;1.5% target)</span
+                  >
+                </div>
+                <div
+                  class="w-full bg-surface-container-highest h-1 rounded-full mt-2 overflow-hidden"
+                >
+                  <div
+                    class="bg-error h-full rounded-full"
+                    style="width: 46%"
+                  ></div>
+                </div>
+              </div>
+              <!-- Card 2 -->
+              <div
+                class="bg-surface-container-low p-space-sm rounded-lg flex flex-col justify-between"
+              >
+                <div class="flex items-center justify-between mb-space-xs">
+                  <span
+                    class="text-on-surface-variant font-label-sm text-label-sm"
+                    >Soil Texture &amp; Zinc Status</span
+                  >
+                  <span
+                    class="material-symbols-outlined text-[16px] text-secondary"
+                    >science</span
+                  >
+                </div>
+                <div class="flex items-baseline gap-space-xs">
+                  <span
+                    class="font-headline-sm text-headline-sm font-bold text-on-surface"
+                    >High Silt</span
+                  >
+                  <span
+                    class="text-on-surface-variant font-label-sm text-label-sm"
+                    >Zn: Deficient (0.55 ppm)</span
+                  >
+                </div>
+                <span
+                  class="text-on-surface-variant font-label-sm text-label-sm mt-2 text-opacity-80"
+                  >Requires non-acidifying organic cycles</span
+                >
+              </div>
+              <!-- Card 3 -->
+              <div
+                class="bg-surface-container-low p-space-sm rounded-lg flex flex-col justify-between"
+              >
+                <div class="flex items-center justify-between mb-space-xs">
+                  <span
+                    class="text-on-surface-variant font-label-sm text-label-sm"
+                    >Groundwater Sensitivity</span
+                  >
+                  <span
+                    class="material-symbols-outlined text-[16px] text-secondary"
+                    >water_drop</span
+                  >
+                </div>
+                <div class="flex items-baseline gap-space-xs">
+                  <span
+                    class="font-headline-sm text-headline-sm font-bold text-on-surface"
+                    >Tier-1 Alert</span
+                  >
+                  <span
+                    class="text-on-surface-variant font-label-sm text-label-sm"
+                    >-0.82m / decade</span
+                  >
+                </div>
+                <span
+                  class="text-on-surface-variant font-label-sm text-label-sm mt-2"
+                  >Aquifer draw high in Boro belt</span
+                >
+              </div>
+              <!-- Card 4: Farmer Priorities -->
+              <div
+                class="bg-surface-container-high p-space-sm rounded-lg flex flex-col justify-between"
+              >
+                <div class="flex items-center justify-between mb-space-xs">
+                  <span
+                    class="text-on-surface font-label-sm text-label-sm font-semibold"
+                    >Farmer Selected Priorities</span
+                  >
+                  <span
+                    class="material-symbols-outlined text-[16px] text-secondary"
+                    >tune</span
+                  >
+                </div>
+                <div class="flex flex-wrap gap-1 mt-1">
+                  <span
+                    class="inline-flex items-center px-1.5 py-0.5 rounded bg-surface-container-lowest text-on-surface font-data-mono text-[11px]"
+                    >Water Save: 85%</span
+                  >
+                  <span
+                    class="inline-flex items-center px-1.5 py-0.5 rounded bg-surface-container-lowest text-on-surface font-data-mono text-[11px]"
+                    >Soil N: 90%</span
+                  >
+                  <span
+                    class="inline-flex items-center px-1.5 py-0.5 rounded bg-secondary text-on-secondary font-data-mono text-[11px] font-semibold"
+                    >Profit: 95%</span
+                  >
+                </div>
+                <span
+                  class="text-on-surface-variant font-label-sm text-label-sm mt-1"
+                  >Weighted DSS Mode Active</span
+                >
+              </div>
+            </div>
+          </div>
+          <!-- Header & Strategy Selection Mode Title Bar -->
+          <div
+            class="flex flex-col md:flex-row md:items-end justify-between mb-space-md gap-space-sm"
+          >
+            <div>
+              <div
+                class="flex items-center gap-space-xs text-secondary font-label-sm text-label-sm uppercase tracking-wider mb-1"
+              >
+                <span class="material-symbols-outlined text-[16px]"
+                  >psychology</span
+                >
+                <span>Decision Engine • সিদ্ধান্ত সহায়তা ব্যবস্থা</span>
+              </div>
+              <h1
+                class="font-headline-lg text-headline-lg font-bold text-on-surface"
+              >
+                Crop Rotation Advisor
+              </h1>
+              <p class="font-body-md text-on-surface-variant">
+                Evaluating 3-season crop sequences against NASA hydrological
+                sensors and local AEZ-3 agrarian agronomy.
+              </p>
+            </div>
+            <div
+              class="flex items-center gap-space-xs bg-surface-container-low p-1 rounded-lg"
+            >
+              <button
+                class="px-space-sm py-space-xs rounded bg-surface-container-lowest font-label-md text-label-md text-on-surface font-medium shadow-sm flex items-center gap-1"
+                id="viewToggleCards"
+                type="button"
+              >
+                <span class="material-symbols-outlined text-[16px]"
+                  >view_column</span
+                >
+                Side-by-Side
+              </button>
+              <button
+                class="px-space-sm py-space-xs rounded text-on-surface-variant font-label-md text-label-md hover:text-on-surface flex items-center gap-1"
+                id="viewToggleMatrix"
+                type="button"
+              >
+                <span class="material-symbols-outlined text-[16px]"
+                  >table_chart</span
+                >
+                Timeline Matrix
+              </button>
+            </div>
+          </div>
+          <!-- Three Side-by-Side In-Depth Crop Rotation Strategies -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-space-md mb-space-lg">
+            <!-- STRATEGY A: Traditional Monoculture -->
+            <div
+              class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden flex flex-col justify-between transition-all hover:shadow-md"
+            >
+              <div>
+                <!-- Top Visual Tag -->
+                <div class="p-space-md bg-surface-container-low">
+                  <div class="flex items-center justify-between mb-space-xs">
+                    <span
+                      class="px-space-sm py-space-xs rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm uppercase font-semibold"
+                    >
+                      Strategy A • বর্তমান পদ্ধতি
+                    </span>
+                    <span
+                      class="px-space-sm py-space-xs rounded bg-error-container text-on-error-container font-label-sm text-label-sm font-semibold flex items-center gap-1"
+                    >
+                      <span class="material-symbols-outlined text-[14px]"
+                        >warning</span
+                      >
+                      Unsustainable
+                    </span>
+                  </div>
+                  <h2
+                    class="font-title-md text-title-md font-bold text-on-surface"
+                  >
+                    Traditional Rice Monoculture
+                  </h2>
+                  <p class="font-body-sm text-body-sm text-on-surface-variant">
+                    আমন ধান → পতিত → বোরো ধান চক্র
+                  </p>
+                </div>
+                <!-- Seasonal Cycle Visual Stepper -->
+                <div class="p-space-md">
+                  <div
+                    class="font-label-sm text-label-sm font-semibold text-on-surface-variant mb-space-sm uppercase"
+                  >
+                    12-Month Rotation Timeline
+                  </div>
+                  <div class="space-y-space-xs">
+                    <div
+                      class="flex items-center justify-between p-space-xs rounded bg-surface-container-low"
+                    >
+                      <div class="flex items-center gap-space-xs">
+                        <span
+                          class="w-2.5 h-2.5 rounded-full bg-surface-tint"
+                        ></span>
+                        <span
+                          class="font-label-md text-label-md text-on-surface font-medium"
+                          >Aman Rice (আমন)</span
+                        >
+                      </div>
+                      <span
+                        class="font-data-mono text-data-mono text-on-surface-variant"
+                        >Jul – Nov</span
+                      >
+                    </div>
+                    <div
+                      class="flex items-center justify-between p-space-xs rounded bg-error-container/20"
+                    >
+                      <div class="flex items-center gap-space-xs">
+                        <span class="w-2.5 h-2.5 rounded-full bg-error"></span>
+                        <span
+                          class="font-label-md text-label-md text-error font-medium"
+                          >Bare Fallow (পতিত জমি)</span
+                        >
+                      </div>
+                      <span class="font-data-mono text-data-mono text-error"
+                        >Dec – Jan</span
+                      >
+                    </div>
+                    <div
+                      class="flex items-center justify-between p-space-xs rounded bg-surface-container-low"
+                    >
+                      <div class="flex items-center gap-space-xs">
+                        <span
+                          class="w-2.5 h-2.5 rounded-full bg-surface-tint"
+                        ></span>
+                        <span
+                          class="font-label-md text-label-md text-on-surface font-medium"
+                          >Boro Rice (বোরো ধান)</span
+                        >
+                      </div>
+                      <span
+                        class="font-data-mono text-data-mono text-on-surface-variant"
+                        >Feb – May</span
+                      >
+                    </div>
+                    <div
+                      class="flex items-center justify-between p-space-xs rounded bg-error-container/20"
+                    >
+                      <div class="flex items-center gap-space-xs">
+                        <span class="w-2.5 h-2.5 rounded-full bg-error"></span>
+                        <span
+                          class="font-label-md text-label-md text-error font-medium"
+                          >Pre-Monsoon Fallow</span
+                        >
+                      </div>
+                      <span class="font-data-mono text-data-mono text-error"
+                        >Jun</span
+                      >
+                    </div>
+                  </div>
+                  <!-- Key Diagnostic Metrics -->
+                  <div class="mt-space-md pt-space-md space-y-space-xs">
+                    <div
+                      class="flex justify-between items-center text-body-sm font-body-sm"
+                    >
+                      <span class="text-on-surface-variant"
+                        >Water Depletion (সেচ ড্র)</span
+                      >
+                      <span
+                        class="font-data-mono text-data-mono font-bold text-error"
+                        >1,450 mm/yr</span
+                      >
+                    </div>
+                    <div
+                      class="flex justify-between items-center text-body-sm font-body-sm"
+                    >
+                      <span class="text-on-surface-variant"
+                        >Soil Carbon Flux</span
+                      >
+                      <span
+                        class="font-data-mono text-data-mono font-bold text-error"
+                        >-4.2% / year</span
+                      >
+                    </div>
+                    <div
+                      class="flex justify-between items-center text-body-sm font-body-sm"
+                    >
+                      <span class="text-on-surface-variant"
+                        >Synthetic N Requirement</span
+                      >
+                      <span
+                        class="font-data-mono text-data-mono text-on-surface"
+                        >220 kg N/ha</span
+                      >
+                    </div>
+                    <div
+                      class="flex justify-between items-center text-body-sm font-body-sm"
+                    >
+                      <span class="text-on-surface-variant"
+                        >Bare Soil Exposure</span
+                      >
+                      <span
+                        class="font-data-mono text-data-mono text-on-surface font-medium"
+                        >75 Days / yr</span
+                      >
+                    </div>
+                  </div>
+                  <div
+                    class="mt-space-md p-space-sm rounded-lg bg-surface-container text-on-surface-variant font-body-sm text-body-sm"
+                  >
+                    <span class="font-semibold text-on-surface block mb-0.5"
+                      >Critical Vulnerability:</span
+                    >
+                    Severe diesel/electricity expense in dry season tube-wells.
+                    Escalating yellow stem borer carryover during bare soil
+                    periods.
+                  </div>
+                </div>
+              </div>
+              <div class="p-space-md bg-surface-container-low">
+                <button
+                  class="w-full py-space-sm px-space-md rounded bg-surface-container font-label-md text-label-md text-on-surface hover:bg-surface-container-highest transition-colors"
+                  type="button"
+                >
+                  Inspect Historical Monoculture Audit
+                </button>
+              </div>
+            </div>
+            <!-- STRATEGY B: Soil Rejuvenation & Pulse Rotation (RECOMMENDED) -->
+            <div
+              class="bg-surface-container-lowest rounded-xl shadow-md overflow-hidden flex flex-col justify-between relative transform lg:-translate-y-2"
+            >
+              <div class="absolute top-0 inset-x-0 h-1.5 bg-secondary"></div>
+              <div>
+                <!-- Top Visual Tag -->
+                <div class="p-space-md bg-tertiary-fixed/30">
+                  <div class="flex items-center justify-between mb-space-xs">
+                    <span
+                      class="px-space-sm py-space-xs rounded bg-surface-container-lowest text-on-tertiary-fixed font-label-sm text-label-sm uppercase font-bold tracking-wide flex items-center gap-1 shadow-sm"
+                    >
+                      <span
+                        class="material-symbols-outlined text-[15px] text-on-tertiary-fixed"
+                        >verified</span
+                      >
+                      Strategy B • সর্বোচ্চ উপযোগী
+                    </span>
+                    <span
+                      class="px-space-sm py-space-xs rounded bg-on-tertiary-fixed text-tertiary-fixed font-data-mono text-label-sm font-bold"
+                    >
+                      96 / 100 Match
+                    </span>
+                  </div>
+                  <h2
+                    class="font-title-md text-title-md font-bold text-on-surface"
+                  >
+                    Soil Rejuvenation &amp; Pulse Rotation
+                  </h2>
+                  <p class="font-body-sm text-body-sm text-on-surface-variant">
+                    আমন → সরিষা → মুগডাল → ধইঞ্চা সবুজ সার
+                  </p>
+                </div>
+                <!-- Seasonal Cycle Visual Stepper -->
+                <div class="p-space-md">
+                  <div
+                    class="font-label-sm text-label-sm font-semibold text-secondary mb-space-sm uppercase flex items-center justify-between"
+                  >
+                    <span>Optimized 4-Crop High Intensity Sequence</span>
+                    <span class="text-on-surface-variant font-normal lowercase"
+                      >0 bare days</span
+                    >
+                  </div>
+                  <div class="space-y-space-xs">
+                    <div
+                      class="flex items-center justify-between p-space-xs rounded bg-surface-container-low"
+                    >
+                      <div class="flex items-center gap-space-xs">
+                        <span
+                          class="w-2.5 h-2.5 rounded-full bg-secondary"
+                        ></span>
+                        <span
+                          class="font-label-md text-label-md text-on-surface font-medium"
+                          >Aman Rice (স্বল্পমেয়াদী আমন)</span
+                        >
+                      </div>
+                      <span
+                        class="font-data-mono text-data-mono text-on-surface-variant"
+                        >Jul – Oct</span
+                      >
+                    </div>
+                    <div
+                      class="flex items-center justify-between p-space-xs rounded bg-surface-container-low"
+                    >
+                      <div class="flex items-center gap-space-xs">
+                        <span
+                          class="w-2.5 h-2.5 rounded-full bg-secondary-container"
+                        ></span>
+                        <span
+                          class="font-label-md text-label-md text-on-surface font-medium"
+                          >Mustard / Tori-7 (সরিষা)</span
+                        >
+                      </div>
+                      <span
+                        class="font-data-mono text-data-mono text-on-surface-variant"
+                        >Nov – Jan</span
+                      >
+                    </div>
+                    <div
+                      class="flex items-center justify-between p-space-xs rounded bg-tertiary-fixed/30"
+                    >
+                      <div class="flex items-center gap-space-xs">
+                        <span
+                          class="w-2.5 h-2.5 rounded-full bg-on-tertiary-fixed"
+                        ></span>
+                        <span
+                          class="font-label-md text-label-md text-on-surface font-bold"
+                          >Mungbean BARI-6 (মুগডাল)</span
+                        >
+                      </div>
+                      <span
+                        class="font-data-mono text-data-mono text-on-surface-variant"
+                        >Feb – Apr</span
+                      >
+                    </div>
+                    <div
+                      class="flex items-center justify-between p-space-xs rounded bg-surface-container-low"
+                    >
+                      <div class="flex items-center gap-space-xs">
+                        <span
+                          class="w-2.5 h-2.5 rounded-full bg-secondary"
+                        ></span>
+                        <span
+                          class="font-label-md text-label-md text-on-surface font-medium"
+                          >Sesbania Green Manure (ধইঞ্চা)</span
+                        >
+                      </div>
+                      <span
+                        class="font-data-mono text-data-mono text-on-surface-variant"
+                        >May – Jun</span
+                      >
+                    </div>
+                  </div>
+                  <!-- Key Diagnostic Metrics -->
+                  <div class="mt-space-md pt-space-md space-y-space-xs">
+                    <div
+                      class="flex justify-between items-center text-body-sm font-body-sm"
+                    >
+                      <span class="text-on-surface-variant"
+                        >Water Depletion</span
+                      >
+                      <span
+                        class="font-data-mono text-data-mono font-bold text-secondary"
+                        >480 mm/yr (-67%)</span
+                      >
+                    </div>
+                    <div
+                      class="flex justify-between items-center text-body-sm font-body-sm"
+                    >
+                      <span class="text-on-surface-variant"
+                        >Biological Nitrogen Fixation</span
+                      >
+                      <span
+                        class="font-data-mono text-data-mono font-bold text-on-surface"
+                        >+65 kg N/ha natural</span
+                      >
+                    </div>
+                    <div
+                      class="flex justify-between items-center text-body-sm font-body-sm"
+                    >
+                      <span class="text-on-surface-variant"
+                        >Soil Organic Carbon Forecast</span
+                      >
+                      <span
+                        class="font-data-mono text-data-mono font-bold text-on-surface"
+                        >+14% / 3-yrs</span
+                      >
+                    </div>
+                    <div
+                      class="flex justify-between items-center text-body-sm font-body-sm"
+                    >
+                      <span class="text-on-surface-variant"
+                        >Farmer Net Profit Margin</span
+                      >
+                      <span
+                        class="font-data-mono text-data-mono font-bold text-on-surface"
+                        >+22% vs. Boro Rice</span
+                      >
+                    </div>
+                  </div>
+                  <div
+                    class="mt-space-md p-space-sm rounded-lg bg-tertiary-fixed/20 text-on-surface font-body-sm text-body-sm"
+                  >
+                    <span class="font-semibold text-on-surface block mb-0.5"
+                      >Ecological Payoff:</span
+                    >
+                    Leguminous root nodules fix atmospheric nitrogen directly
+                    into AEZ-3 silt beds. Breaks the yellow stem borer lifecycle
+                    completely.
+                  </div>
+                </div>
+              </div>
+              <div
+                class="p-space-md bg-surface-container-low flex flex-col gap-2"
+              >
+                <button
+                  class="w-full py-space-sm px-space-md rounded bg-primary text-on-primary font-label-md text-label-md font-semibold hover:bg-surface-tint transition-colors flex items-center justify-center gap-1 shadow-sm"
+                  type="button"
+                >
+                  <span class="material-symbols-outlined text-[16px]"
+                    >check_circle</span
+                  >
+                  Select Recommended Plan
+                </button>
+              </div>
+            </div>
+            <!-- STRATEGY C: Climate Resilience & Diversified Cash Crop -->
+            <div
+              class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden flex flex-col justify-between transition-all hover:shadow-md"
+            >
+              <div>
+                <!-- Top Visual Tag -->
+                <div class="p-space-md bg-surface-container-low">
+                  <div class="flex items-center justify-between mb-space-xs">
+                    <span
+                      class="px-space-sm py-space-xs rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm uppercase font-semibold"
+                    >
+                      Strategy C • অর্থকরী বিকল্প
+                    </span>
+                    <span
+                      class="px-space-sm py-space-xs rounded bg-secondary-fixed text-on-secondary-fixed font-data-mono text-label-sm font-bold"
+                    >
+                      88 / 100 Match
+                    </span>
+                  </div>
+                  <h2
+                    class="font-title-md text-title-md font-bold text-on-surface"
+                  >
+                    Climate Resilient Cash Crop
+                  </h2>
+                  <p class="font-body-sm text-body-sm text-on-surface-variant">
+                    বিনা-১৭ ধান → গোল আলু → হাইব্রিড ভুট্টা
+                  </p>
+                </div>
+                <!-- Seasonal Cycle Visual Stepper -->
+                <div class="p-space-md">
+                  <div
+                    class="font-label-sm text-label-sm font-semibold text-on-surface-variant mb-space-sm uppercase"
+                  >
+                    12-Month High Revenue Cycle
+                  </div>
+                  <div class="space-y-space-xs">
+                    <div
+                      class="flex items-center justify-between p-space-xs rounded bg-surface-container-low"
+                    >
+                      <div class="flex items-center gap-space-xs">
+                        <span
+                          class="w-2.5 h-2.5 rounded-full bg-surface-tint"
+                        ></span>
+                        <span
+                          class="font-label-md text-label-md text-on-surface font-medium"
+                          >BINA-17 Short Aman</span
+                        >
+                      </div>
+                      <span
+                        class="font-data-mono text-data-mono text-on-surface-variant"
+                        >Jul – Oct</span
+                      >
+                    </div>
+                    <div
+                      class="flex items-center justify-between p-space-xs rounded bg-surface-container-low"
+                    >
+                      <div class="flex items-center gap-space-xs">
+                        <span
+                          class="w-2.5 h-2.5 rounded-full bg-secondary-container"
+                        ></span>
+                        <span
+                          class="font-label-md text-label-md text-on-surface font-medium"
+                          >Commercial Potato (আলু)</span
+                        >
+                      </div>
+                      <span
+                        class="font-data-mono text-data-mono text-on-surface-variant"
+                        >Nov – Feb</span
+                      >
+                    </div>
+                    <div
+                      class="flex items-center justify-between p-space-xs rounded bg-surface-container-low"
+                    >
+                      <div class="flex items-center gap-space-xs">
+                        <span
+                          class="w-2.5 h-2.5 rounded-full bg-surface-tint"
+                        ></span>
+                        <span
+                          class="font-label-md text-label-md text-on-surface font-medium"
+                          >Drought-Hardy Maize (ভুট্টা)</span
+                        >
+                      </div>
+                      <span
+                        class="font-data-mono text-data-mono text-on-surface-variant"
+                        >Feb – Jun</span
+                      >
+                    </div>
+                    <div
+                      class="flex items-center justify-between p-space-xs rounded bg-surface-container-low text-on-surface-variant"
+                    >
+                      <div class="flex items-center gap-space-xs">
+                        <span
+                          class="w-2.5 h-2.5 rounded-full bg-outline"
+                        ></span>
+                        <span class="font-label-md text-label-md font-medium"
+                          >Fast Turnaround Bed Prep</span
+                        >
+                      </div>
+                      <span class="font-data-mono text-data-mono"
+                        >Late Jun</span
+                      >
+                    </div>
+                  </div>
+                  <!-- Key Diagnostic Metrics -->
+                  <div class="mt-space-md pt-space-md space-y-space-xs">
+                    <div
+                      class="flex justify-between items-center text-body-sm font-body-sm"
+                    >
+                      <span class="text-on-surface-variant"
+                        >Water Depletion</span
+                      >
+                      <span
+                        class="font-data-mono text-data-mono font-bold text-on-surface"
+                        >720 mm/yr (-50%)</span
+                      >
+                    </div>
+                    <div
+                      class="flex justify-between items-center text-body-sm font-body-sm"
+                    >
+                      <span class="text-on-surface-variant"
+                        >Economic Gross Return</span
+                      >
+                      <span
+                        class="font-data-mono text-data-mono font-bold text-secondary"
+                        >+41% Revenue</span
+                      >
+                    </div>
+                    <div
+                      class="flex justify-between items-center text-body-sm font-body-sm"
+                    >
+                      <span class="text-on-surface-variant"
+                        >Soil Erosion Reduction</span
+                      >
+                      <span
+                        class="font-data-mono text-data-mono font-bold text-on-surface"
+                        >58% Reduction</span
+                      >
+                    </div>
+                    <div
+                      class="flex justify-between items-center text-body-sm font-body-sm"
+                    >
+                      <span class="text-on-surface-variant"
+                        >Nutrient Demand</span
+                      >
+                      <span
+                        class="font-data-mono text-data-mono text-on-surface font-medium"
+                        >High (P &amp; K intensive)</span
+                      >
+                    </div>
+                  </div>
+                  <div
+                    class="mt-space-md p-space-sm rounded-lg bg-surface-container text-on-surface-variant font-body-sm text-body-sm"
+                  >
+                    <span class="font-semibold text-on-surface block mb-0.5"
+                      >Economic Trade-off:</span
+                    >
+                    Exceptional cash flow potential via potato cold-storage
+                    export. However, requires rigorous post-harvest potash and
+                    organic residue returning.
+                  </div>
+                </div>
+              </div>
+              <div class="p-space-md bg-surface-container-low">
+                <button
+                  class="w-full py-space-sm px-space-md rounded bg-surface-container font-label-md text-label-md text-on-surface hover:bg-surface-container-highest transition-colors"
+                  type="button"
+                >
+                  Evaluate Commercial Potato Feasibility
+                </button>
+              </div>
+            </div>
+          </div>
+          <!-- Interactive What-If Simulator & Weighting Sliders -->
+          <div
+            class="bg-surface-container-lowest rounded-xl shadow-sm p-space-md mb-space-lg"
+          >
+            <div
+              class="flex flex-col md:flex-row md:items-center justify-between pb-space-md mb-space-md gap-space-sm"
+            >
+              <div>
+                <h3
+                  class="font-headline-sm text-headline-sm font-bold text-on-surface flex items-center gap-2"
+                >
+                  <span class="material-symbols-outlined text-secondary"
+                    >tune</span
+                  >
+                  Farmer Priority Weighting &amp; What-If Simulator
+                </h3>
+                <p class="font-body-sm text-body-sm text-on-surface-variant">
+                  Adjust your personal operational priorities to re-rank
+                  rotation recommendations in real time (কৃষকের নিজস্ব
+                  অগ্রাধিকার সমন্বয়).
+                </p>
+              </div>
+              <div class="flex items-center gap-space-xs">
+                <button
+                  class="px-space-sm py-space-xs rounded bg-surface-container text-on-surface font-label-sm text-label-sm hover:bg-surface-container-high transition-colors"
+                  id="resetSlidersBtn"
+                  type="button"
+                >
+                  Reset Defaults
+                </button>
+                <button
+                  class="px-space-md py-space-xs rounded bg-primary text-on-primary font-label-sm text-label-sm font-semibold hover:bg-surface-tint transition-colors flex items-center gap-1 shadow-sm"
+                  type="button"
+                >
+                  <span class="material-symbols-outlined text-[16px]"
+                    >file_download</span
+                  >
+                  Export Agronomic Plan (PDF)
+                </button>
+              </div>
+            </div>
+            <!-- Sliders Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-space-lg">
+              <!-- Slider 1 -->
+              <div class="bg-surface-container-low p-space-md rounded-lg">
+                <div class="flex justify-between items-center mb-space-xs">
+                  <label
+                    class="font-label-md text-label-md font-semibold text-on-surface"
+                    for="waterWeight"
+                    >Prioritize Water Savings (ভূগর্ভস্থ পানি সংরক্ষণ)</label
+                  >
+                  <span
+                    class="font-data-mono text-data-mono font-bold text-secondary"
+                    id="waterWeightVal"
+                    >85%</span
+                  >
+                </div>
+                <input
+                  class="w-full accent-secondary cursor-pointer h-2 bg-surface-container-highest rounded-lg"
+                  id="waterWeight"
+                  max="100"
+                  min="0"
+                  type="range"
+                  value="85"
+                />
+                <p
+                  class="font-label-sm text-label-sm text-on-surface-variant mt-2"
+                >
+                  Dampens strategies that demand high dry-season tube well
+                  operation.
+                </p>
+              </div>
+              <!-- Slider 2 -->
+              <div class="bg-surface-container-low p-space-md rounded-lg">
+                <div class="flex justify-between items-center mb-space-xs">
+                  <label
+                    class="font-label-md text-label-md font-semibold text-on-surface"
+                    for="profitWeight"
+                    >Prioritize Profit &amp; Cash Flow (মুনাফার পরিমাণ)</label
+                  >
+                  <span
+                    class="font-data-mono text-data-mono font-bold text-secondary"
+                    id="profitWeightVal"
+                    >95%</span
+                  >
+                </div>
+                <input
+                  class="w-full accent-secondary cursor-pointer h-2 bg-surface-container-highest rounded-lg"
+                  id="profitWeight"
+                  max="100"
+                  min="0"
+                  type="range"
+                  value="95"
+                />
+                <p
+                  class="font-label-sm text-label-sm text-on-surface-variant mt-2"
+                >
+                  Rewards multi-crop high market yield cash crops like potato
+                  and maize.
+                </p>
+              </div>
+              <!-- Labor Selector -->
+              <div class="bg-surface-container-low p-space-md rounded-lg">
+                <div class="flex justify-between items-center mb-space-xs">
+                  <label
+                    class="font-label-md text-label-md font-semibold text-on-surface"
+                    >Labor Availability (শ্রমিক সহজলভ্যতা)</label
+                  >
+                  <span
+                    class="font-data-mono text-data-mono font-bold text-on-surface"
+                    id="laborVal"
+                    >Medium</span
+                  >
+                </div>
+                <div class="grid grid-cols-3 gap-space-xs mt-2">
+                  <button
+                    class="labor-btn py-space-xs px-space-xs text-center rounded bg-surface-container font-label-sm text-label-sm text-on-surface hover:bg-surface-container-highest"
+                    data-labor="low"
+                    type="button"
+                  >
+                    Low (সীমিত)
+                  </button>
+                  <button
+                    class="labor-btn py-space-xs px-space-xs text-center rounded bg-primary text-on-primary font-label-sm text-label-sm font-semibold"
+                    data-labor="medium"
+                    type="button"
+                  >
+                    Medium (মাঝারি)
+                  </button>
+                  <button
+                    class="labor-btn py-space-xs px-space-xs text-center rounded bg-surface-container font-label-sm text-label-sm text-on-surface hover:bg-surface-container-highest"
+                    data-labor="high"
+                    type="button"
+                  >
+                    High (উচ্চ)
+                  </button>
+                </div>
+                <p
+                  class="font-label-sm text-label-sm text-on-surface-variant mt-2"
+                >
+                  Short turnaround intervals between crops require mechanized
+                  sowing.
+                </p>
+              </div>
+            </div>
+          </div>
+          <!-- "Why This Strategy?" Scientific Explainability & NASA Evidence Engine -->
+          <div
+            class="bg-surface-container-lowest rounded-xl shadow-sm p-space-md mb-space-lg"
+          >
+            <div
+              class="flex items-center gap-space-xs text-secondary font-label-sm text-label-sm uppercase tracking-wider mb-1"
+            >
+              <span class="material-symbols-outlined text-[16px]">biotech</span>
+              <span>NASA Earth Observation Telemetry Synthesis</span>
+            </div>
+            <h3
+              class="font-headline-sm text-headline-sm font-bold text-on-surface mb-space-xs"
+            >
+              Why Strategy B is Scientifically Superior for Pirgachha (বৈজ্ঞানিক
+              ব্যাখ্যা)
+            </h3>
+            <p class="font-body-md text-on-surface-variant mb-space-md">
+              Our algorithmic decision support system reconciles decadal
+              satellite records with ground research conducted at the Bangladesh
+              Agricultural Research Institute (BARI).
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-space-md">
+              <!-- Evidence 1: SMAP & GPM Hydrology -->
+              <div
+                class="bg-surface-container-low p-space-md rounded-lg flex flex-col justify-between"
+              >
+                <div>
+                  <div
+                    class="flex items-center gap-space-xs mb-space-xs text-secondary"
+                  >
+                    <span class="material-symbols-outlined text-[20px]"
+                      >cloudy_snowing</span
+                    >
+                    <span
+                      class="font-title-md text-title-md font-bold text-on-surface"
+                      >NASA GPM &amp; SMAP Data</span
+                    >
+                  </div>
+                  <p
+                    class="font-body-sm text-body-sm text-on-surface-variant mb-space-sm"
+                  >
+                    Analysis of Rangpur's 10-year Integrated Multi-satellitE
+                    Retrievals for GPM (IMERG) reveals a
+                    <strong>14-day persistent delay</strong> in pre-monsoon
+                    precipitation onset.
+                  </p>
+                  <div
+                    class="bg-surface-container-lowest p-space-sm rounded font-body-sm text-body-sm text-on-surface"
+                  >
+                    "Traditional Boro paddy will suffer exorbitant groundwater
+                    extraction expenses during the late March heat pulse. The
+                    Pulse strategy requires zero irrigation past early March."
+                  </div>
+                </div>
+                <div
+                  class="mt-space-md pt-space-xs flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm"
+                >
+                  <span>Sensor: SMAP L4_SM</span>
+                  <span class="font-data-mono text-data-mono text-secondary"
+                    >Δ -18.4% root moisture</span
+                  >
+                </div>
+              </div>
+              <!-- Evidence 2: Landsat/MODIS Thermal Cover -->
+              <div
+                class="bg-surface-container-low p-space-md rounded-lg flex flex-col justify-between"
+              >
+                <div>
+                  <div
+                    class="flex items-center gap-space-xs mb-space-xs text-secondary"
+                  >
+                    <span class="material-symbols-outlined text-[20px]"
+                      >thermostat</span
+                    >
+                    <span
+                      class="font-title-md text-title-md font-bold text-on-surface"
+                      >MODIS / Landsat LST Engine</span
+                    >
+                  </div>
+                  <p
+                    class="font-body-sm text-body-sm text-on-surface-variant mb-space-sm"
+                  >
+                    Land Surface Temperature (LST) mapping compares bare winter
+                    soil versus a continuous brassica/pulse vegetative canopy in
+                    Rangpur.
+                  </p>
+                  <div
+                    class="bg-surface-container-lowest p-space-sm rounded font-body-sm text-body-sm text-on-surface"
+                  >
+                    "Mustard and mungbean vegetative canopy suppresses topsoil
+                    surface heat by <strong>3.8°C</strong> compared to bare
+                    winter fallow, preventing volatile loss of mycorrhizal fungi
+                    and topsoil moisture."
+                  </div>
+                </div>
+                <div
+                  class="mt-space-md pt-space-xs flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm"
+                >
+                  <span>Sensor: Landsat-9 TIRS-2</span>
+                  <span class="font-data-mono text-data-mono text-secondary"
+                    >LST diff: -3.8°C avg</span
+                  >
+                </div>
+              </div>
+              <!-- Evidence 3: BARI & DAE Ground Reality -->
+              <div
+                class="bg-surface-container-low p-space-md rounded-lg flex flex-col justify-between"
+              >
+                <div>
+                  <div
+                    class="flex items-center gap-space-xs mb-space-xs text-secondary"
+                  >
+                    <span class="material-symbols-outlined text-[20px]"
+                      >location_city</span
+                    >
+                    <span
+                      class="font-title-md text-title-md font-bold text-on-surface"
+                      >BARI &amp; DAE Agronomy Proof</span
+                    >
+                  </div>
+                  <p
+                    class="font-body-sm text-body-sm text-on-surface-variant mb-space-sm"
+                  >
+                    Empirical field data from the Rangpur Regional Agricultural
+                    Research Station (ARS) confirms biological nitrogen fixed by
+                    <em>Sesbania</em> and <em>Vigna radiata</em>.
+                  </p>
+                  <div
+                    class="bg-surface-container-lowest p-space-sm rounded font-body-sm text-body-sm text-on-surface"
+                  >
+                    "Green manuring with Sesbania incorporates ~12 tons/ha of
+                    fresh green biomass, lowering chemical urea expenditure by
+                    <strong>45 kg/bigha</strong> for the subsequent Aman crop."
+                  </div>
+                </div>
+                <div
+                  class="mt-space-md pt-space-xs flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm"
+                >
+                  <span>Protocol: BARI AEZ-3 Field Note</span>
+                  <span
+                    class="font-data-mono text-data-mono text-secondary font-bold"
+                    >Validated</span
+                  >
+                </div>
+              </div>
+            </div>
+            <!-- Interactive Seasonal Water Consumption Visual Sparkline Chart -->
+            <div
+              class="mt-space-lg p-space-md rounded-lg bg-surface-container-low"
+            >
+              <div
+                class="flex flex-col md:flex-row md:items-center justify-between mb-space-sm gap-2"
+              >
+                <span
+                  class="font-title-md text-title-md font-bold text-on-surface"
+                >
+                  Monthly Groundwater &amp; Evapotranspiration Deficit
+                  Comparison (mm)
+                </span>
+                <div
+                  class="flex items-center gap-space-md text-label-sm font-label-sm"
+                >
+                  <div class="flex items-center gap-1">
+                    <span class="w-3 h-3 rounded-sm bg-error"></span>
+                    <span class="text-on-surface-variant"
+                      >Traditional Monoculture (Strategy A)</span
+                    >
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <span class="w-3 h-3 rounded-sm bg-secondary"></span>
+                    <span class="text-on-surface font-semibold"
+                      >Pulse Rotation (Strategy B)</span
+                    >
+                  </div>
+                </div>
+              </div>
+              <!-- SVG Chart for visual richness -->
+              <div class="w-full overflow-x-auto">
+                <svg
+                  class="w-full h-36"
+                  fill="none"
+                  viewbox="0 0 900 140"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <!-- Horizontal Gridlines -->
+                  <line
+                    class="text-outline-variant/30"
+                    stroke="currentColor"
+                    stroke-dasharray="2 4"
+                    x1="50"
+                    x2="880"
+                    y1="20"
+                    y2="20"
+                  ></line>
+                  <line
+                    class="text-outline-variant/30"
+                    stroke="currentColor"
+                    stroke-dasharray="2 4"
+                    x1="50"
+                    x2="880"
+                    y1="60"
+                    y2="60"
+                  ></line>
+                  <line
+                    class="text-outline-variant/30"
+                    stroke="currentColor"
+                    stroke-dasharray="2 4"
+                    x1="50"
+                    x2="880"
+                    y1="100"
+                    y2="100"
+                  ></line>
+                  <!-- Month labels -->
+                  <text
+                    class="fill-current text-outline font-label-sm"
+                    font-size="10"
+                    x="65"
+                    y="125"
+                  >
+                    Jul
+                  </text>
+                  <text
+                    class="fill-current text-outline font-label-sm"
+                    font-size="10"
+                    x="135"
+                    y="125"
+                  >
+                    Aug
+                  </text>
+                  <text
+                    class="fill-current text-outline font-label-sm"
+                    font-size="10"
+                    x="210"
+                    y="125"
+                  >
+                    Sep
+                  </text>
+                  <text
+                    class="fill-current text-outline font-label-sm"
+                    font-size="10"
+                    x="285"
+                    y="125"
+                  >
+                    Oct
+                  </text>
+                  <text
+                    class="fill-current text-outline font-label-sm"
+                    font-size="10"
+                    x="360"
+                    y="125"
+                  >
+                    Nov
+                  </text>
+                  <text
+                    class="fill-current text-outline font-label-sm"
+                    font-size="10"
+                    x="435"
+                    y="125"
+                  >
+                    Dec
+                  </text>
+                  <text
+                    class="fill-current text-outline font-label-sm"
+                    font-size="10"
+                    x="510"
+                    y="125"
+                  >
+                    Jan
+                  </text>
+                  <text
+                    class="fill-current text-outline font-label-sm"
+                    font-size="10"
+                    x="585"
+                    y="125"
+                  >
+                    Feb
+                  </text>
+                  <text
+                    class="fill-current text-outline font-label-sm"
+                    font-size="10"
+                    x="660"
+                    y="125"
+                  >
+                    Mar
+                  </text>
+                  <text
+                    class="fill-current text-outline font-label-sm"
+                    font-size="10"
+                    x="735"
+                    y="125"
+                  >
+                    Apr
+                  </text>
+                  <text
+                    class="fill-current text-outline font-label-sm"
+                    font-size="10"
+                    x="810"
+                    y="125"
+                  >
+                    May
+                  </text>
+                  <text
+                    class="fill-current text-outline font-label-sm"
+                    font-size="10"
+                    x="865"
+                    y="125"
+                  >
+                    Jun
+                  </text>
+                  <!-- Strategy A Line (High peak in Feb-May for Boro) -->
+                  <path
+                    class="text-error"
+                    d="M 70 85 C 130 90, 200 80, 280 88 C 350 95, 430 100, 500 85 C 570 30, 650 15, 730 22 C 800 45, 840 90, 870 95"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                  ></path>
+                  <!-- Strategy B Line (Flat, low in dry season) -->
+                  <path
+                    class="text-secondary"
+                    d="M 70 85 C 130 88, 200 85, 280 92 C 350 90, 430 85, 500 80 C 570 75, 650 72, 730 78 C 800 82, 840 88, 870 90"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                  ></path>
+                  <!-- Critical Dry Season Alert Zone Box -->
+                  <rect
+                    class="text-error/5"
+                    fill="currentColor"
+                    height="98"
+                    rx="4"
+                    width="220"
+                    x="560"
+                    y="10"
+                  ></rect>
+                  <text
+                    class="fill-current text-error font-label-sm font-bold"
+                    font-size="9"
+                    x="580"
+                    y="24"
+                  >
+                    PEAK BORO PUMPING CRISIS
+                  </text>
+                </svg>
+              </div>
+              <div
+                class="flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm mt-1"
+              >
+                <span
+                  >*Aggregated from Landsat 8/9 Thermal Infrared Sensor and
+                  MODIS MOD16A2 Evapotranspiration baseline (2014-2024).</span
+                >
+                <span class="text-secondary font-medium"
+                  >Boro water usage peak: 320 mm/mo vs Mungbean peak: 65
+                  mm/mo</span
+                >
+              </div>
+            </div>
+          </div>
+          <!-- Field Action Plan Roadmap & Agronomic Guidance Checklist -->
+          <div
+            class="bg-surface-container-lowest rounded-xl shadow-sm p-space-md mb-space-lg"
+          >
+            <div
+              class="flex flex-col md:flex-row md:items-center justify-between pb-space-sm mb-space-md gap-space-sm"
+            >
+              <div>
+                <h3
+                  class="font-headline-sm text-headline-sm font-bold text-on-surface"
+                >
+                  Implementation Roadmap: Strategy B Execution (মাঠপর্যায়ে
+                  বাস্তবায়ন নির্দেশিকা)
+                </h3>
+                <p class="font-body-sm text-body-sm text-on-surface-variant">
+                  Recommended agronomic sequence for upcoming parcel transition
+                  at RPR-FIELD-04.
+                </p>
+              </div>
+              <span
+                class="inline-flex items-center px-space-sm py-space-xs rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm"
+              >
+                DAE Field Officer Assisted Mode
+              </span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-space-md">
+              <!-- Step 1 -->
+              <div
+                class="bg-surface-container-low p-space-sm rounded-lg flex flex-col justify-between"
+              >
+                <div>
+                  <div class="flex items-center justify-between mb-space-xs">
+                    <span
+                      class="w-6 h-6 rounded-full bg-primary text-on-primary font-data-mono text-[12px] flex items-center justify-center font-bold"
+                      >1</span
+                    >
+                    <span
+                      class="font-label-sm text-label-sm text-on-surface-variant font-semibold"
+                      >Jul – Oct</span
+                    >
+                  </div>
+                  <h4
+                    class="font-title-md text-title-md font-semibold text-on-surface"
+                  >
+                    Early-Maturing Aman
+                  </h4>
+                  <p
+                    class="font-body-sm text-body-sm text-on-surface-variant mt-1"
+                  >
+                    Plant short duration rice (e.g., BRRI dhan75 / BINA dhan17).
+                    Harvest by late October to clear the plot for relay mustard.
+                  </p>
+                </div>
+                <div
+                  class="mt-space-md text-secondary font-label-sm text-label-sm font-medium flex items-center gap-1"
+                >
+                  <span class="material-symbols-outlined text-[16px]"
+                    >schedule</span
+                  >
+                  115-day lifecycle
+                </div>
+              </div>
+              <!-- Step 2 -->
+              <div
+                class="bg-surface-container-low p-space-sm rounded-lg flex flex-col justify-between"
+              >
+                <div>
+                  <div class="flex items-center justify-between mb-space-xs">
+                    <span
+                      class="w-6 h-6 rounded-full bg-primary text-on-primary font-data-mono text-[12px] flex items-center justify-center font-bold"
+                      >2</span
+                    >
+                    <span
+                      class="font-label-sm text-label-sm text-on-surface-variant font-semibold"
+                      >Nov – Jan</span
+                    >
+                  </div>
+                  <h4
+                    class="font-title-md text-title-md font-semibold text-on-surface"
+                  >
+                    Zero-Till Mustard
+                  </h4>
+                  <p
+                    class="font-body-sm text-body-sm text-on-surface-variant mt-1"
+                  >
+                    Sow BARI Sarisha-14 or 17 immediately into residual Aman
+                    moisture. Suppresses soil crusting and yields edible
+                    oilseed.
+                  </p>
+                </div>
+                <div
+                  class="mt-space-md text-secondary font-label-sm text-label-sm font-medium flex items-center gap-1"
+                >
+                  <span class="material-symbols-outlined text-[16px]">spa</span>
+                  80-day oilseed flush
+                </div>
+              </div>
+              <!-- Step 3 -->
+              <div
+                class="bg-surface-container-low p-space-sm rounded-lg flex flex-col justify-between"
+              >
+                <div>
+                  <div class="flex items-center justify-between mb-space-xs">
+                    <span
+                      class="w-6 h-6 rounded-full bg-primary text-on-primary font-data-mono text-[12px] flex items-center justify-center font-bold"
+                      >3</span
+                    >
+                    <span
+                      class="font-label-sm text-label-sm text-on-surface-variant font-semibold"
+                      >Feb – Apr</span
+                    >
+                  </div>
+                  <h4
+                    class="font-title-md text-title-md font-semibold text-on-surface"
+                  >
+                    BARI Mung-6 Pulse
+                  </h4>
+                  <p
+                    class="font-body-sm text-body-sm text-on-surface-variant mt-1"
+                  >
+                    Two hand pickings of high-protein pulse pods. Rhizobial root
+                    colonization deposits ~65 kg reactive N/ha into silty
+                    matrix.
+                  </p>
+                </div>
+                <div
+                  class="mt-space-md text-secondary font-label-sm text-label-sm font-medium flex items-center gap-1"
+                >
+                  <span class="material-symbols-outlined text-[16px]">hub</span>
+                  Nitrogen fixing pods
+                </div>
+              </div>
+              <!-- Step 4 -->
+              <div
+                class="bg-surface-container-low p-space-sm rounded-lg flex flex-col justify-between"
+              >
+                <div>
+                  <div class="flex items-center justify-between mb-space-xs">
+                    <span
+                      class="w-6 h-6 rounded-full bg-primary text-on-primary font-data-mono text-[12px] flex items-center justify-center font-bold"
+                      >4</span
+                    >
+                    <span
+                      class="font-label-sm text-label-sm text-on-surface-variant font-semibold"
+                      >May – Jun</span
+                    >
+                  </div>
+                  <h4
+                    class="font-title-md text-title-md font-semibold text-on-surface"
+                  >
+                    Dhaincha Incorporation
+                  </h4>
+                  <p
+                    class="font-body-sm text-body-sm text-on-surface-variant mt-1"
+                  >
+                    Broadcast Sesbania with pre-monsoon shower. Plough in at 45
+                    days before puddle-ploughing for the next Aman transplant.
+                  </p>
+                </div>
+                <div
+                  class="mt-space-md text-secondary font-label-sm text-label-sm font-medium flex items-center gap-1"
+                >
+                  <span class="material-symbols-outlined text-[16px]"
+                    >recycling</span
+                  >
+                  Biomass return
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Scientific Disclaimer & Methodology Footnote -->
+          <div
+            class="p-space-md rounded-xl bg-surface-container-low text-on-surface-variant font-body-sm text-body-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-space-sm mb-space-md"
+          >
+            <div class="flex items-start gap-space-xs max-w-4xl">
+              <span
+                class="material-symbols-outlined text-[20px] text-outline mt-0.5"
+                >verified_user</span
+              >
+              <span>
+                <strong>Scientific Advisory Notice:</strong> Remote sensing
+                recommendations are produced using NASA SMAP Level-4 soil
+                moisture profiles, GPM satellite precipitation estimation, and
+                MODIS vegetative indices combined with regional crop
+                coefficients (FAO-56) tuned to AEZ-3 Rangpur soils. Consult
+                Upazila Agricultural Office (DAE Pirgachha) before applying
+                extreme alterations to traditional tenancy arrangements.
+              </span>
+            </div>
+            <span class="font-data-mono text-data-mono text-outline shrink-0"
+              >Model: DSS-AGRI-v4.8</span
+            >
+          </div>
+        </div>
+        <script>
+          // Simple Micro-interaction script for What-If simulator sliders and labor toggle
+          (function initDSSSimulator() {
+            const waterSlider = document.getElementById("waterWeight");
+            const profitSlider = document.getElementById("profitWeight");
+            const waterDisplay = document.getElementById("waterWeightVal");
+            const profitDisplay = document.getElementById("profitWeightVal");
+            const resetBtn = document.getElementById("resetSlidersBtn");
+            const laborButtons = document.querySelectorAll(".labor-btn");
+            const laborDisplay = document.getElementById("laborVal");
+
+            if (waterSlider && waterDisplay) {
+              waterSlider.addEventListener("input", (e) => {
+                waterDisplay.textContent = e.target.value + "%";
+              });
+            }
+
+            if (profitSlider && profitDisplay) {
+              profitSlider.addEventListener("input", (e) => {
+                profitDisplay.textContent = e.target.value + "%";
+              });
+            }
+
+            if (resetBtn) {
+              resetBtn.addEventListener("click", () => {
+                if (waterSlider) {
+                  waterSlider.value = 85;
+                  waterDisplay.textContent = "85%";
+                }
+                if (profitSlider) {
+                  profitSlider.value = 95;
+                  profitDisplay.textContent = "95%";
+                }
+                if (laborDisplay) {
+                  laborDisplay.textContent = "Medium";
+                }
+                laborButtons.forEach((btn) => {
+                  if (btn.getAttribute("data-labor") === "medium") {
+                    btn.className =
+                      "labor-btn py-space-xs px-space-xs text-center rounded bg-primary text-on-primary font-label-sm text-label-sm font-semibold";
+                  } else {
+                    btn.className =
+                      "labor-btn py-space-xs px-space-xs text-center rounded bg-surface-container font-label-sm text-label-sm text-on-surface hover:bg-surface-container-highest";
+                  }
+                });
+              });
+            }
+
+            laborButtons.forEach((btn) => {
+              btn.addEventListener("click", () => {
+                laborButtons.forEach((b) => {
+                  b.className =
+                    "labor-btn py-space-xs px-space-xs text-center rounded bg-surface-container font-label-sm text-label-sm text-on-surface hover:bg-surface-container-highest";
+                });
+                btn.className =
+                  "labor-btn py-space-xs px-space-xs text-center rounded bg-primary text-on-primary font-label-sm text-label-sm font-semibold";
+                const type = btn.getAttribute("data-labor");
+                laborDisplay.textContent =
+                  type.charAt(0).toUpperCase() + type.slice(1);
+              });
+            });
+
+            const toggleCards = document.getElementById("viewToggleCards");
+            const toggleMatrix = document.getElementById("viewToggleMatrix");
+            if (toggleCards && toggleMatrix) {
+              toggleMatrix.addEventListener("click", () => {
+                toggleMatrix.className =
+                  "px-space-sm py-space-xs rounded bg-surface-container-lowest font-label-md text-label-md text-on-surface font-medium shadow-sm flex items-center gap-1";
+                toggleCards.className =
+                  "px-space-sm py-space-xs rounded text-on-surface-variant font-label-md text-label-md hover:text-on-surface flex items-center gap-1";
+              });
+              toggleCards.addEventListener("click", () => {
+                toggleCards.className =
+                  "px-space-sm py-space-xs rounded bg-surface-container-lowest font-label-md text-label-md text-on-surface font-medium shadow-sm flex items-center gap-1";
+                toggleMatrix.className =
+                  "px-space-sm py-space-xs rounded text-on-surface-variant font-label-md text-label-md hover:text-on-surface flex items-center gap-1";
+              });
+            }
+          })();
+        </script>
+      </main>
+      <footer
+        class="w-full bg-surface-container-low border-t border-outline-variant/30 py-space-md px-gutter text-on-surface-variant font-label-sm text-label-sm flex items-center justify-between"
+      >
+        <span
+          >NASA Earth observation decision support demonstration. Illustrative
+          data for Rangpur, Bangladesh.</span
+        ><span>Farm ID: RPR-FIELD-04</span>
+      </footer>
+    </div>
+  </body>
+</html>
