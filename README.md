@@ -9,27 +9,14 @@ Requirements: Docker Desktop with Compose, Python 3, and Git.
 ```bash
 git clone https://github.com/km-wahid/NasaSpaceAppsChallange.git
 cd NasaSpaceAppsChallange
-
-# Generate the PostgreSQL CSV imports from the included workbook.
-python3 database/prepare_import.py
-
-# Build the app, run migrations, and start PostgreSQL plus AdonisJS.
-docker compose -f docker.yml up --build -d
-
-# Load the imported Bangladesh district and crop records.
-docker compose -f docker.yml exec -T postgres \
-  psql -v ON_ERROR_STOP=1 -U nasaweb -d nasaweb -f /imports/load_postgres.sql
-
-# Load source-backed starter crop references after workbook import.
-docker compose -f docker.yml restart app
+./setup.sh
 ```
 
-Open http://localhost:3333/ after the import completes.
+Open http://localhost:3333/ when the script prints `Ready`.
 
-The first startup runs all AdonisJS migrations automatically. Each app startup runs the idempotent
-crop-reference seeder; restart after the first workbook import so it can match the imported crops.
-The seeder never overwrites existing curated records. **The workbook import truncates tables with
-CASCADE: use it only on a new database, not to refresh an installation containing farmer data.**
+The setup script prepares the included dataset, builds the app, runs migrations, imports the data,
+and waits until the website responds. It imports only into a fresh database; running it again keeps
+existing farmer data unchanged.
 
 To watch the app:
 
