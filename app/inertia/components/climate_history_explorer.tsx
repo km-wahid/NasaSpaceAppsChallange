@@ -27,6 +27,7 @@ export type ClimateHistory = {
   source: {
     name: string
     temporalResolution: string
+    grid: string
     retrievedAt: string
     apiVersion: string | null
   }

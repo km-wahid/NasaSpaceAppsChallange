@@ -29,6 +29,7 @@ test.group('Public NASA climate history', () => {
     assert.isNull(result.months[1].rainfallMm)
     assert.isNull(result.years[0].rainfallMm)
     assert.equal(result.years[0].maximumTemperatureC, 44)
+    assert.equal(result.source.grid, '0.5° × 0.625°')
   })
 
   test('calculates a deterministic temperature trend per decade', ({ assert }) => {

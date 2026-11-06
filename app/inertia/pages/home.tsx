@@ -128,7 +128,7 @@ export default function Home() {
             aria-hidden="true"
             tabIndex={-1}
           >
-            <source src="/media/home-field-sunset.mp4" type="video/mp4" />
+            <source src="/videos/vid3.webm" type="video/webm" />
           </video>
         )}
         <div className="hero-overlay oa-hero-video-overlay" />

@@ -58,3 +58,4 @@ __pycache__/
 # Generated analytical exports
 reports/**/.data-app-offline/
 /reports/
+/agents/

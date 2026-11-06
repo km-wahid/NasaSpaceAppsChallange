@@ -56,6 +56,7 @@ const climateHistory = {
   source: {
     name: 'NASA POWER',
     temporalResolution: 'monthly',
+    grid: '0.5° × 0.625°',
     retrievedAt: '2026-01-01T00:00:00.000Z',
     apiVersion: 'test',
   },
@@ -214,11 +215,35 @@ try {
       },
     })
   })
+  await context.route('**/api/v1/farms/7/recommendations/88', (route) =>
+    route.fulfill({
+      json: {
+        run: { recommendation_run_id: 88, farm_id: 7 },
+        recommendations: fixturePlans.map((plan, index) => ({
+          recommendation_id: index + 1,
+          rank: index + 1,
+          overall_score: [84, 76, 69][index],
+          climate_score: [88, 72, 65][index],
+          water_score: [74, 91, 58][index],
+          soil_score: [86, 68, 81][index],
+          resilience_score: [82, 79, 66][index],
+          economic_score: [90, 64, 75][index],
+          total_water_requirement_mm: [780, 610, 940][index],
+          total_profit_bdt: index === 2 ? null : [128000, 106000][index],
+          items: plan.crops.map((crop) => ({
+            crop_name: crop.name,
+            planting_date: crop.plantingDate,
+            harvest_date: crop.harvestDate,
+          })),
+          explanations: [],
+        })),
+      },
+    })
+  )
   const page = await context.newPage()
   const errors = []
   page.on('pageerror', (error) => errors.push(error.message))
   await page.addInitScript(() => {
-    window.localStorage.setItem('orbitagro-locale', 'en')
     window.locationRequests = 0
     Object.defineProperty(navigator, 'geolocation', {
       value: {
@@ -296,6 +321,17 @@ try {
   assert.equal(await page.evaluate(() => window.locationRequests), 0, 'No automatic GPS prompt')
   await page.setViewportSize({ width: 1440, height: 1000 })
   await page.goto(base)
+  const languageSelect = page.locator('.oa-locale-select select')
+  assert.equal(await languageSelect.inputValue(), 'en')
+  assert.equal(await page.locator('html').getAttribute('lang'), 'en')
+  await languageSelect.selectOption('bn')
+  await page.getByRole('heading', { name: /আপনার জমি চিনুন/ }).waitFor()
+  assert.equal(await page.locator('html').getAttribute('lang'), 'bn')
+  await page.reload()
+  assert.equal(await languageSelect.inputValue(), 'bn')
+  await page.getByRole('heading', { name: /আপনার জমি চিনুন/ }).waitFor()
+  await languageSelect.selectOption('en')
+  await page.getByRole('heading', { name: /Know your land/ }).waitFor()
   assert.equal(await page.locator('link[rel="icon"]').getAttribute('href'), '/favicon.svg')
   const favicon = await context.request.get(`${base}/favicon.svg`)
   assert.equal(favicon.status(), 200)
@@ -309,7 +345,8 @@ try {
     const video = document.querySelector('video[poster="/media/home-field-sunset.jpg"]')
     return video instanceof HTMLVideoElement && video.readyState >= HTMLMediaElement.HAVE_METADATA
   })
-  assert.ok((await heroVideo.evaluate((video) => video.duration)) > 40)
+  assert.equal(await heroVideo.locator('source').getAttribute('src'), '/videos/vid3.webm')
+  assert.ok((await heroVideo.evaluate((video) => video.duration)) > 0)
   if (process.env.SCREENSHOT_DIR) {
     await page.getByRole('heading', { name: /Know your land/ }).waitFor()
     await page.locator('.oa-cycle-section').waitFor()
@@ -358,19 +395,13 @@ try {
   )
   await dialog.getByRole('button', { name: 'Continue', exact: true }).click()
   await page.getByRole('heading', { name: 'Moderate water availability' }).waitFor()
-  const mapPreview = page.getByRole('region', { name: 'Map preview of Dhaka', exact: true })
+  const mapPreview = page.getByRole('img', {
+    name: 'Dhaka highlighted on a map of Bangladesh',
+    exact: true,
+  })
   await mapPreview.waitFor()
-  await mapPreview
-    .locator('img')
-    .first()
-    .evaluate(async (image) => image.decode())
+  assert.ok(await mapPreview.locator('path[data-selected="true"]').count())
   assert.equal(await page.locator('iframe').count(), 0, 'Map must not embed a WebGL renderer')
-  await mapPreview
-    .locator('img')
-    .first()
-    .evaluate((image) => image.dispatchEvent(new Event('error')))
-  await page.getByRole('region', { name: 'Map preview unavailable for Dhaka' }).waitFor()
-  await page.getByRole('link', { name: 'Open larger map' }).waitFor()
   assert.deepEqual(analysisInput, { districtId: '8001', waterAvailability: 'medium' })
   await page.getByText('Local data preview', { exact: true }).waitFor()
   assert.equal(await page.getByText('Preview sample crop rotations', { exact: true }).count(), 0)
@@ -380,7 +411,7 @@ try {
   )
   await page.getByRole('button', { name: /Local Plan B/ }).click()
   await page.getByRole('heading', { name: 'Local Plan B · Crop rotation' }).waitFor()
-  await page.getByText('Explore monthly water', { exact: true }).click()
+  await page.getByRole('heading', { name: 'Seasonal water outlook' }).waitFor()
   await page.getByRole('button', { name: 'Jan: No data water availability' }).click()
   assert.ok(
     await page
@@ -393,7 +424,6 @@ try {
   await page.getByRole('button', { name: 'Change water availability' }).click()
   await dialog.getByRole('button', { name: 'Continue', exact: true }).click()
   await page.getByRole('heading', { name: 'Plan A · Crop rotation' }).waitFor()
-  await page.getByText('Explore monthly water', { exact: true }).click()
   await page.getByText('View seasonal risks', { exact: true }).click()
   assert.ok(
     await page
@@ -464,7 +494,23 @@ try {
   await capture(page, 'crop-plans-mobile')
   await page.setViewportSize({ width: 1440, height: 1000 })
   await capture(page, 'crop-plans-desktop')
+  await page.goto(`${base}/compare?farmId=7&runId=88`)
+  await page.getByRole('heading', { name: 'Rotation score profile' }).waitFor()
+  assert.equal(await page.locator('.oa-radar-series').count(), 3)
+  assert.equal(await page.locator('.oa-circle-comparisons .oa-proportional-circle').count(), 6)
+  await page.getByRole('button', { name: /plan #2/i }).click()
+  assert.equal(
+    await page.getByRole('button', { name: /plan #2/i }).getAttribute('aria-pressed'),
+    'true'
+  )
+  await capture(page, 'comparison-desktop')
   await page.setViewportSize({ width: 390, height: 844 })
+  assert.ok(
+    await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
+    'Comparison dashboard fits mobile'
+  )
+  await capture(page, 'comparison-mobile')
+  await page.goto(`${base}/planner`)
   assert.ok(
     await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
     'Water dashboard fits mobile'

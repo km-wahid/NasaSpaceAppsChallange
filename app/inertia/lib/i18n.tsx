@@ -151,6 +151,21 @@ const copy = {
       'Compare the scores, seasonal sequence and trade-offs from a saved recommendation run.',
     compareEmpty: 'Open a generated recommendation to compare its strategies.',
     compareAction: 'Build a recommendation',
+    nasaHistory: 'NASA POWER climate history',
+    historicalNotForecast: 'Historical context · not a forecast',
+    scoreProfile: 'Rotation score profile',
+    recommendedPlan: 'Recommended plan',
+    overallScore: 'Overall score',
+    waterRequirement: 'Water requirement',
+    grossMargin: 'Gross margin',
+    cropCalendar: 'Crop calendar',
+    climate: 'Climate',
+    water: 'Water',
+    soil: 'Soil',
+    resilience: 'Resilience',
+    economics: 'Economics',
+    howCalculated: 'How this was calculated',
+    nasaUnavailable: 'NASA climate history is temporarily unavailable.',
     noData: 'Not available',
     sourceNote: 'Stored reference data',
     modelNotice: 'Visualization only; confirm field conditions locally.',
@@ -299,6 +314,21 @@ const copy = {
     compareBody: 'সংরক্ষিত সুপারিশের স্কোর, মৌসুমি ক্রম ও সুবিধা-অসুবিধা তুলনা করুন।',
     compareEmpty: 'কৌশল তুলনা করতে তৈরি করা একটি সুপারিশ খুলুন।',
     compareAction: 'সুপারিশ তৈরি করুন',
+    nasaHistory: 'NASA POWER জলবায়ু ইতিহাস',
+    historicalNotForecast: 'ঐতিহাসিক প্রেক্ষাপট · পূর্বাভাস নয়',
+    scoreProfile: 'আবর্তন স্কোরের চিত্র',
+    recommendedPlan: 'প্রস্তাবিত পরিকল্পনা',
+    overallScore: 'সামগ্রিক স্কোর',
+    waterRequirement: 'পানির প্রয়োজন',
+    grossMargin: 'মোট মুনাফা',
+    cropCalendar: 'ফসলের ক্যালেন্ডার',
+    climate: 'জলবায়ু',
+    water: 'পানি',
+    soil: 'মাটি',
+    resilience: 'সহনশীলতা',
+    economics: 'অর্থনীতি',
+    howCalculated: 'যেভাবে হিসাব করা হয়েছে',
+    nasaUnavailable: 'NASA জলবায়ু ইতিহাস এখন পাওয়া যাচ্ছে না।',
     noData: 'তথ্য নেই',
     sourceNote: 'সংরক্ষিত রেফারেন্স তথ্য',
     modelNotice: 'শুধু তথ্যচিত্র; মাঠের অবস্থা স্থানীয়ভাবে নিশ্চিত করুন।',
@@ -313,18 +343,19 @@ type LocaleContextValue = {
 }
 
 const LocaleContext = createContext<LocaleContextValue | null>(null)
+const localeStorageKey = 'orbitagro-locale-v2'
 
 export function LocaleProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocale] = useState<Locale>('bn')
+  const [locale, setLocale] = useState<Locale>(() => {
+    if (typeof window === 'undefined') return 'en'
 
-  useEffect(() => {
-    const stored = window.localStorage.getItem('orbitagro-locale')
-    if (stored === 'bn' || stored === 'en') setLocale(stored)
-  }, [])
+    const stored = window.localStorage.getItem(localeStorageKey)
+    return stored === 'bn' || stored === 'en' ? stored : 'en'
+  })
 
   useEffect(() => {
     document.documentElement.lang = locale
-    window.localStorage.setItem('orbitagro-locale', locale)
+    window.localStorage.setItem(localeStorageKey, locale)
   }, [locale])
 
   const value = useMemo(

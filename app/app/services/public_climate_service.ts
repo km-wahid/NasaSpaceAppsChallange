@@ -36,6 +36,7 @@ export type ClimateHistory = {
   source: {
     name: 'NASA POWER'
     temporalResolution: 'monthly'
+    grid: '0.5° × 0.625°'
     retrievedAt: string
     apiVersion: string | null
   }
@@ -136,6 +137,7 @@ export function buildClimateHistory(
     source: {
       name: 'NASA POWER',
       temporalResolution: 'monthly',
+      grid: '0.5° × 0.625°',
       retrievedAt: retrievedAt.toISOString(),
       apiVersion: body.header?.api?.version ?? null,
     },
@@ -153,7 +155,13 @@ export async function getPublicClimateHistory(latitude: number, longitude: numbe
     .from('public_climate_histories')
     .where('request_hash', requestHash)
     .first()
-  if (cached) return cached.payload as ClimateHistory
+  if (cached) {
+    const history = cached.payload as ClimateHistory
+    return {
+      ...history,
+      source: { ...history.source, grid: '0.5° × 0.625°' },
+    }
+  }
 
   const baseUrl = env.get('NASA_POWER_BASE_URL', 'https://power.larc.nasa.gov/api')
   const url = new URL(`${baseUrl}/temporal/monthly/point`)
