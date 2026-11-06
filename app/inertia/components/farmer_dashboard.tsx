@@ -4,8 +4,9 @@ import type { UserLocation } from '../lib/location'
 import type { Catalog } from './data_browser'
 import FarmWorkspace from './farm_workspace'
 import Icon from './icon'
-import LocationMap from './location_map'
+import DistrictMiniMap from './district_mini_map'
 import RotationPlans, { type RotationPlan } from './rotation_plans'
+import { useLocale } from '../lib/i18n'
 
 type WaterLevel = 'low' | 'medium' | 'high'
 type Farm = { farm_id: string; name: string; district_id: string }
@@ -44,6 +45,18 @@ type Analysis = {
   planning: { status: string; message: string }
   contextNote: string
   source: { reportingYear: number | null } | null
+}
+type ClimateHistory = {
+  latitude: number
+  longitude: number
+  startYear: number
+  endYear: number
+  source: {
+    name: string
+    temporalResolution: string
+    grid: string
+    retrievedAt: string
+  }
 }
 const choices = [
   { level: 'high', title: 'Plenty', text: 'Irrigation is usually available.', icon: 'rain' },
@@ -283,6 +296,165 @@ function SeasonalRisks({ water }: { water: Analysis['water'] }) {
   )
 }
 
+function PlannerSummary({
+  analysis,
+  climate,
+  climateLoading,
+  climateError,
+  district,
+  onRetryClimate,
+}: {
+  analysis: Analysis
+  climate: ClimateHistory | null
+  climateLoading: boolean
+  climateError: string
+  district: string
+  onRetryClimate: () => void
+}) {
+  const { t } = useLocale()
+  const plan = analysis.plans[0]
+  const water = analysis.water
+  const gaugeValue = { Low: 28, Moderate: 62, High: 92 }[water.label] ?? 0
+  const currentMonth = water.series[new Date().getMonth()]
+  return (
+    <section className="planner-visual-dashboard" aria-labelledby="planner-dashboard-title">
+      <div className="planner-dashboard-heading">
+        <div>
+          <p className="oa-kicker">
+            <Icon name="grid" size={17} /> FIELD OVERVIEW
+          </p>
+          <h2 id="planner-dashboard-title">Your next season at a glance</h2>
+        </div>
+        <span className="badge badge-success badge-soft">
+          <Icon name="shield" size={14} /> DETERMINISTIC
+        </span>
+      </div>
+
+      <div className="stats stats-vertical lg:stats-horizontal planner-kpi-strip">
+        <div className="stat">
+          <div className="stat-figure text-primary">
+            <Icon name="pin" />
+          </div>
+          <div className="stat-title">District</div>
+          <div className="stat-value">{district}</div>
+          <div className="stat-desc">Bangladesh growing context</div>
+        </div>
+        <div className="stat">
+          <div className="stat-figure text-info">
+            <Icon name="water" />
+          </div>
+          <div className="stat-title">Water outlook</div>
+          <div className="stat-value">{water.label}</div>
+          <div className="stat-desc">Farmer-reported availability</div>
+        </div>
+        <div className="stat">
+          <div className="stat-figure text-warning">
+            <Icon name="rain" />
+          </div>
+          <div className="stat-title">This month</div>
+          <div className="stat-value">{currentMonth?.level ?? t('noData')}</div>
+          <div className="stat-desc">Categorical seasonal signal</div>
+        </div>
+        <div className="stat">
+          <div className="stat-figure text-success">
+            <Icon name="sprout" />
+          </div>
+          <div className="stat-title">Top rotation</div>
+          <div className="stat-value planner-kpi-plan">{plan?.label ?? t('noData')}</div>
+          <div className="stat-desc">
+            {plan ? `${plan.crops.length} growing seasons` : 'Add a farm to rank plans'}
+          </div>
+        </div>
+      </div>
+
+      <div className="planner-dashboard-grid">
+        <article className="card card-border planner-gauge-card">
+          <div className="card-body">
+            <div className="planner-card-title">
+              <span className="signal-icon text-info">
+                <Icon name="water" />
+              </span>
+              <div>
+                <h3>Farm water availability</h3>
+                <p>Planning preference, not a field measurement</p>
+              </div>
+            </div>
+            <div
+              className="planner-water-gauge"
+              role="meter"
+              aria-label={`${water.label} farmer-reported water availability`}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={gaugeValue}
+            >
+              {Array.from({ length: 12 }, (_, index) => (
+                <i key={index} data-active={index < Math.round((gaugeValue / 100) * 12)} />
+              ))}
+              <strong>{water.label}</strong>
+              <span>farmer reported</span>
+            </div>
+          </div>
+        </article>
+
+        <article className="card card-border planner-nasa-card">
+          <div className="card-body">
+            <div className="planner-card-title">
+              <span className="signal-icon text-primary">
+                <Icon name="satellite" />
+              </span>
+              <div>
+                <h3>{t('nasaHistory')}</h3>
+                <p>{t('historicalNotForecast')}</p>
+              </div>
+            </div>
+            {climateLoading && (
+              <div className="planner-source-loading" role="status">
+                <span className="loading loading-ring loading-md" /> Reading ten years of history…
+              </div>
+            )}
+            {climateError && !climateLoading && (
+              <div className="alert alert-warning alert-soft" role="alert">
+                <Icon name="warning" />
+                <span>{t('nasaUnavailable')}</span>
+                <button className="btn btn-sm" type="button" onClick={onRetryClimate}>
+                  {t('tryAgain')}
+                </button>
+              </div>
+            )}
+            {climate && !climateLoading && (
+              <div className="planner-source-facts">
+                <span>
+                  <small>Period</small>
+                  <strong>
+                    {climate.startYear}–{climate.endYear}
+                  </strong>
+                </span>
+                <span>
+                  <small>NASA grid</small>
+                  <strong>{climate.source.grid}</strong>
+                </span>
+                <span>
+                  <small>Reference point</small>
+                  <strong>
+                    {climate.latitude.toFixed(3)}, {climate.longitude.toFixed(3)}
+                  </strong>
+                </span>
+              </div>
+            )}
+            <details className="collapse collapse-arrow planner-method">
+              <summary className="collapse-title">{t('howCalculated')}</summary>
+              <div className="collapse-content">
+                Cached NASA POWER history, reviewed district references and farmer inputs are
+                combined by deterministic scoring rules. Missing evidence remains unavailable.
+              </div>
+            </details>
+          </div>
+        </article>
+      </div>
+    </section>
+  )
+}
+
 export default function FarmerDashboard({
   location,
   catalog,
@@ -305,6 +477,10 @@ export default function FarmerDashboard({
   const [farmsError, setFarmsError] = useState('')
   const [farmsLoading, setFarmsLoading] = useState(false)
   const [farmRefresh, setFarmRefresh] = useState(0)
+  const [climate, setClimate] = useState<ClimateHistory | null>(null)
+  const [climateLoading, setClimateLoading] = useState(true)
+  const [climateError, setClimateError] = useState('')
+  const [climateRetry, setClimateRetry] = useState(0)
   async function analyze(level: WaterLevel | null) {
     request.current?.abort()
     const controller = new AbortController()
@@ -380,6 +556,29 @@ export default function FarmerDashboard({
     )
     return () => window.clearInterval(timer)
   }, [busy])
+  useEffect(() => {
+    const controller = new AbortController()
+    const query =
+      location.latitude !== null && location.longitude !== null
+        ? `latitude=${encodeURIComponent(location.latitude)}&longitude=${encodeURIComponent(location.longitude)}`
+        : `districtId=${encodeURIComponent(String(location.districtId))}`
+    setClimateLoading(true)
+    setClimateError('')
+    api<ClimateHistory>(`/api/v1/climate-history?${query}`, 'GET', undefined, controller.signal)
+      .then((result) => {
+        if (!controller.signal.aborted) setClimate(result)
+      })
+      .catch((reason) => {
+        if (!controller.signal.aborted) {
+          setClimate(null)
+          setClimateError(reason instanceof Error ? reason.message : 'NASA_POWER_UNAVAILABLE')
+        }
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setClimateLoading(false)
+      })
+    return () => controller.abort()
+  }, [location.districtId, location.latitude, location.longitude, climateRetry])
   const latitude = location.latitude ?? Number(catalog.district.latitude)
   const longitude = location.longitude ?? Number(catalog.district.longitude)
   const canMap =
@@ -423,26 +622,12 @@ export default function FarmerDashboard({
         </div>
         {canMap && (
           <div className="card location-map-card overflow-hidden border border-base-300 bg-base-100">
-            <LocationMap
+            <DistrictMiniMap
               key={`${latitude}:${longitude}`}
               latitude={latitude}
               longitude={longitude}
               district={location.district ?? catalog.district.district_name}
             />
-            <p className="px-4 py-2 text-xs text-base-content/70">
-              {location.latitude === null
-                ? 'Selected district reference point'
-                : 'Your detected location'}{' '}
-              ·{' '}
-              <a
-                className="link"
-                target="_blank"
-                rel="noreferrer"
-                href="https://www.openstreetmap.org/copyright"
-              >
-                © OpenStreetMap contributors
-              </a>
-            </p>
           </div>
         )}
       </div>
@@ -665,6 +850,14 @@ export default function FarmerDashboard({
       )}
       {analysis && water && (
         <div className="flex flex-col gap-6">
+          <PlannerSummary
+            analysis={analysis}
+            climate={climate}
+            climateLoading={climateLoading}
+            climateError={climateError}
+            district={location.district ?? catalog.district.district_name}
+            onRetryClimate={() => setClimateRetry((value) => value + 1)}
+          />
           <section
             className="card water-outlook order-2 border border-info/20 bg-base-100"
             aria-label="Water outlook"
@@ -865,19 +1058,9 @@ export default function FarmerDashboard({
               </div>
             </details>
           )}
-          <details className="collapse collapse-arrow order-3 border border-base-300 bg-base-100">
-            <summary className="collapse-title">
-              <span className="flex items-center gap-3 font-semibold">
-                <Icon name="calendar" /> Explore monthly water
-              </span>
-              <span className="block text-sm font-normal text-base-content/65">
-                Tap to view the 12-month outlook
-              </span>
-            </summary>
-            <div className="collapse-content">
-              <WaterChart water={water} />
-            </div>
-          </details>
+          <div className="order-3">
+            <WaterChart water={water} />
+          </div>
           <details className="collapse collapse-arrow order-4 border border-base-300 bg-base-100">
             <summary className="collapse-title">
               <span className="flex items-center gap-3 font-semibold">

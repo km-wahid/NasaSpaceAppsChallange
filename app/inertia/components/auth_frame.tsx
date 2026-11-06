@@ -2,7 +2,6 @@ import type { ReactNode } from 'react'
 import { Head } from '@inertiajs/react'
 import { Link } from '@adonisjs/inertia/react'
 import Icon from './icon'
-import FarmScene from './farm_scene'
 
 export default function AuthFrame({
   title,
@@ -19,35 +18,42 @@ export default function AuthFrame({
     <div className="auth-page">
       <Head title={signup ? 'Create account' : 'Log in'} />
       <aside className="auth-landscape">
-        <div>
-          <Icon name="leaf" size={36} />
-          <p className="agri-eyebrow">YOUR FARM, KEPT TOGETHER</p>
+        <img src="/media/home-field-sunset.jpg" alt="" aria-hidden="true" />
+        <div className="auth-landscape-content">
+          <span className="badge badge-success badge-soft">
+            <Icon name="satellite" size={15} /> NASA EARTH OBSERVATION
+          </span>
+          <p className="auth-landscape-kicker">YOUR FARM, KEPT TOGETHER</p>
           <h2>
-            Your field.
+            Your land.
             <br />
-            Your future.
+            Your next season.
           </h2>
-          <p>Save your farm. Return to your plan anytime.</p>
+          <p>Return to saved fields, climate history and transparent crop-rotation guidance.</p>
+          <div className="auth-landscape-note">
+            <Icon name="shield" size={17} /> Stored securely. Decisions stay with the farmer.
+          </div>
         </div>
-        <FarmScene scene="auth" />
       </aside>
-      <div className="auth-card">
-        <span className="agri-icon-box">
-          <Icon name="leaf" size={25} />
-        </span>
-        <h1>{title}</h1>
-        <p>{description}</p>
-        {children}
-        <p className="auth-switch">
-          {signup ? 'Already growing with us?' : 'New to Orbit?'}{' '}
-          <Link href={signup ? '/login' : '/signup'}>
-            {signup ? 'Log in' : 'Create an account'} <Icon name="arrow" size={14} />
-          </Link>
-        </p>
-        <p className="auth-privacy">
-          <Icon name="shield" size={15} /> Your farm records stay linked to your account.
-        </p>
-      </div>
+      <main className="card auth-card">
+        <div className="card-body auth-card-body">
+          <p className="auth-card-kicker">
+            <Icon name="sprout" size={17} /> SECURE FARM WORKSPACE
+          </p>
+          <h1>{title}</h1>
+          <p className="auth-description">{description}</p>
+          {children}
+          <p className="auth-switch">
+            {signup ? 'Already growing with us?' : 'New to OrbitAgro?'}{' '}
+            <Link href={signup ? '/login' : '/signup'}>
+              {signup ? 'Log in' : 'Create an account'} <Icon name="arrow" size={14} />
+            </Link>
+          </p>
+          <p className="auth-privacy">
+            <Icon name="shield" size={15} /> Your farm records stay linked to your account.
+          </p>
+        </div>
+      </main>
     </div>
   )
 }

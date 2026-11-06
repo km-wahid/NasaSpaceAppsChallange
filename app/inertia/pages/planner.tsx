@@ -7,7 +7,7 @@ import { useLocale } from '../lib/i18n'
 export default function Planner({ user }: InertiaProps) {
   const { t } = useLocale()
   return (
-    <div className="oa-app-page">
+    <div className="oa-app-page oa-planner-page">
       <Head title={t('plannerTitle')} />
       <div className="oa-page-header">
         <div>

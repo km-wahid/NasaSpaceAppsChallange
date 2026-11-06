@@ -38,6 +38,8 @@ test-results/
 *.jpg
 # Bundled website photography is source, not a browser-test artifact.
 !app/inertia/assets/*.jpg
+!app/public/media/*.jpg
+!app/public/media/mission-layers/*.jpg
 
 # Local database/import artifacts
 database/*.sqlite
@@ -58,3 +60,4 @@ __pycache__/
 # Generated analytical exports
 reports/**/.data-app-offline/
 /reports/
+/agents/
