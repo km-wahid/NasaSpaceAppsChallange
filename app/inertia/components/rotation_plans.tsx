@@ -26,6 +26,11 @@ export type RotationPlan = {
     soilContribution?: string
     soilSourceId?: string
     soilNote?: string
+    profitPerHa: number | null
+    yieldTonnesPerHa: number | null
+    yieldKind: 'expected' | 'reported' | null
+    soilScore: number | null
+    soilMetric: 'farm-fit' | 'reference-effect'
     system?: {
       id: number
       type: string

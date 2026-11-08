@@ -18,8 +18,15 @@ const district = {
   latitude: '23.8',
   longitude: '90.4',
 }
+const otherDistrict = {
+  district_id: '8002',
+  district_name: 'Bandarban',
+  division_id: '8001',
+  latitude: '22.195',
+  longitude: '92.218',
+}
 const catalog = {
-  districts: [district],
+  districts: [district, otherDistrict],
   district,
   divisions: [{ division_id: '8001', division_name: 'Dhaka' }],
   crops: [],
@@ -92,28 +99,45 @@ const fixturePlans = [0, 1, 2].map((index) => ({
       waterNeed: 'high',
       condition: 'Fixture fit',
       reason: 'Test fixture: seasonal checks passed.',
-      nextCrop: index === 1 ? 'Fixture Mustard' : 'Fixture Lentil',
+      nextCrop: ['Fixture Lentil', 'Fixture Mustard', 'Fixture Wheat'][index],
       soilContribution: 'Fixture soil contribution',
+      profitPerHa: null,
+      yieldTonnesPerHa: 4.2 - index * 0.2,
+      yieldKind: 'expected',
+      soilScore: 64 + index * 4,
+      soilMetric: 'farm-fit',
     },
     {
       id: 2,
-      name: index === 1 ? 'Fixture Mustard' : 'Fixture Lentil',
+      name: ['Fixture Lentil', 'Fixture Mustard', 'Fixture Wheat'][index],
       plantingDate: '2026-11-20',
       harvestDate: '2027-02-20',
       waterNeed: 'low',
       condition: 'Fixture fit',
       reason: 'Test fixture: lower relative water demand.',
       nextCrop: 'Fixture Aus',
+      soilContribution: 'Fixture soil contribution',
+      profitPerHa: null,
+      yieldTonnesPerHa: 1.8 + index * 0.3,
+      yieldKind: 'expected',
+      soilScore: 78 - index * 3,
+      soilMetric: 'farm-fit',
     },
     {
       id: 3,
-      name: 'Fixture Aus',
+      name: ['Fixture Aus', 'Fixture Maize', 'Fixture Jute'][index],
       plantingDate: '2027-04-10',
       harvestDate: '2027-06-20',
       waterNeed: 'medium',
       condition: 'Fixture fit',
       reason: 'Test fixture: growing window fits.',
       nextCrop: 'Fixture Rice',
+      soilContribution: 'Fixture soil contribution',
+      profitPerHa: null,
+      yieldTonnesPerHa: 2.4 + index * 0.4,
+      yieldKind: 'expected',
+      soilScore: 70 + index * 2,
+      soilMetric: 'farm-fit',
     },
   ],
   reasons: [
@@ -205,6 +229,7 @@ try {
           ? fixturePlans
           : fixturePlans.map((plan, index) => ({
               ...plan,
+              rank: undefined,
               preview: true,
               label: `Local Plan ${String.fromCharCode(65 + index)}`,
               fit: 'Dhaka preview',
@@ -366,6 +391,10 @@ try {
   await page.getByRole('link', { name: 'Explore my farm', exact: true }).first().click()
   await page.waitForURL('**/planner')
   await page.getByRole('heading', { name: 'Let’s find your location' }).waitFor()
+  assert.equal(
+    await page.locator('.planner-live-steps [aria-current="step"]').textContent(),
+    'Choose location'
+  )
   await capture(page, 'location-desktop')
   await page.getByRole('button', { name: 'Use my location', exact: true }).click()
   await page.getByRole('heading', { name: 'Location access is off' }).waitFor()
@@ -380,9 +409,12 @@ try {
     'Manual location fits mobile'
   )
   await page.getByRole('button', { name: 'Use this district' }).click()
-  await page.getByRole('button', { name: 'Continue', exact: true }).click()
   const dialog = page.getByRole('dialog')
   await dialog.waitFor()
+  assert.equal(
+    await page.locator('.planner-live-steps [aria-current="step"]').textContent(),
+    'Add field details'
+  )
   await dialog.getByRole('radio').nth(1).check()
   await capture(page, 'water-selection-mobile')
   const modalBounds = await dialog.locator('.modal-box').boundingBox()
@@ -393,16 +425,31 @@ try {
       modalBounds.y + modalBounds.height <= 844,
     'Water modal fits the mobile viewport'
   )
-  await dialog.getByRole('button', { name: 'Continue', exact: true }).click()
+  await dialog.getByRole('button', { name: 'View NASA data', exact: true }).click()
+  await page.getByRole('heading', { name: 'Your recommended crop rotation' }).waitFor()
+  await page.locator('.local-month-chart').waitFor()
+  assert.equal(await page.locator('.local-crop-table-card tbody tr').count(), 6)
+  assert.ok((await page.locator('.local-crop-chart').first().textContent()).includes('Yield proxy'))
+  const planBVariation = page.getByRole('tab', { name: 'Local Plan B' })
+  await planBVariation.click()
+  await page.waitForFunction(() =>
+    document.querySelector('[role="tab"][aria-selected="true"]')?.textContent?.includes('Local Plan B')
+  )
+  assert.ok(
+    (await page.locator('.local-rotation-graph').textContent()).includes('Fixture Mustard'),
+    'Plan B variation redraws its crop sequence'
+  )
+  await page.getByRole('tab', { name: 'Local Plan A' }).click()
+  await page.getByText('Water & seasonal evidence', { exact: true }).click()
   await page.getByRole('heading', { name: 'Moderate water availability' }).waitFor()
-  const mapPreview = page.getByRole('img', {
-    name: 'Dhaka highlighted on a map of Bangladesh',
-    exact: true,
-  })
-  await mapPreview.waitFor()
-  assert.ok(await mapPreview.locator('path[data-selected="true"]').count())
+  assert.equal(
+    await page.locator('.planner-live-steps [aria-current="step"]').textContent(),
+    'View NASA plan'
+  )
+  assert.ok(await page.locator('.location-summary path[data-selected="true"]').count())
   assert.equal(await page.locator('iframe').count(), 0, 'Map must not embed a WebGL renderer')
   assert.deepEqual(analysisInput, { districtId: '8001', waterAvailability: 'medium' })
+  await page.getByText('Rotation details & explanations', { exact: true }).click()
   await page.getByText('Local data preview', { exact: true }).waitFor()
   assert.equal(await page.getByText('Preview sample crop rotations', { exact: true }).count(), 0)
   assert.equal(
@@ -412,6 +459,8 @@ try {
   await page.getByRole('button', { name: /Local Plan B/ }).click()
   await page.getByRole('heading', { name: 'Local Plan B · Crop rotation' }).waitFor()
   await page.getByRole('heading', { name: 'Seasonal water outlook' }).waitFor()
+  await page.locator('.water-radar-chart').waitFor()
+  assert.equal(await page.locator('.water-calendar').count(), 0, 'Old month bars are removed')
   await page.getByRole('button', { name: 'Jan: No data water availability' }).click()
   assert.ok(
     await page
@@ -421,20 +470,11 @@ try {
   )
   assert.equal(await page.locator('.seasonal-signal[data-tone="unknown"]').count(), 3)
   showPlans = true
-  await page.getByRole('button', { name: 'Change water availability' }).click()
-  await dialog.getByRole('button', { name: 'Continue', exact: true }).click()
+  await page.locator('.local-dashboard-header').getByRole('button', { name: 'Edit field details' }).click()
+  await dialog.getByRole('button', { name: 'View NASA data', exact: true }).click()
+  await page.getByText('Rotation details & explanations', { exact: true }).click()
   await page.getByRole('heading', { name: 'Plan A · Crop rotation' }).waitFor()
-  await page.getByText('View seasonal risks', { exact: true }).click()
-  assert.ok(
-    await page
-      .locator('#crop-plans')
-      .boundingBox()
-      .then(
-        async (box) =>
-          box.y < (await page.getByRole('region', { name: 'Water outlook' }).boundingBox()).y
-      ),
-    'Crop recommendations appear before supporting water analytics'
-  )
+  await page.getByText('Water & seasonal evidence', { exact: true }).click()
   await page.getByText('More plan actions', { exact: true }).click()
   const download = page.waitForEvent('download')
   await page.getByRole('button', { name: 'Download guide' }).click()
@@ -494,6 +534,15 @@ try {
   await capture(page, 'crop-plans-mobile')
   await page.setViewportSize({ width: 1440, height: 1000 })
   await capture(page, 'crop-plans-desktop')
+  await page.getByRole('region', { name: 'Your location' }).getByRole('button', { name: /Change/ }).click()
+  await page.getByRole('button', { name: 'Choose location manually' }).click()
+  await page.locator('select[id$="-division"]').selectOption('8001')
+  await page.locator('select[id$="-district"]').selectOption('8002')
+  await page.getByRole('button', { name: 'Use this district' }).click()
+  await dialog.getByRole('radio').nth(1).check()
+  await dialog.getByRole('button', { name: 'View NASA data', exact: true }).click()
+  await page.getByText('LOCAL DECISION PANEL · Bandarban', { exact: true }).waitFor()
+  assert.equal(analysisInput.districtId, '8002', 'Changing district refreshes the analysis input')
   await page.goto(`${base}/compare?farmId=7&runId=88`)
   await page.getByRole('heading', { name: 'Rotation score profile' }).waitFor()
   assert.equal(await page.locator('.oa-radar-series').count(), 3)
@@ -655,6 +704,7 @@ try {
     .getByRole('link', { name: 'Rotation advisor' })
     .click()
   await page.getByRole('button', { name: 'Generate crop rotations' }).click()
+  await page.getByText('Rotation details & explanations', { exact: true }).click()
   await page.getByRole('heading', { name: 'Plan A · Crop rotation' }).waitFor()
   assert.equal(analysisInput.farmId, 1)
   await page.getByRole('button', { name: 'Use this rotation · Plan A' }).click()
@@ -670,6 +720,7 @@ try {
   await page.getByRole('button', { name: 'Rotation saved to your farm' }).waitFor()
   assert.equal(savedChoice.rank, 2)
   await page.getByRole('button', { name: 'Generate crop rotations' }).click()
+  await page.getByText('Rotation details & explanations', { exact: true }).click()
   await page.getByText(/Your saved rotation:.*Fixture Mustard/).waitFor()
   await capture(page, 'recommendation-first-desktop')
   await page.goto(`${base}/this-page-does-not-exist`)

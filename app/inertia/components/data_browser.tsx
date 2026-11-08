@@ -4,6 +4,7 @@ import { api } from '../lib/api'
 import type { UserLocation } from '../lib/location'
 import LocationExperience from './location_experience'
 import FarmerDashboard from './farmer_dashboard'
+import { useLocale } from '../lib/i18n'
 
 export type Catalog = {
   districts: Array<{
@@ -53,16 +54,25 @@ export type Catalog = {
   }
 }
 
-export default function DataBrowser({ signedIn }: { signedIn: boolean }) {
+export default function DataBrowser({
+  signedIn,
+  showJourney = false,
+}: {
+  signedIn: boolean
+  showJourney?: boolean
+}) {
+  const { t } = useLocale()
   const [catalog, setCatalog] = useState<Catalog | null>(null)
   const [location, setLocation] = useState<UserLocation | null>(null)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
   const [retry, setRetry] = useState(0)
   const [selectionId, setSelectionId] = useState(0)
+  const [step, setStep] = useState<1 | 2 | 3>(1)
   const continueWithLocation = useCallback((next: UserLocation) => {
     setLocation(next)
     setSelectionId((current) => current + 1)
+    setStep(2)
   }, [])
   useEffect(() => {
     const controller = new AbortController()
@@ -87,12 +97,40 @@ export default function DataBrowser({ signedIn }: { signedIn: boolean }) {
   }, [location?.districtId, retry])
   return (
     <div id="overview" className="farmer-flow space-y-6">
+      {showJourney && (
+        <nav
+          className="card planner-live-steps border border-base-300 bg-base-100"
+          aria-label={t('plannerJourney')}
+        >
+          <span className="sr-only" aria-live="polite">
+            Step {step} of 3
+          </span>
+          <ol className="steps steps-horizontal w-full text-xs sm:text-sm">
+            {[t('plannerStepLocation'), t('plannerStepField'), t('plannerStepNasa')].map(
+              (label, index) => {
+                const number = (index + 1) as 1 | 2 | 3
+                return (
+                  <li
+                    key={label}
+                    className={`step ${number <= step ? 'step-primary' : ''} ${number === step ? 'is-current' : ''}`}
+                    data-content={number}
+                    aria-current={number === step ? 'step' : undefined}
+                  >
+                    {label}
+                  </li>
+                )
+              }
+            )}
+          </ol>
+        </nav>
+      )}
       {catalog && (
         <LocationExperience
           signedIn={signedIn}
           districts={catalog.districts}
           divisions={catalog.divisions}
           onContinue={continueWithLocation}
+          onEdit={() => setStep(1)}
         />
       )}
       {loading && (
@@ -125,6 +163,8 @@ export default function DataBrowser({ signedIn }: { signedIn: boolean }) {
           location={location}
           catalog={catalog}
           signedIn={signedIn}
+          onFieldEdit={() => setStep(2)}
+          onAnalysisReady={() => setStep(3)}
         />
       )}
       <details

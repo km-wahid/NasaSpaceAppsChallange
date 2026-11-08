@@ -7,7 +7,7 @@ import {
   type UserLocation,
 } from '../lib/location'
 import Icon from './icon'
-import FarmScene from './farm_scene'
+import DistrictMiniMap from './district_mini_map'
 
 type LocationState =
   | 'idle'
@@ -18,9 +18,16 @@ type LocationState =
   | 'geocoding-error'
 type Props = {
   signedIn: boolean
-  districts: Array<{ district_id: string; district_name: string; division_id: string }>
+  districts: Array<{
+    district_id: string
+    district_name: string
+    division_id: string
+    latitude: string
+    longitude: string
+  }>
   divisions: Array<{ division_id: string; division_name: string }>
   onContinue: (location: UserLocation) => void
+  onEdit?: () => void
   title?: string
   description?: string
   buttonText?: string
@@ -46,6 +53,7 @@ export default function LocationExperience({
   districts,
   divisions,
   onContinue,
+  onEdit,
   title = 'Let’s find your location',
   description = 'We use your location to provide local climate and agricultural insights.',
   buttonText = 'Use my location',
@@ -163,6 +171,8 @@ export default function LocationExperience({
       setLocation(selected)
       setManual(false)
       setState('success')
+      onContinue(selected)
+      setExpanded(false)
     } catch (error) {
       setState('geocoding-error')
       setMessage(
@@ -181,34 +191,48 @@ export default function LocationExperience({
     setExpanded(false)
   }
 
-  if (!expanded && location)
+  if (!expanded && location) {
+    const district = districts.find((item) => item.district_id === location.districtId)
+    const latitude = location.latitude ?? Number(district?.latitude)
+    const longitude = location.longitude ?? Number(district?.longitude)
     return (
       <section className="location-summary card" aria-label="Your location">
-        <span className="location-summary-pin">
-          <Icon name="pin" />
-        </span>
-        <div>
-          <span>{signedIn ? 'YOUR SAVED LOCATION' : 'YOUR LOCAL VIEW'}</span>
-          <strong>
-            {location.district}
-            <small>
-              {location.division} · {location.country}
-            </small>
-          </strong>
+        <DistrictMiniMap
+          district={location.district ?? district?.district_name ?? 'Selected location'}
+          latitude={latitude}
+          longitude={longitude}
+          background
+        />
+        <div className="location-summary-content">
+          <span className="location-summary-pin">
+            <Icon name="pin" />
+          </span>
+          <div className="location-summary-copy">
+            <span>{signedIn ? 'YOUR SAVED LOCATION' : 'YOUR LOCAL VIEW'}</span>
+            <strong>
+              {location.district}
+              <small>
+                {location.division} · {location.country}
+              </small>
+            </strong>
+          </div>
+          <button
+            className="btn btn-sm"
+            type="button"
+            onClick={() => {
+              onEdit?.()
+              setExpanded(true)
+              setState('idle')
+              setMessage('')
+              setManual(false)
+            }}
+          >
+            Change <Icon name="arrow" size={16} />
+          </button>
         </div>
-        <button
-          type="button"
-          onClick={() => {
-            setExpanded(true)
-            setState('idle')
-            setMessage('')
-            setManual(false)
-          }}
-        >
-          Change <Icon name="arrow" size={16} />
-        </button>
       </section>
     )
+  }
 
   const success = state === 'success' && !manual
   const label = restoring
@@ -220,9 +244,15 @@ export default function LocationExperience({
         : state === 'idle'
           ? title
           : headings[state]
+  const mapDistrict = districts.find(
+    (item) => item.district_id === (districtId || location?.districtId)
+  )
+  const mapDistrictName = mapDistrict?.district_name ?? location?.district ?? 'Bangladesh'
+  const mapLatitude = location?.latitude ?? Number(mapDistrict?.latitude)
+  const mapLongitude = location?.longitude ?? Number(mapDistrict?.longitude)
   return (
     <section
-      className={`location-scene location-welcome location-bg-${backgroundStyle}`}
+      className={`location-scene location-welcome location-map-experience location-bg-${backgroundStyle}`}
       data-motion={animationIntensity}
       style={
         {
@@ -232,30 +262,18 @@ export default function LocationExperience({
       }
       aria-labelledby={`${id}-heading`}
     >
-      <div className="location-intro">
-        <FarmScene scene="location" className="location-intro-scene" />
-        <div className="location-intro-copy">
-          <span className="agri-eyebrow">
-            <Icon name="leaf" size={18} /> A LOCAL START
-          </span>
-          <h3>
-            Every field
-            <br />
-            has a <em>story.</em>
-          </h3>
-          <p>Your district connects local seasons to your crop plan.</p>
-          <div className="location-intro-features">
-            <span>
-              <Icon name="sun" size={18} /> Seasonal context
-            </span>
-            <span>
-              <Icon name="water" size={18} /> Local water patterns
-            </span>
-            <span>
-              <Icon name="leaf" size={18} /> Farm-first planning
-            </span>
-          </div>
-        </div>
+      <DistrictMiniMap
+        district={mapDistrictName}
+        latitude={mapLatitude}
+        longitude={mapLongitude}
+        background
+      />
+      <div className="location-map-context">
+        <span className="badge badge-neutral badge-soft">
+          <Icon name="map" size={15} /> Bangladesh growing map
+        </span>
+        <strong>{mapDistrictName}</strong>
+        <small>Choose a district to connect local seasons with your crop plan.</small>
       </div>
       <p className="sr-only" role="status" aria-live="polite">
         {label}

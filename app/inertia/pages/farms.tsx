@@ -37,38 +37,39 @@ export default function Farms() {
     <div className="oa-app-page farms-page">
       <Head title="My farms" />
       <div className="oa-page-header workspace-page-banner">
-        <div>
+        <div className="farms-hero-copy">
           <p className="oa-kicker">
-            <Icon name="barn" size={18} /> YOUR FARM AT A GLANCE
+            <Icon name="barn" size={18} /> MY FARMS
           </p>
           <h1>Your farm workspace</h1>
-          <p>Keep soil, water, crop history and priorities together.</p>
+          <p>Select a farm, check what is ready, and move straight into your seasonal plan.</p>
+          {catalog && (
+            <div className="farms-district-control">
+              <label htmlFor="farm-district">
+                <span>New farm location</span>
+                <select
+                  id="farm-district"
+                  className="select select-bordered"
+                  value={districtId || catalog.district.district_id}
+                  disabled={loading}
+                  onChange={(event) => setDistrictId(event.target.value)}
+                >
+                  {catalog.districts.map((district) => (
+                    <option key={district.district_id} value={district.district_id}>
+                      {district.district_name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <p>Used only when you add a new farm.</p>
+            </div>
+          )}
         </div>
-        <FarmScene scene="farm" />
+        <div className="farms-hero-scene" aria-hidden="true">
+          <FarmScene scene="farm" />
+          <span className="badge badge-lg">Farm overview</span>
+        </div>
       </div>
-      {catalog && (
-        <div className="card border border-base-300 bg-base-100 mb-6 p-6">
-          <label htmlFor="farm-district" className="mb-2 font-semibold">
-            District for new farms
-          </label>
-          <select
-            id="farm-district"
-            className="select w-full sm:max-w-md"
-            value={districtId || catalog.district.district_id}
-            disabled={loading}
-            onChange={(event) => setDistrictId(event.target.value)}
-          >
-            {catalog.districts.map((district) => (
-              <option key={district.district_id} value={district.district_id}>
-                {district.district_name}
-              </option>
-            ))}
-          </select>
-          <p className="mt-2 text-sm text-base-content/70">
-            This selection is used when creating a new farm. It does not relocate existing farms.
-          </p>
-        </div>
-      )}
       {loading && (
         <p role="status" className="flex items-center gap-3 py-6">
           <span className="loading loading-spinner" />

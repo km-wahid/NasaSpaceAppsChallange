@@ -9,24 +9,17 @@ export default function Planner({ user }: InertiaProps) {
   return (
     <div className="oa-app-page oa-planner-page">
       <Head title={t('plannerTitle')} />
-      <div className="oa-page-header">
-        <div>
-          <p className="oa-kicker">
+      <header className="card border border-base-300 bg-base-100 shadow-sm">
+        <div className="card-body gap-2 p-6 sm:p-8">
+          <p className="oa-kicker m-0">
             <Icon name="sprout" size={18} /> {t('plannerEyebrow')}
           </p>
-          <h1>{t('plannerTitle')}</h1>
-          <p>{t('plannerBody')}</p>
+          <h1 className="m-0 max-w-3xl text-3xl font-bold tracking-tight text-base-content sm:text-4xl">
+            {t('plannerTitle')}
+          </h1>
         </div>
-        <span className="badge badge-info badge-soft">
-          <Icon name="shield" size={15} /> DETERMINISTIC
-        </span>
-      </div>
-      <ol className="steps steps-horizontal oa-planner-steps" aria-label="Planning journey">
-        <li className="step step-primary">{t('selectDistrict')}</li>
-        <li className="step">{t('soilWater')}</li>
-        <li className="step">{t('navCompare')}</li>
-      </ol>
-      <DataBrowser signedIn={Boolean(user)} />
+      </header>
+      <DataBrowser signedIn={Boolean(user)} showJourney />
     </div>
   )
 }

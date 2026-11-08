@@ -235,61 +235,114 @@ export default function FarmWorkspace({ catalog }: { catalog: Catalog }) {
       </p>
     </>
   )
+  const selectedFarm = farms.find((farm) => String(farm.farm_id) === farmId)
+  const selectedDistrict = selectedFarm
+    ? catalog.districts.find(
+        (district) => String(district.district_id) === String(selectedFarm.district_id)
+      )?.district_name
+    : null
   return (
-    <section className="card farm-workspace" id="farm-workspace">
-      <div className="farm-workspace-heading">
-        <span className="agri-icon-box">
-          <Icon name="layers" size={24} />
-        </span>
-        <p className="agri-eyebrow text-primary">FROM INSIGHT TO ACTION</p>
-        <h2>Your farm workspace</h2>
-      </div>
-      <p>
-        Pick a farm, set what matters, then see your crop options.
-      </p>
+    <section className="farm-workspace" id="farm-workspace">
+      <header className="farm-workspace-heading">
+        <div>
+          <p className="agri-eyebrow text-primary">YOUR LAND, ONE PLACE</p>
+          <h2>
+            {farms.length
+              ? `${farms.length} saved ${farms.length === 1 ? 'farm' : 'farms'}`
+              : 'Add your first farm'}
+          </h2>
+          <p>Choose a farm to update its priorities or build a crop rotation.</p>
+        </div>
+        {farmId && (
+          <Link href="/planner" className="btn btn-primary">
+            Plan next seasons
+            <Icon name="arrow" />
+          </Link>
+        )}
+      </header>
       {farms.length > 0 && (
-        <div className="saved-farm-grid" aria-label="Saved farms">
-          {farms.map((farm) => (
-            <button
-              className="card saved-farm-card"
-              data-selected={String(farm.farm_id) === farmId}
-              type="button"
-              key={farm.farm_id}
-              onClick={() => setFarmId(String(farm.farm_id))}
-            >
-              <span><Icon name="barn" size={24} /></span>
-              <strong>{farm.name}</strong>
-              <small>
-                {catalog.districts.find(
-                  (district) => String(district.district_id) === String(farm.district_id)
-                )?.district_name}
-              </small>
-              {String(farm.farm_id) === farmId && <Icon name="check" size={18} />}
-            </button>
-          ))}
+        <div className="farm-dashboard-grid">
+          <div className="card farm-switcher-card">
+            <div className="card-body">
+              <div className="farm-card-heading">
+                <div>
+                  <p className="agri-eyebrow">SAVED FARMS</p>
+                  <h3 className="card-title">Choose a farm</h3>
+                </div>
+                <span className="badge badge-ghost">{farms.length}</span>
+              </div>
+              <div className="saved-farm-grid" aria-label="Saved farms">
+                {farms.map((farm) => (
+                  <button
+                    className="saved-farm-card"
+                    data-selected={String(farm.farm_id) === farmId}
+                    type="button"
+                    key={farm.farm_id}
+                    onClick={() => setFarmId(String(farm.farm_id))}
+                  >
+                    <span className="saved-farm-icon"><Icon name="barn" size={22} /></span>
+                    <span className="saved-farm-copy">
+                      <strong>{farm.name}</strong>
+                      <small>
+                        {catalog.districts.find(
+                          (district) => String(district.district_id) === String(farm.district_id)
+                        )?.district_name}
+                      </small>
+                    </span>
+                    <Icon name={String(farm.farm_id) === farmId ? 'check' : 'arrow'} size={18} />
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+          {selectedFarm && (
+            <article className="card selected-farm-card">
+              <div className="card-body">
+                <div className="farm-card-heading">
+                  <span className="badge badge-primary badge-outline">ACTIVE FARM</span>
+                  {environment ? (
+                    <span className="badge badge-success badge-soft">Climate ready</span>
+                  ) : (
+                    <span className="badge badge-warning badge-soft">Climate pending</span>
+                  )}
+                </div>
+                <div>
+                  <h3 className="selected-farm-name">{selectedFarm.name}</h3>
+                  <p className="selected-farm-location">
+                    <Icon name="pin" size={17} /> {selectedDistrict}
+                  </p>
+                </div>
+                <div className="farm-facts">
+                  <div>
+                    <span>Land area</span>
+                    <strong>
+                      {selectedFarm.area_hectares
+                        ? `${selectedFarm.area_hectares} ha`
+                        : 'Not added'}
+                    </strong>
+                  </div>
+                  <div>
+                    <span>Irrigation</span>
+                    <strong>
+                      {selectedFarm.irrigation_available_mm_per_season
+                        ? `${selectedFarm.irrigation_available_mm_per_season} mm`
+                        : 'Not added'}
+                    </strong>
+                  </div>
+                  <div>
+                    <span>Farm data</span>
+                    <strong>{inputsLoading ? 'Loading…' : 'Ready to edit'}</strong>
+                  </div>
+                </div>
+                <Link href="/planner" className="btn btn-primary btn-block">
+                  Build crop rotation
+                  <Icon name="arrow" />
+                </Link>
+              </div>
+            </article>
+          )}
         </div>
       )}
-      <label>
-        Saved farm
-        <select
-          aria-label="Saved farm"
-          disabled={!!busy}
-          value={farmId}
-          onChange={(event) => setFarmId(event.target.value)}
-        >
-          <option value="">Select a farm</option>
-          {farms.map((farm) => (
-            <option value={farm.farm_id} key={farm.farm_id}>
-              {farm.name} —{' '}
-              {
-                catalog.districts.find(
-                  (district) => String(district.district_id) === String(farm.district_id)
-                )?.district_name
-              }
-            </option>
-          ))}
-        </select>
-      </label>
       {!farmId && (
         <div className="card card-border my-5 bg-base-100">
           <div className="card-body gap-2">
@@ -303,7 +356,9 @@ export default function FarmWorkspace({ catalog }: { catalog: Catalog }) {
         </div>
       )}
       <details className="farm-create-panel" open={!farms.length}>
-        <summary>Create a farm in {catalog.district.district_name}</summary>
+        <summary>
+          {farms.length ? 'Add another farm' : `Create a farm in ${catalog.district.district_name}`}
+        </summary>
         <form
           className="data-form"
           onSubmit={(event) => {

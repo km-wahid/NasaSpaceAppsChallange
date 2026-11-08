@@ -338,6 +338,14 @@ export async function generateFarmRecommendations(
         ),
         waterRequirementMm: waterNeed,
         profitPerHa: profit,
+        yieldTonnesPerHa:
+          row.economic_data_id === null || row.expected_yield_tonnes_per_hectare === null
+            ? null
+            : Number(row.expected_yield_tonnes_per_hectare),
+        yieldKind:
+          row.economic_data_id === null || row.expected_yield_tonnes_per_hectare === null
+            ? null
+            : 'expected',
         scores,
         soilEffectPoints:
           row.crop_soil_effect_points === null ? undefined : Number(row.crop_soil_effect_points),

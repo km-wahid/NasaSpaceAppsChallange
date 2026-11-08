@@ -4,7 +4,7 @@ import type { UserLocation } from '../lib/location'
 import type { Catalog } from './data_browser'
 import FarmWorkspace from './farm_workspace'
 import Icon from './icon'
-import DistrictMiniMap from './district_mini_map'
+import LocalDecisionDashboard from './local_decision_dashboard'
 import RotationPlans, { type RotationPlan } from './rotation_plans'
 import { useLocale } from '../lib/i18n'
 
@@ -51,6 +51,11 @@ type ClimateHistory = {
   longitude: number
   startYear: number
   endYear: number
+  months: Array<{
+    month: number
+    meanTemperatureC: number | null
+    rainfallMm: number | null
+  }>
   source: {
     name: string
     temporalResolution: string
@@ -76,8 +81,46 @@ const phases = [
 
 function WaterChart({ water }: { water: Analysis['water'] }) {
   const [selected, setSelected] = useState(new Date().getMonth())
+  const [morphed, setMorphed] = useState(false)
+  const chart = useRef<SVGSVGElement>(null)
   const month = water.series[selected] ?? water.series[0]
   const hasData = water.series.some((point) => point.index !== null)
+  const center = 210
+  const radius = 118
+  const point = (index: number, scale: number) => {
+    const angle = (Math.PI * 2 * index) / 12 - Math.PI / 2
+    return {
+      x: center + Math.cos(angle) * radius * scale,
+      y: center + Math.sin(angle) * radius * scale,
+    }
+  }
+  const polygon = (scale: number) =>
+    water.series
+      .map((_, index) => {
+        const value = point(index, scale)
+        return `${value.x},${value.y}`
+      })
+      .join(' ')
+  const values = water.series.map((item, index) => {
+    const scale = item.index === null ? 0.18 : [0.4, 0.68, 1][item.index]
+    return point(index, scale)
+  })
+  useEffect(() => {
+    if (!chart.current || typeof IntersectionObserver === 'undefined') {
+      setMorphed(true)
+      return
+    }
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return
+        setMorphed(true)
+        observer.disconnect()
+      },
+      { threshold: 0.35 }
+    )
+    observer.observe(chart.current)
+    return () => observer.disconnect()
+  }, [])
   return (
     <div className="card seasonal-water-chart border border-base-300 bg-base-100">
       <div className="card-body gap-5 p-5 sm:p-7">
@@ -100,37 +143,78 @@ function WaterChart({ water }: { water: Analysis['water'] }) {
             Missing information is shown as unavailable, not estimated.
           </p>
         )}
-        <div
-          className="water-calendar"
-          role="group"
-          aria-label="Explore water availability by month"
-        >
-          {water.series.map((item, i) => (
-            <button
-              key={item.month}
-              type="button"
-              className="water-month"
-              aria-label={`${item.month}: ${item.index === null ? 'No data' : item.level} water availability`}
-              aria-pressed={selected === i}
-              onClick={() => setSelected(i)}
-              data-level={item.index === null ? 'unknown' : item.level.toLowerCase()}
-            >
-              <span className="water-month-track" aria-hidden="true">
-                {item.index === null ? (
-                  <span className="water-month-missing">—</span>
-                ) : (
-                  <span
-                    className="water-month-fill"
-                    style={{ height: `${[25, 60, 100][item.index]}%` }}
+        <div className="water-radar-wrap">
+          <svg
+            ref={chart}
+            className="water-radar-chart"
+            data-morphed={morphed}
+            viewBox="0 0 420 420"
+            role="group"
+            aria-label="Explore water availability by month"
+          >
+            {[0.33, 0.66, 1].map((scale) => (
+              <polygon className="water-radar-grid" points={polygon(scale)} key={scale} />
+            ))}
+            {water.series.map((_, index) => {
+              const end = point(index, 1)
+              return (
+                <line
+                  className="water-radar-axis"
+                  x1={center}
+                  y1={center}
+                  x2={end.x}
+                  y2={end.y}
+                  key={index}
+                />
+              )
+            })}
+            <line className="water-radar-seed" x1="88" y1={center} x2="332" y2={center} />
+            <polygon
+              className="water-radar-shape"
+              points={values.map((value) => `${value.x},${value.y}`).join(' ')}
+            />
+            {water.series.map((item, index) => {
+              const value = values[index]
+              const label = point(index, 1.28)
+              return (
+                <g
+                  className="water-radar-month"
+                  data-level={item.index === null ? 'unknown' : item.level.toLowerCase()}
+                  data-selected={selected === index}
+                  key={item.month}
+                >
+                  <circle className="water-radar-point" cx={value.x} cy={value.y} r="5" />
+                  <circle
+                    className="water-radar-hit"
+                    cx={label.x}
+                    cy={label.y}
+                    r="22"
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`${item.month}: ${item.index === null ? 'No data' : item.level} water availability`}
+                    aria-pressed={selected === index}
+                    onClick={() => setSelected(index)}
+                    onKeyDown={(event) => {
+                      if (event.key !== 'Enter' && event.key !== ' ') return
+                      event.preventDefault()
+                      setSelected(index)
+                    }}
                   />
-                )}
-              </span>
-              <strong>{item.month}</strong>
-              <span className="water-month-label">
-                {item.index === null ? 'No data' : item.level}
-              </span>
-            </button>
-          ))}
+                  <text className="water-radar-label" x={label.x} y={label.y - 2}>
+                    {item.month}
+                  </text>
+                  <text className="water-radar-level" x={label.x} y={label.y + 12}>
+                    {item.index === null ? 'No data' : item.level}
+                  </text>
+                </g>
+              )
+            })}
+          </svg>
+          <div className="water-radar-legend" aria-hidden="true">
+            <span data-level="low">Low</span>
+            <span data-level="moderate">Moderate</span>
+            <span data-level="high">High</span>
+          </div>
         </div>
         {month && (
           <div className="water-month-detail" aria-live="polite" aria-atomic="true">
@@ -296,7 +380,7 @@ function SeasonalRisks({ water }: { water: Analysis['water'] }) {
   )
 }
 
-function PlannerSummary({
+export function PlannerSummary({
   analysis,
   climate,
   climateLoading,
@@ -459,10 +543,14 @@ export default function FarmerDashboard({
   location,
   catalog,
   signedIn,
+  onFieldEdit,
+  onAnalysisReady,
 }: {
   location: UserLocation
   catalog: Catalog
   signedIn: boolean
+  onFieldEdit?: () => void
+  onAnalysisReady?: () => void
 }) {
   const dialog = useRef<HTMLDialogElement>(null)
   const farmDetails = useRef<HTMLDetailsElement>(null)
@@ -481,6 +569,10 @@ export default function FarmerDashboard({
   const [climateLoading, setClimateLoading] = useState(true)
   const [climateError, setClimateError] = useState('')
   const [climateRetry, setClimateRetry] = useState(0)
+  const openFieldDialog = () => {
+    onFieldEdit?.()
+    dialog.current?.showModal()
+  }
   async function analyze(level: WaterLevel | null) {
     request.current?.abort()
     const controller = new AbortController()
@@ -504,7 +596,10 @@ export default function FarmerDashboard({
         },
         controller.signal
       )
-      if (!controller.signal.aborted) setAnalysis(data)
+      if (!controller.signal.aborted) {
+        setAnalysis(data)
+        onAnalysisReady?.()
+      }
     } catch (reason) {
       if (!controller.signal.aborted)
         setError(
@@ -579,58 +674,10 @@ export default function FarmerDashboard({
       })
     return () => controller.abort()
   }, [location.districtId, location.latitude, location.longitude, climateRetry])
-  const latitude = location.latitude ?? Number(catalog.district.latitude)
-  const longitude = location.longitude ?? Number(catalog.district.longitude)
-  const canMap =
-    Number.isFinite(latitude) &&
-    Number.isFinite(longitude) &&
-    Math.abs(latitude) <= 90 &&
-    Math.abs(longitude) <= 180
   const water = analysis?.water
   const currentRain = water?.series[new Date().getMonth()]?.rainfall ?? 'Not available'
   return (
     <div className="farmer-flow farmer-dashboard farmer-dashboard-enter space-y-6 pb-8 text-base-content">
-      <div className="grid gap-5 lg:grid-cols-[1fr_300px]">
-        <div className="card local-guide-intro border border-base-300 bg-base-100">
-          <div className="card-body justify-center p-6 sm:p-8">
-            <span className="flex items-center gap-2 text-sm font-medium text-primary">
-              <Icon name="pin" />
-              Your crop rotation guide
-            </span>
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-              What will you grow next?
-            </h1>
-            <p className="mt-2 max-w-xl text-base-content/75">
-              Choose a farm, generate rotations, then compare planting dates, water needs and
-              trade-offs.
-            </p>
-            <div className="mt-3 flex flex-wrap items-center gap-3">
-              <span className="badge badge-info badge-soft">
-                {location.district}, {location.country}
-              </span>
-              <button
-                type="button"
-                className="btn btn-sm btn-outline btn-primary"
-                onClick={() => dialog.current?.showModal()}
-                disabled={busy}
-              >
-                <Icon name="water" />
-                {choice ? 'Change water availability' : 'Choose water availability'}
-              </button>
-            </div>
-          </div>
-        </div>
-        {canMap && (
-          <div className="card location-map-card overflow-hidden border border-base-300 bg-base-100">
-            <DistrictMiniMap
-              key={`${latitude}:${longitude}`}
-              latitude={latitude}
-              longitude={longitude}
-              district={location.district ?? catalog.district.district_name}
-            />
-          </div>
-        )}
-      </div>
       <dialog
         ref={dialog}
         className="modal farm-water-dialog"
@@ -638,12 +685,12 @@ export default function FarmerDashboard({
         aria-describedby="water-description"
       >
         <div className="modal-box w-[calc(100%-2rem)] max-w-2xl rounded-2xl p-6 sm:p-8">
-          <p className="agri-eyebrow text-info mb-3">A LITTLE KNOWLEDGE FROM YOUR FIELD</p>
+          <p className="agri-eyebrow text-info mb-3">STEP 2 · FIELD DETAILS</p>
           <h2 id="water-title" className="text-2xl font-semibold">
-            Which picture matches your farm?
+            How much water can this field access?
           </h2>
           <p id="water-description" className="mt-2 text-base-content/70">
-            Choose what feels closest. You can change this later.
+            Pick the closest option. You can change it later.
           </p>
           <fieldset className="my-6 grid gap-3 sm:grid-cols-3">
             <legend className="sr-only">Farm water availability</legend>
@@ -688,8 +735,8 @@ export default function FarmerDashboard({
             disabled={!choice}
             onClick={() => choice && void analyze(choice)}
           >
-            Continue
-            <Icon name="arrow" />
+            View NASA data
+            <Icon name="satellite" />
           </button>
           <form method="dialog" className="mt-2">
             <button
@@ -818,7 +865,14 @@ export default function FarmerDashboard({
           aria-live="polite"
         >
           <div className="card-body items-center py-12 text-center">
-            <span className="loading loading-ring loading-lg text-info" />
+            <div className="decision-orbit" data-phase={phase} aria-hidden="true">
+              <span>
+                <Icon name={phase === 2 ? 'sprout' : 'satellite'} size={28} />
+              </span>
+              <i />
+              <i />
+              <i />
+            </div>
             <h2 className="mt-3 text-xl font-semibold">
               {phase === 2 && !farmId ? 'Preparing your local outlook…' : phases[phase]}
             </h2>
@@ -850,19 +904,28 @@ export default function FarmerDashboard({
       )}
       {analysis && water && (
         <div className="flex flex-col gap-6">
-          <PlannerSummary
-            analysis={analysis}
+          <LocalDecisionDashboard
+            plans={analysis.plans}
             climate={climate}
             climateLoading={climateLoading}
             climateError={climateError}
             district={location.district ?? catalog.district.district_name}
+            waterLabel={water.label}
             onRetryClimate={() => setClimateRetry((value) => value + 1)}
+            onEditField={openFieldDialog}
           />
-          <section
-            className="card water-outlook order-2 border border-info/20 bg-base-100"
-            aria-label="Water outlook"
-          >
-            <div className="card-body gap-5 p-6 sm:p-8">
+          <details className="collapse collapse-arrow border border-base-300 bg-base-100">
+            <summary className="collapse-title">
+              <span className="flex items-center gap-3 font-semibold">
+                <Icon name="water" /> Water &amp; seasonal evidence
+              </span>
+              <span className="block text-sm font-normal text-base-content/65">
+                Open the NASA context and month-by-month planning signals
+              </span>
+            </summary>
+            <div className="collapse-content space-y-5">
+              <section className="card water-outlook border border-info/20 bg-base-100" aria-label="Water outlook">
+                <div className="card-body gap-5 p-6 sm:p-8">
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
                   <p className="flex items-center gap-2 text-sm font-medium text-info">
@@ -881,6 +944,13 @@ export default function FarmerDashboard({
                   </p>
                 </div>
                 <span className="badge badge-info badge-soft">{location.district}</span>
+                <button
+                  type="button"
+                  className="btn btn-sm btn-outline"
+                  onClick={openFieldDialog}
+                >
+                  Edit field details
+                </button>
               </div>
               {water.label !== 'Not provided' && (
                 <progress
@@ -921,20 +991,34 @@ export default function FarmerDashboard({
                   ? ` District references: ${analysis.source.reportingYear}.`
                   : ''}
               </p>
+                </div>
+              </section>
+              <WaterChart water={water} />
+              <SeasonalRisks water={water} />
             </div>
-          </section>
+          </details>
           {analysis.plans.length ? (
-            <div className="order-0 space-y-4">
-              <p className="px-1 text-sm text-base-content/75">
-                {analysis.planning.message} The water choice above does not change measured
-                irrigation in your farm record.
-              </p>
-              <RotationPlans
-                key={analysis.plans.map((plan) => plan.id).join(',')}
-                plans={analysis.plans}
-                farmId={signedIn ? farmId : ''}
-              />
-            </div>
+            <details className="collapse collapse-arrow border border-base-300 bg-base-100">
+              <summary className="collapse-title">
+                <span className="flex items-center gap-3 font-semibold">
+                  <Icon name="layers" /> Rotation details &amp; explanations
+                </span>
+                <span className="block text-sm font-normal text-base-content/65">
+                  Open all three plans, crop checks and reasons
+                </span>
+              </summary>
+              <div className="collapse-content space-y-4">
+                <p className="px-1 text-sm text-base-content/75">
+                  {analysis.planning.message} The water choice above does not change measured
+                  irrigation in your farm record.
+                </p>
+                <RotationPlans
+                  key={analysis.plans.map((plan) => plan.id).join(',')}
+                  plans={analysis.plans}
+                  farmId={signedIn ? farmId : ''}
+                />
+              </div>
+            </details>
           ) : (
             <div
               id="farm-plan-setup"
@@ -1058,36 +1142,16 @@ export default function FarmerDashboard({
               </div>
             </details>
           )}
-          <div className="order-3">
-            <WaterChart water={water} />
-          </div>
-          <details className="collapse collapse-arrow order-4 border border-base-300 bg-base-100">
-            <summary className="collapse-title">
-              <span className="flex items-center gap-3 font-semibold">
-                <Icon name="shield" /> View seasonal risks
-              </span>
-              <span className="block text-sm font-normal text-base-content/65">
-                Rain, dry spells, irrigation and soil
-              </span>
-            </summary>
-            <div className="collapse-content">
-              <SeasonalRisks water={water} />
-            </div>
-          </details>
         </div>
       )}
       {!busy && !analysis && !error && (
-        <div className="card border border-dashed border-base-300 bg-base-100 p-8 text-center">
-          <h2 className="text-xl font-semibold">Start with your farm’s water</h2>
-          <p className="my-3 text-base-content/70">
-            A quick choice helps you explore the local seasonal outlook.
-          </p>
+        <div className="flex justify-center">
           <button
             type="button"
-            className="btn btn-primary mx-auto"
-            onClick={() => dialog.current?.showModal()}
+            className="btn btn-primary btn-wide"
+            onClick={openFieldDialog}
           >
-            Choose water availability
+            Add field details
           </button>
         </div>
       )}
