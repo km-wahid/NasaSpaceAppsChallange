@@ -15,20 +15,132 @@ export interface CropMetadata {
 }
 
 export const cropDirectory: Record<string, CropMetadata> = {
-  'aman rice': { family: 'cereal', displayName: 'Aman Rice', waterNeedMm: 1100, nitrogenFixationKgPerHa: 0, profitIndex: 78, yieldIndex: 88, isLegume: false },
-  'boro rice': { family: 'cereal', displayName: 'Boro Rice', waterNeedMm: 1300, nitrogenFixationKgPerHa: 0, profitIndex: 75, yieldIndex: 95, isLegume: false },
-  'aus rice': { family: 'cereal', displayName: 'Aus Rice', waterNeedMm: 650, nitrogenFixationKgPerHa: 0, profitIndex: 70, yieldIndex: 72, isLegume: false },
-  'wheat': { family: 'cereal', displayName: 'Wheat', waterNeedMm: 400, nitrogenFixationKgPerHa: 0, profitIndex: 72, yieldIndex: 80, isLegume: false },
-  'maize': { family: 'cereal', displayName: 'Maize', waterNeedMm: 550, nitrogenFixationKgPerHa: 0, profitIndex: 82, yieldIndex: 92, isLegume: false },
-  'lentil': { family: 'legume', displayName: 'Lentil', waterNeedMm: 250, nitrogenFixationKgPerHa: 38, profitIndex: 88, yieldIndex: 68, isLegume: true },
-  'mungbean': { family: 'legume', displayName: 'Mungbean', waterNeedMm: 280, nitrogenFixationKgPerHa: 42, profitIndex: 85, yieldIndex: 70, isLegume: true },
-  'blackgram': { family: 'legume', displayName: 'Blackgram', waterNeedMm: 270, nitrogenFixationKgPerHa: 35, profitIndex: 80, yieldIndex: 65, isLegume: true },
-  'chickpea': { family: 'legume', displayName: 'Chickpea', waterNeedMm: 300, nitrogenFixationKgPerHa: 40, profitIndex: 84, yieldIndex: 68, isLegume: true },
-  'grasspea': { family: 'legume', displayName: 'Grasspea (Khesari)', waterNeedMm: 220, nitrogenFixationKgPerHa: 32, profitIndex: 74, yieldIndex: 62, isLegume: true },
-  'mustard': { family: 'oilseed', displayName: 'Mustard', waterNeedMm: 320, nitrogenFixationKgPerHa: 0, profitIndex: 86, yieldIndex: 74, isLegume: false },
-  'sesame': { family: 'oilseed', displayName: 'Sesame', waterNeedMm: 300, nitrogenFixationKgPerHa: 0, profitIndex: 82, yieldIndex: 70, isLegume: false },
-  'potato': { family: 'vegetable', displayName: 'Potato', waterNeedMm: 500, nitrogenFixationKgPerHa: 0, profitIndex: 89, yieldIndex: 94, isLegume: false },
-  'jute': { family: 'fiber', displayName: 'Jute', waterNeedMm: 600, nitrogenFixationKgPerHa: 10, profitIndex: 75, yieldIndex: 76, isLegume: false },
+  'aman rice': {
+    family: 'cereal',
+    displayName: 'Aman Rice',
+    waterNeedMm: 1100,
+    nitrogenFixationKgPerHa: 0,
+    profitIndex: 78,
+    yieldIndex: 88,
+    isLegume: false,
+  },
+  'boro rice': {
+    family: 'cereal',
+    displayName: 'Boro Rice',
+    waterNeedMm: 1300,
+    nitrogenFixationKgPerHa: 0,
+    profitIndex: 75,
+    yieldIndex: 95,
+    isLegume: false,
+  },
+  'aus rice': {
+    family: 'cereal',
+    displayName: 'Aus Rice',
+    waterNeedMm: 650,
+    nitrogenFixationKgPerHa: 0,
+    profitIndex: 70,
+    yieldIndex: 72,
+    isLegume: false,
+  },
+  'wheat': {
+    family: 'cereal',
+    displayName: 'Wheat',
+    waterNeedMm: 400,
+    nitrogenFixationKgPerHa: 0,
+    profitIndex: 72,
+    yieldIndex: 80,
+    isLegume: false,
+  },
+  'maize': {
+    family: 'cereal',
+    displayName: 'Maize',
+    waterNeedMm: 550,
+    nitrogenFixationKgPerHa: 0,
+    profitIndex: 82,
+    yieldIndex: 92,
+    isLegume: false,
+  },
+  'lentil': {
+    family: 'legume',
+    displayName: 'Lentil',
+    waterNeedMm: 250,
+    nitrogenFixationKgPerHa: 38,
+    profitIndex: 88,
+    yieldIndex: 68,
+    isLegume: true,
+  },
+  'mungbean': {
+    family: 'legume',
+    displayName: 'Mungbean',
+    waterNeedMm: 280,
+    nitrogenFixationKgPerHa: 42,
+    profitIndex: 85,
+    yieldIndex: 70,
+    isLegume: true,
+  },
+  'blackgram': {
+    family: 'legume',
+    displayName: 'Blackgram',
+    waterNeedMm: 270,
+    nitrogenFixationKgPerHa: 35,
+    profitIndex: 80,
+    yieldIndex: 65,
+    isLegume: true,
+  },
+  'chickpea': {
+    family: 'legume',
+    displayName: 'Chickpea',
+    waterNeedMm: 300,
+    nitrogenFixationKgPerHa: 40,
+    profitIndex: 84,
+    yieldIndex: 68,
+    isLegume: true,
+  },
+  'grasspea': {
+    family: 'legume',
+    displayName: 'Grasspea (Khesari)',
+    waterNeedMm: 220,
+    nitrogenFixationKgPerHa: 32,
+    profitIndex: 74,
+    yieldIndex: 62,
+    isLegume: true,
+  },
+  'mustard': {
+    family: 'oilseed',
+    displayName: 'Mustard',
+    waterNeedMm: 320,
+    nitrogenFixationKgPerHa: 0,
+    profitIndex: 86,
+    yieldIndex: 74,
+    isLegume: false,
+  },
+  'sesame': {
+    family: 'oilseed',
+    displayName: 'Sesame',
+    waterNeedMm: 300,
+    nitrogenFixationKgPerHa: 0,
+    profitIndex: 82,
+    yieldIndex: 70,
+    isLegume: false,
+  },
+  'potato': {
+    family: 'vegetable',
+    displayName: 'Potato',
+    waterNeedMm: 500,
+    nitrogenFixationKgPerHa: 0,
+    profitIndex: 89,
+    yieldIndex: 94,
+    isLegume: false,
+  },
+  'jute': {
+    family: 'fiber',
+    displayName: 'Jute',
+    waterNeedMm: 600,
+    nitrogenFixationKgPerHa: 10,
+    profitIndex: 75,
+    yieldIndex: 76,
+    isLegume: false,
+  },
 }
 
 export function lookupCropMeta(cropName: string): CropMetadata {
@@ -39,13 +151,42 @@ export function lookupCropMeta(cropName: string): CropMetadata {
     }
   }
   // Fallback
-  if (normalized.includes('pulse') || normalized.includes('dal') || normalized.includes('bean') || normalized.includes('pea')) {
-    return { family: 'legume', displayName: cropName, waterNeedMm: 280, nitrogenFixationKgPerHa: 35, profitIndex: 82, yieldIndex: 70, isLegume: true }
+  if (
+    normalized.includes('pulse') ||
+    normalized.includes('dal') ||
+    normalized.includes('bean') ||
+    normalized.includes('pea')
+  ) {
+    return {
+      family: 'legume',
+      displayName: cropName,
+      waterNeedMm: 280,
+      nitrogenFixationKgPerHa: 35,
+      profitIndex: 82,
+      yieldIndex: 70,
+      isLegume: true,
+    }
   }
   if (normalized.includes('rice') || normalized.includes('paddy')) {
-    return { family: 'cereal', displayName: cropName, waterNeedMm: 1100, nitrogenFixationKgPerHa: 0, profitIndex: 75, yieldIndex: 85, isLegume: false }
+    return {
+      family: 'cereal',
+      displayName: cropName,
+      waterNeedMm: 1100,
+      nitrogenFixationKgPerHa: 0,
+      profitIndex: 75,
+      yieldIndex: 85,
+      isLegume: false,
+    }
   }
-  return { family: 'cereal', displayName: cropName, waterNeedMm: 450, nitrogenFixationKgPerHa: 0, profitIndex: 75, yieldIndex: 75, isLegume: false }
+  return {
+    family: 'cereal',
+    displayName: cropName,
+    waterNeedMm: 450,
+    nitrogenFixationKgPerHa: 0,
+    profitIndex: 75,
+    yieldIndex: 75,
+    isLegume: false,
+  }
 }
 
 export interface RuleValidationResult {
@@ -102,7 +243,10 @@ export function validateRotationRules(
     const metaA = lookupCropMeta(crops[i].name)
     const metaB = lookupCropMeta(crops[i + 1].name)
 
-    if (metaA.family === metaB.family || crops[i].name.toLowerCase() === crops[i + 1].name.toLowerCase()) {
+    if (
+      metaA.family === metaB.family ||
+      crops[i].name.toLowerCase() === crops[i + 1].name.toLowerCase()
+    ) {
       noConsecutiveSameCrop = false
       consecutiveViolationDetail = `Consecutive planting of ${metaA.family} family crops (${crops[i].name} → ${crops[i + 1].name}) breaks natural pest suppression cycles.`
       break
@@ -120,7 +264,12 @@ export function validateRotationRules(
   const hasLegume = legumeCrops.length > 0
 
   // Rule 3: Match crop water need with rainfall / available water
-  const effectiveWaterSupply = waterAvailability === 'low' ? 450 : waterAvailability === 'high' ? 1200 : districtRainfallMm || 750
+  const effectiveWaterSupply =
+    waterAvailability === 'low'
+      ? 450
+      : waterAvailability === 'high'
+        ? 1200
+        : districtRainfallMm || 750
 
   let totalMatchDelta = 0
   for (const crop of crops) {
@@ -134,7 +283,8 @@ export function validateRotationRules(
 
   let waterMatchAnalysis = 'Crop water requirements align well with natural seasonal rainfall.'
   if (waterRainMatchScore < 70) {
-    waterMatchAnalysis = 'Some crops require supplemental irrigation beyond district seasonal rainfall.'
+    waterMatchAnalysis =
+      'Some crops require supplemental irrigation beyond district seasonal rainfall.'
   }
 
   return {
@@ -198,7 +348,11 @@ export function evaluatePlan(
 ): PlanEvaluation {
   // Ensure legume rule
   const enforcedPlan = enforceLegumeInPlan(plan)
-  const validation = validateRotationRules(enforcedPlan.crops, districtRainfallMm, waterAvailability)
+  const validation = validateRotationRules(
+    enforcedPlan.crops,
+    districtRainfallMm,
+    waterAvailability
+  )
 
   // Compute components:
   // 1. Rule compliance (up to 25 pts)
@@ -233,34 +387,22 @@ export function evaluatePlan(
 
   if (priority === 'profit') {
     finalScore = Math.round(
-      ruleCompliance * 0.8 +
-      waterEfficiency * 0.8 +
-      soilHealthScore * 0.8 +
-      economicReturn * 1.6
+      ruleCompliance * 0.8 + waterEfficiency * 0.8 + soilHealthScore * 0.8 + economicReturn * 1.6
     )
     rankBadge = 'Top Profit Earner 💰'
   } else if (priority === 'water') {
     finalScore = Math.round(
-      ruleCompliance * 0.8 +
-      waterEfficiency * 1.7 +
-      soilHealthScore * 0.8 +
-      economicReturn * 0.7
+      ruleCompliance * 0.8 + waterEfficiency * 1.7 + soilHealthScore * 0.8 + economicReturn * 0.7
     )
     rankBadge = 'Highest Water Saver 💧'
   } else if (priority === 'soil') {
     finalScore = Math.round(
-      ruleCompliance * 0.8 +
-      waterEfficiency * 0.8 +
-      soilHealthScore * 1.7 +
-      economicReturn * 0.7
+      ruleCompliance * 0.8 + waterEfficiency * 0.8 + soilHealthScore * 1.7 + economicReturn * 0.7
     )
     rankBadge = 'Best Soil Builder 🌱'
   } else {
     finalScore = Math.round(
-      ruleCompliance * 0.8 +
-      waterEfficiency * 0.8 +
-      soilHealthScore * 0.7 +
-      yieldReturn * 1.7
+      ruleCompliance * 0.8 + waterEfficiency * 0.8 + soilHealthScore * 0.7 + yieldReturn * 1.7
     )
     rankBadge = 'Highest Yielding 🌾'
   }
@@ -299,7 +441,8 @@ export function evaluatePlan(
       title: 'Erratic Rainfall & Flash Storms',
       text: 'Pre-monsoon or late monsoon heavy rains can waterlog ripening crops or delay sowing.',
       riskLevel: 'moderate',
-      mitigation: 'Prepare raised beds and ensure clean boundary drainage trenches before planting.',
+      mitigation:
+        'Prepare raised beds and ensure clean boundary drainage trenches before planting.',
     },
     {
       title: 'Winter Warm Spells (Shortened Rabi Window)',
@@ -315,7 +458,8 @@ export function evaluatePlan(
       title: 'Dry Spell Moisture Stress',
       text: 'If dry spells exceed 14 consecutive days during flowering, supplementary irrigation will be needed.',
       riskLevel: 'elevated',
-      mitigation: 'Keep a backup shallow pump arrangement ready and apply straw mulching to preserve topsoil moisture.',
+      mitigation:
+        'Keep a backup shallow pump arrangement ready and apply straw mulching to preserve topsoil moisture.',
     })
   }
 

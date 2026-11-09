@@ -39,8 +39,10 @@ export const generalShiftMetrics: SeasonShiftMetric[] = [
     nowValue: 'Late June / July (delayed by 2-3 weeks)',
     delta: '+15 to 20 days delay',
     deltaType: 'warning',
-    impactText: 'Delayed monsoon pushes back Aman rice transplanting, compressing the subsequent winter crop window.',
-    farmerAction: 'Opt for early-maturing Aman varieties (e.g., BRRI dhan-71/75) instead of long-duration varieties.',
+    impactText:
+      'Delayed monsoon pushes back Aman rice transplanting, compressing the subsequent winter crop window.',
+    farmerAction:
+      'Opt for early-maturing Aman varieties (e.g., BRRI dhan-71/75) instead of long-duration varieties.',
   },
   {
     id: 'rabi-duration',
@@ -50,8 +52,10 @@ export const generalShiftMetrics: SeasonShiftMetric[] = [
     nowValue: '~85 - 95 cold days (compressed)',
     delta: '-25 to 30 days shorter',
     deltaType: 'alert',
-    impactText: 'Warmer winter nights and premature February heat cause early flowering and shriveled grains in mustard and wheat.',
-    farmerAction: 'Plant short-duration mustard/lentils immediately after Aman harvest by early November.',
+    impactText:
+      'Warmer winter nights and premature February heat cause early flowering and shriveled grains in mustard and wheat.',
+    farmerAction:
+      'Plant short-duration mustard/lentils immediately after Aman harvest by early November.',
   },
   {
     id: 'rain-intensity',
@@ -61,7 +65,8 @@ export const generalShiftMetrics: SeasonShiftMetric[] = [
     nowValue: 'Erratic concentrated cloudbursts with dry gaps',
     delta: '+30% erratic intensity',
     deltaType: 'alert',
-    impactText: 'Sudden heavy downpours cause field waterlogging, while mid-season dry spells stress crops without irrigation.',
+    impactText:
+      'Sudden heavy downpours cause field waterlogging, while mid-season dry spells stress crops without irrigation.',
     farmerAction: 'Ensure good field drainage trenches and prepare backup supplemental irrigation.',
   },
   {
@@ -72,8 +77,10 @@ export const generalShiftMetrics: SeasonShiftMetric[] = [
     nowValue: 'Spikes of 38°C - 41°C heatwaves in April',
     delta: '+1.3°C overall rise',
     deltaType: 'warning',
-    impactText: 'High evapotranspiration rapidly dries out topsoil moisture and wilts summer seedling roots.',
-    farmerAction: 'Use straw mulching and drought-tolerant legumes like Mungbean to preserve soil moisture.',
+    impactText:
+      'High evapotranspiration rapidly dries out topsoil moisture and wilts summer seedling roots.',
+    farmerAction:
+      'Use straw mulching and drought-tolerant legumes like Mungbean to preserve soil moisture.',
   },
 ]
 
@@ -94,8 +101,10 @@ export const seasonalShiftDetails: SeasonalShiftDetail[] = [
       rainfallPattern: 'Dry spells with sudden late unseasonal rains',
       mainChallenge: 'Shortened chill hours; sudden early heat in February damages grain filling.',
     },
-    shiftSummary: 'Winter arrives 1-2 weeks late and departs early. The cool growing period is squeezed by almost a month.',
-    recommendedCropStrategy: 'Sow short-cycle mustard (e.g., BARI Sarisha-14) or lentils by Nov 15. Do not delay seeding.',
+    shiftSummary:
+      'Winter arrives 1-2 weeks late and departs early. The cool growing period is squeezed by almost a month.',
+    recommendedCropStrategy:
+      'Sow short-cycle mustard (e.g., BARI Sarisha-14) or lentils by Nov 15. Do not delay seeding.',
   },
   {
     seasonKey: 'kharif1',
@@ -111,10 +120,13 @@ export const seasonalShiftDetails: SeasonalShiftDetail[] = [
       durationDays: 90,
       avgTemp: '32°C - 39°C (Intense Heatwaves)',
       rainfallPattern: 'Prolonged dry heat with severe erratic localized storms',
-      mainChallenge: 'Severe soil moisture deficit; high irrigation costs and salinity rise in coastal belts.',
+      mainChallenge:
+        'Severe soil moisture deficit; high irrigation costs and salinity rise in coastal belts.',
     },
-    shiftSummary: 'Pre-monsoon is hotter with unpredictable rainfall, making moisture management critical.',
-    recommendedCropStrategy: 'Plant fast-maturing Mungbean or short-duration Aus; use green manure to rebuild soil organic carbon.',
+    shiftSummary:
+      'Pre-monsoon is hotter with unpredictable rainfall, making moisture management critical.',
+    recommendedCropStrategy:
+      'Plant fast-maturing Mungbean or short-duration Aus; use green manure to rebuild soil organic carbon.',
   },
   {
     seasonKey: 'kharif2',
@@ -132,7 +144,9 @@ export const seasonalShiftDetails: SeasonalShiftDetail[] = [
       rainfallPattern: 'Delayed onset; concentrated heavy downpours with mid-season gaps',
       mainChallenge: 'Late transplanting pushes harvest into winter, causing delayed Rabi sowing.',
     },
-    shiftSummary: 'The monsoon starts later and brings rain in intense bursts rather than steady showers.',
-    recommendedCropStrategy: 'Adopt 110-115 day Aman varieties (e.g., BRRI dhan-75) to harvest by late October for timely winter planting.',
+    shiftSummary:
+      'The monsoon starts later and brings rain in intense bursts rather than steady showers.',
+    recommendedCropStrategy:
+      'Adopt 110-115 day Aman varieties (e.g., BRRI dhan-75) to harvest by late October for timely winter planting.',
   },
 ]

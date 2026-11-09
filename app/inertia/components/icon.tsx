@@ -31,6 +31,8 @@ const paths = {
     'm5 3 4 4-2 2-4-4 2-2Z m14 12 2 2-4 4-2-2 4-4Z M9 15l6-6 M7 17l10-10 M14 4a6 6 0 0 1 6 6 M4 14a6 6 0 0 0 6 6',
   warning: 'M12 3 2 21h20L12 3Z M12 9v5 M12 18v.1',
   clock: 'M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0 M12 7v5l3 2',
+  history: 'M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8 M3 3v5h5 M12 7v5l4 2',
+  volume: 'M11 5L6 9H2v6h4l5 4V5z M19.07 4.93a10 10 0 0 1 0 14.14 M15.54 8.46a5 5 0 0 1 0 7.07',
 } as const
 
 export default function Icon({ name, size = 20 }: { name: keyof typeof paths; size?: number }) {
