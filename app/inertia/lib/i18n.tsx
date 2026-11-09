@@ -73,6 +73,28 @@ const copy = {
       'Changes in crop greenness help reveal stress and uneven growth across the landscape.',
     homeCycleTitle: 'A three-season crop cycle',
     homeCycleBody: 'See planting windows, water demand and trade-offs before choosing.',
+    landingHeroTitle: 'Deterministic Climate & Crop Rotation Intelligence',
+    landingHeroSub:
+      'Satellite-backed Earth Observation and verified agronomic modeling for farmers in Bangladesh.',
+    landingExploreFarm: 'Explore farm',
+    landingLogin: 'Login / Sign up',
+    featClimateHist: 'Climate History',
+    featClimateHistMetric: '10 Years',
+    featClimateHistLabel: 'Rainfall & temperature patterns',
+    featCropRot: 'Crop Rotation',
+    featCropRotMetric: '3 Seasons',
+    featCropRotLabel: 'Deterministic field sequencing',
+    featSoilWater: 'Soil & Water',
+    featSoilWaterMetric: 'NASA POWER',
+    featSoilWaterLabel: 'Calibrated moisture & nutrients',
+    featSatGis: 'Satellite GIS',
+    featSatGisMetric: '64 Districts',
+    featSatGisLabel: 'Spatial agro-climatic boundaries',
+    cadenceEyebrow: 'ANNUAL ROTATION CADENCE',
+    cadenceTitle: 'Three Season Balanced Rotation',
+    cadenceLaunch: 'Launch Rotation Planner',
+    cadenceNote: 'Preserves soil organic carbon and cuts water stress by 35%.',
+    cadenceModel: 'Model: Bogura One-Hectare Trial',
     missionEyebrow: 'NASA Earth observation initiative',
     missionTitle: 'Understand your land. Adapt your farming. Grow resilience.',
     missionBody:
@@ -239,6 +261,28 @@ const copy = {
     observationVegetationBody: 'ফসলের সবুজ রঙের পরিবর্তন থেকে জমিজুড়ে চাপ ও অসম বৃদ্ধি বোঝা যায়।',
     homeCycleTitle: 'তিন মৌসুমের ফসলি চাকা',
     homeCycleBody: 'বেছে নেওয়ার আগে বপনের সময়, পানির চাহিদা ও সুবিধা-অসুবিধা দেখুন।',
+    landingHeroTitle: 'নিয়মতান্ত্রিক জলবায়ু ও ফসল আবর্তন সিদ্ধান্ত',
+    landingHeroSub:
+      'বাংলাদেশের কৃষকদের জন্য উপগ্রহভিত্তিক ভূ-পর্যবেক্ষণ ও নির্ভরযোগ্য কৃষি বিশ্লেষণ।',
+    landingExploreFarm: 'খামার দেখুন',
+    landingLogin: 'লগইন / সাইন আপ',
+    featClimateHist: 'জলবায়ু ইতিহাস',
+    featClimateHistMetric: '১০ বছর',
+    featClimateHistLabel: 'বৃষ্টিপাত ও তাপমাত্রা বিশ্লেষণ',
+    featCropRot: 'ফসল আবর্তন',
+    featCropRotMetric: '৩টি মৌসুম',
+    featCropRotLabel: 'জমির উপযোগী ফসলি ক্রম',
+    featSoilWater: 'মাটি ও পানি',
+    featSoilWaterMetric: 'নাসা পাওয়ার',
+    featSoilWaterLabel: 'আর্দ্রতা ও পুষ্টি উপযোগিতা',
+    featSatGis: 'স্যাটেলাইট জিআইএস',
+    featSatGisMetric: '৬৪ জেলা',
+    featSatGisLabel: 'স্থানীয় ভৌগোলিক কৃষি অঞ্চল',
+    cadenceEyebrow: 'বার্ষিক আবর্তন চক্র',
+    cadenceTitle: 'তিন মৌসুমের ভারসাম্যপূর্ণ ফসল আবর্তন',
+    cadenceLaunch: 'আবর্তন পরিকল্পনাকারী শুরু করুন',
+    cadenceNote: 'মাটির জৈব কার্বন রক্ষা করে এবং পানির চাপ ৩৫% পর্যন্ত কমায়।',
+    cadenceModel: 'মডেল: বগুড়া এক-হেক্টর পাইলট',
     missionEyebrow: 'নাসা ভূ-পর্যবেক্ষণ উদ্যোগ',
     missionTitle: 'জমি বুঝুন। চাষ মানিয়ে নিন। সহনশীলতা বাড়ান।',
     missionBody:
@@ -356,6 +400,7 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     document.documentElement.lang = locale
     window.localStorage.setItem(localeStorageKey, locale)
+    document.cookie = `orbitagro_locale=${locale}; path=/; max-age=31536000; SameSite=Lax`
   }, [locale])
 
   const value = useMemo(
