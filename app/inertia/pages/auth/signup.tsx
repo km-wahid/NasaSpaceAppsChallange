@@ -1,167 +1,158 @@
 import { useState } from 'react'
-import { Form } from '@adonisjs/inertia/react'
-import AuthFrame from '../../components/auth_frame'
+import { Head } from '@inertiajs/react'
+import { Form, Link } from '@adonisjs/inertia/react'
+import AuthLayout from '../../components/auth_layout'
 import PasswordInput from '../../components/password_input'
-import { Loader2, ArrowRight, ArrowLeft, CheckCircle2 } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 
 export default function Signup() {
-  const [step, setStep] = useState<1 | 2>(1)
+  const [password, setPassword] = useState('')
+
+  // Lightweight visual strength meter
+  const strengthScore = Math.min(
+    4,
+    (password.length >= 8 ? 1 : 0) +
+      (/[A-Z]/.test(password) ? 1 : 0) +
+      (/[0-9]/.test(password) ? 1 : 0) +
+      (/[^A-Za-z0-9]/.test(password) ? 1 : 0)
+  )
+
+  const strengthLabel =
+    password.length === 0
+      ? ''
+      : strengthScore <= 1
+      ? 'Weak'
+      : strengthScore <= 3
+      ? 'Moderate'
+      : 'Strong'
 
   return (
-    <Form route="new_account.store">
-      {({ errors, processing }) => {
-        const hasError = Boolean(
-          errors.fullName || errors.email || errors.password || errors.passwordConfirmation
-        )
+    <AuthLayout title="Create your account">
+      <Head title="Create Account - OrbitAgro" />
 
-        return (
-          <AuthFrame signup title="Create OrbitAgro Account" hasError={hasError}>
-            {/* Multi-step progress indicator */}
-            <div className="flex items-center justify-between mb-4 pb-3 border-b border-base-300/60">
-              <div className="flex items-center gap-2">
-                <span
-                  className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                    step === 1 ? 'bg-success text-white' : 'bg-success/20 text-success'
-                  }`}
-                >
-                  {step > 1 ? <CheckCircle2 className="w-4 h-4" /> : '1'}
-                </span>
-                <span className="text-xs font-semibold text-base-content/80">Account</span>
-              </div>
-
-              <div className="h-0.5 flex-1 mx-3 bg-base-300" />
-
-              <div className="flex items-center gap-2">
-                <span
-                  className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                    step === 2 ? 'bg-success text-white' : 'bg-base-200 text-base-content/50'
-                  }`}
-                >
-                  2
-                </span>
-                <span className="text-xs font-semibold text-base-content/80">Location</span>
-              </div>
+      <Form route="new_account.store">
+        {({ errors, processing }) => (
+          <div className="space-y-4">
+            {/* Full Name */}
+            <div>
+              <label htmlFor="fullName" className="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">
+                Full name
+              </label>
+              <input
+                type="text"
+                name="fullName"
+                id="fullName"
+                autoComplete="name"
+                className="w-full h-11 px-3.5 bg-white text-slate-900 border border-slate-300 rounded-xl text-base md:text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d] transition-all"
+                placeholder="Md. Rafiqul Islam"
+              />
+              {errors.fullName && (
+                <p className="text-xs text-red-600 mt-1 font-medium" role="alert">
+                  {errors.fullName}
+                </p>
+              )}
             </div>
 
-            {/* Step 1: Account credentials */}
-            <div className={`space-y-3.5 ${step === 1 ? 'block' : 'hidden'}`}>
-              <div>
-                <label htmlFor="fullName" className="block text-xs font-semibold text-base-content/75 mb-1">
-                  Full name
-                </label>
-                <input
-                  type="text"
-                  name="fullName"
-                  id="fullName"
-                  className="input input-bordered w-full rounded-xl text-sm"
-                  placeholder="Md. Rafiqul Islam"
-                  autoComplete="name"
-                  required
-                />
-                {errors.fullName && <p className="text-xs text-error mt-1">{errors.fullName}</p>}
-              </div>
+            {/* Email Address */}
+            <div>
+              <label htmlFor="email" className="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">
+                Email address
+              </label>
+              <input
+                type="email"
+                name="email"
+                id="email"
+                autoComplete="email"
+                className="w-full h-11 px-3.5 bg-white text-slate-900 border border-slate-300 rounded-xl text-base md:text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#15803d] focus:border-[#15803d] transition-all"
+                placeholder="farmer@orbitagro.org"
+                required
+                aria-invalid={Boolean(errors.email)}
+              />
+              {errors.email && (
+                <p className="text-xs text-red-600 mt-1 font-medium" role="alert">
+                  {errors.email}
+                </p>
+              )}
+            </div>
 
-              <div>
-                <label htmlFor="email" className="block text-xs font-semibold text-base-content/75 mb-1">
-                  Email address
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  id="email"
-                  autoComplete="email"
-                  className="input input-bordered w-full rounded-xl text-sm"
-                  placeholder="farmer@orbitagro.org"
-                  required
-                />
-                {errors.email && <p className="text-xs text-error mt-1">{errors.email}</p>}
-              </div>
-
-              <div>
-                <label htmlFor="password" className="block text-xs font-semibold text-base-content/75 mb-1">
+            {/* Password */}
+            <div>
+              <div className="flex items-center justify-between mb-1.5">
+                <label htmlFor="password" className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
                   Password
                 </label>
-                <PasswordInput
-                  name="password"
-                  id="password"
-                  autoComplete="new-password"
-                  invalid={Boolean(errors.password)}
-                  errorId="password-error"
-                />
-                {errors.password && <p className="text-xs text-error mt-1">{errors.password}</p>}
-              </div>
-
-              <div>
-                <label htmlFor="passwordConfirmation" className="block text-xs font-semibold text-base-content/75 mb-1">
-                  Confirm password
-                </label>
-                <PasswordInput
-                  name="passwordConfirmation"
-                  id="passwordConfirmation"
-                  autoComplete="new-password"
-                  invalid={Boolean(errors.passwordConfirmation)}
-                  errorId="confirm-error"
-                />
-                {errors.passwordConfirmation && (
-                  <p className="text-xs text-error mt-1">{errors.passwordConfirmation}</p>
+                {strengthLabel && (
+                  <span className={`text-[11px] font-mono font-bold ${
+                    strengthScore <= 1 ? 'text-amber-600' : strengthScore <= 3 ? 'text-blue-600' : 'text-emerald-700'
+                  }`}>
+                    {strengthLabel}
+                  </span>
                 )}
               </div>
-
-              <div className="pt-2">
-                <button
-                  type="button"
-                  onClick={() => setStep(2)}
-                  className="btn btn-success w-full rounded-xl text-white font-bold min-h-11 flex items-center justify-center gap-2"
-                >
-                  <span>Continue to Farm Location</span>
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-
-            {/* Step 2: Farm Location preview & Confirm */}
-            <div className={`space-y-4 ${step === 2 ? 'block' : 'hidden'}`}>
-              <div className="p-4 rounded-xl bg-base-200/60 border border-base-300 text-left space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-success">Pilot Region</span>
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-success/10 text-success font-semibold">
-                    Bogura (বগুড়া)
-                  </span>
-                </div>
-                <p className="text-xs text-base-content/70 leading-relaxed">
-                  Your workspace will initialize with calibrated NASA POWER historical climate data for Bogura & Rajshahi division. You can add more fields anytime.
+              <PasswordInput
+                name="password"
+                id="password"
+                autoComplete="new-password"
+                invalid={Boolean(errors.password)}
+                errorId="password-error"
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              {errors.password && (
+                <p id="password-error" className="text-xs text-red-600 mt-1 font-medium" role="alert">
+                  {errors.password}
                 </p>
-              </div>
-
-              <div className="flex items-center gap-2 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setStep(1)}
-                  className="btn btn-ghost rounded-xl text-xs font-semibold"
-                >
-                  <ArrowLeft className="w-3.5 h-3.5 mr-1" />
-                  Back
-                </button>
-
-                <button
-                  type="submit"
-                  className="btn btn-success flex-1 rounded-xl text-white font-bold min-h-11"
-                  disabled={processing}
-                >
-                  {processing ? (
-                    <span className="flex items-center gap-2">
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      Creating account…
-                    </span>
-                  ) : (
-                    'Complete Registration'
-                  )}
-                </button>
-              </div>
+              )}
             </div>
-          </AuthFrame>
-        )
-      }}
-    </Form>
+
+            {/* Confirm Password */}
+            <div>
+              <label htmlFor="passwordConfirmation" className="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">
+                Confirm password
+              </label>
+              <PasswordInput
+                name="passwordConfirmation"
+                id="passwordConfirmation"
+                autoComplete="new-password"
+                invalid={Boolean(errors.passwordConfirmation)}
+                errorId="passwordConfirmation-error"
+              />
+              {errors.passwordConfirmation && (
+                <p id="passwordConfirmation-error" className="text-xs text-red-600 mt-1 font-medium" role="alert">
+                  {errors.passwordConfirmation}
+                </p>
+              )}
+            </div>
+
+            {/* Submit Button */}
+            <div className="pt-2">
+              <button
+                type="submit"
+                className="w-full h-11 bg-[#15803d] hover:bg-[#166534] text-white font-bold rounded-xl text-sm transition-all shadow-xs cursor-pointer active:scale-98 flex items-center justify-center gap-2 disabled:opacity-60"
+                disabled={processing}
+              >
+                {processing ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Creating account…</span>
+                  </>
+                ) : (
+                  'Create account'
+                )}
+              </button>
+            </div>
+
+            {/* Link to login */}
+            <div className="pt-2 text-center">
+              <Link
+                href="/login"
+                className="text-xs font-semibold text-emerald-800 hover:text-emerald-950 transition-colors"
+              >
+                Already have an account? Sign in →
+              </Link>
+            </div>
+          </div>
+        )}
+      </Form>
+    </AuthLayout>
   )
 }

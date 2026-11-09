@@ -12,9 +12,9 @@ export default function BottomNav({ currentPath }: BottomNavProps) {
   const tabs = [
     { href: '/', label: t('navHome') || 'Home', icon: Home, exact: true },
     { href: '/mission', label: t('navMission') || 'Mission', icon: Compass },
-    { href: '/explorer', label: t('navExplorer') || 'Explorer', icon: MapPin },
+    { href: '/explorer', label: 'EO', icon: MapPin },
     { href: '/compare', label: t('navCompare') || 'Compare', icon: GitCompare },
-    { href: '/farms', label: t('navFarmWorkspace') || 'Farm', icon: Sprout },
+    { href: '/farms', label: 'Farm', icon: Sprout },
   ]
 
   const isActive = (href: string, exact = false) => {

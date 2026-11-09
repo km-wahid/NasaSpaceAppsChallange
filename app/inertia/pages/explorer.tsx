@@ -28,7 +28,7 @@ export default function Explorer() {
   }
 
   return (
-    <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 py-8">
+    <div className="w-full max-w-6xl mx-auto px-3.5 sm:px-6 py-6 pb-36 md:pb-12 overflow-x-hidden">
       <Head title={t('explorerTitle') || 'EO Explorer - OrbitAgro'} />
 
       {/* Minimal Header */}

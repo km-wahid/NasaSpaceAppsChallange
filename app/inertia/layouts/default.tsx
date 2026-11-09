@@ -16,6 +16,7 @@ export default function Layout({ children }: { children: ReactElement<Data.Share
   const user = children.props.user
   const path = url.split(/[?#]/)[0]
   const isFullscreenMap = path === '/explorer/map'
+  const isAuthPage = path === '/login' || path === '/signup'
 
   // Dismiss toast and close dialogs on navigation
   useEffect(() => {
@@ -55,23 +56,29 @@ export default function Layout({ children }: { children: ReactElement<Data.Share
       </a>
 
       {/* Desktop Floating Navbar */}
-      <Navbar
-        currentPath={path}
-        user={user}
-        onOpenCommandPalette={() => setCommandPaletteOpen(true)}
-      />
+      {!isAuthPage && (
+        <Navbar
+          currentPath={path}
+          user={user}
+          onOpenCommandPalette={() => setCommandPaletteOpen(true)}
+        />
+      )}
 
       {/* Mobile Top Header (Minimal) */}
-      <MobileHeader
-        user={user}
-        onOpenCommandPalette={() => setCommandPaletteOpen(true)}
-      />
+      {!isAuthPage && (
+        <MobileHeader
+          user={user}
+          onOpenCommandPalette={() => setCommandPaletteOpen(true)}
+        />
+      )}
 
       {/* Main Page Content */}
       <main
         id="main-content"
         className={`flex-1 w-full ${
-          isFullscreenMap
+          isAuthPage
+            ? 'p-0 m-0'
+            : isFullscreenMap
             ? 'h-[calc(100vh-56px)] md:h-screen p-0 m-0 overflow-hidden'
             : path === '/'
             ? 'pb-24 md:pb-0'
@@ -81,11 +88,11 @@ export default function Layout({ children }: { children: ReactElement<Data.Share
         {children}
       </main>
 
-      {/* Mobile Floating Bottom Navigation Dock */}
-      {!isFullscreenMap && <BottomNav currentPath={path} />}
+      {/* Mobile Floating Bottom Navigation Dock (Excluded on GIS map & Auth pages) */}
+      {!isFullscreenMap && !isAuthPage && <BottomNav currentPath={path} />}
 
-      {/* Interactive 3D Three.js Footer (excluded on full-screen GIS map) */}
-      {!isFullscreenMap && <Footer3D />}
+      {/* Interactive 3D Three.js Footer (excluded on full-screen GIS map & Auth pages) */}
+      {!isFullscreenMap && !isAuthPage && <Footer3D />}
 
       {/* Command Palette (Cmd/Ctrl + K) */}
       <CommandPalette

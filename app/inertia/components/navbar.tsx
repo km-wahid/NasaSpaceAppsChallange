@@ -3,7 +3,7 @@ import { Link } from '@adonisjs/inertia/react'
 import Logo from './logo'
 import { useLocale } from '../lib/i18n'
 import AccountMenu from './account_menu'
-import { Search, Globe, User } from 'lucide-react'
+import { Search, Globe, User, ChevronDown } from 'lucide-react'
 
 interface NavbarProps {
   currentPath: string
@@ -64,9 +64,9 @@ export default function Navbar({ currentPath, user, onOpenCommandPalette }: Navb
 
   const navLinks = [
     { href: '/mission', label: t('navMission') || 'Mission' },
-    { href: '/explorer', label: t('navExplorer') || 'EO explorer' },
+    { href: '/explorer', label: 'EO' },
     { href: '/compare', label: t('navCompare') || 'Compare' },
-    { href: '/farms', label: t('navFarmWorkspace') || 'My farm' },
+    { href: '/farms', label: 'Farm' },
   ]
 
   const isCurrent = (href: string) => {
@@ -114,32 +114,32 @@ export default function Navbar({ currentPath, user, onOpenCommandPalette }: Navb
         <div className="flex items-center gap-2 flex-shrink-0">
           {/* Guest CTA buttons on landing/unauthenticated page */}
           {!user && (
-            <div className="flex items-center gap-1 mr-0.5">
+            <div className="flex items-center gap-1.5 mr-0.5">
               <Link
                 href="/login"
-                className="px-2.5 py-1 text-xs font-semibold text-slate-700 hover:text-slate-950 hover:bg-slate-100 rounded-full transition-colors"
+                className="px-3 py-1.5 text-xs font-semibold text-slate-700 hover:text-slate-950 hover:bg-slate-100 rounded-full transition-colors"
               >
                 {t('login') || 'Log in'}
               </Link>
               <Link
                 href="/signup"
-                className="px-3 py-1.5 text-xs font-bold bg-[#15803d] text-white hover:bg-[#166534] rounded-full shadow-xs transition-transform active:scale-95 hidden sm:inline-flex"
+                className="px-3.5 py-1.5 text-xs font-bold bg-[#15803d] text-white hover:bg-[#166534] rounded-full shadow-xs transition-transform active:scale-95 hidden sm:inline-flex"
               >
                 {t('signup') || 'Get started'}
               </Link>
             </div>
           )}
 
-          {/* 1. Search button (Deep green circle, white icon; on hover white background, black icon) */}
+          {/* 1. Search button (40x40, Deep green circle, white icon; on hover white background, black icon) */}
           {onOpenCommandPalette && (
             <button
               type="button"
               onClick={onOpenCommandPalette}
-              className="nav-pill-btn w-9 h-9 rounded-full"
+              className="group nav-pill-btn flex items-center justify-center w-10 h-10 rounded-full bg-[#15803d] text-white hover:bg-white hover:text-black border border-[#166534] hover:border-slate-300 shadow-xs transition-all duration-200 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#15803d]"
               title="Search (Ctrl + K)"
               aria-label="Open search dialog"
             >
-              <Search className="w-4 h-4" />
+              <Search className="w-[18px] h-[18px] text-white stroke-white group-hover:text-black group-hover:stroke-black transition-colors duration-200" />
             </button>
           )}
 
@@ -147,28 +147,35 @@ export default function Navbar({ currentPath, user, onOpenCommandPalette }: Navb
           <button
             type="button"
             onClick={() => setLocale(locale === 'bn' ? 'en' : 'bn')}
-            className="nav-pill-btn h-9 px-3 rounded-full gap-1.5 text-xs font-bold"
+            className="group nav-pill-btn flex items-center justify-center h-10 px-3.5 rounded-full bg-[#15803d] text-white hover:bg-white hover:text-black border border-[#166534] hover:border-slate-300 shadow-xs transition-all duration-200 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#15803d] gap-1.5 text-xs font-bold select-none"
             title={locale === 'bn' ? 'Switch to English' : 'বাংলায় পরিবর্তন করুন'}
             aria-label="Select language"
           >
-            <Globe className="w-3.5 h-3.5" />
-            <span>{locale === 'bn' ? 'বাং' : 'EN'}</span>
+            <Globe className="w-4 h-4 text-white stroke-white group-hover:text-black group-hover:stroke-black transition-colors duration-200 flex-shrink-0" />
+            <span className="text-white group-hover:text-black transition-colors duration-200">
+              {locale === 'bn' ? 'বাং' : 'EN'}
+            </span>
           </button>
 
-          {/* 3. Account button (Deep green circle, white user initials like RR; on hover white background, black RR) */}
+          {/* 3. Account button (Deep green circle/pill, white user initials like RR; on hover white background, black RR) */}
           <div className="relative">
             <button
               type="button"
               onClick={() => setIsAccountOpen((prev) => !prev)}
-              className="nav-pill-btn w-9 h-9 rounded-full text-xs font-bold uppercase tracking-tight"
+              className="group nav-pill-btn flex items-center justify-center h-10 px-3 min-w-10 rounded-full bg-[#15803d] text-white hover:bg-white hover:text-black border border-[#166534] hover:border-slate-300 shadow-xs transition-all duration-200 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#15803d] gap-1 text-xs font-bold uppercase tracking-tight select-none"
               title={user ? `${t('signedIn') || 'Signed in as'} ${user.email}` : 'Account'}
               aria-label="Open account menu"
               aria-expanded={isAccountOpen}
             >
               {user ? (
-                <span>{user.initials}</span>
+                <>
+                  <span className="text-white group-hover:text-black transition-colors duration-200">
+                    {user.initials}
+                  </span>
+                  <ChevronDown className="w-3.5 h-3.5 text-white stroke-white group-hover:text-black group-hover:stroke-black transition-colors duration-200 flex-shrink-0" />
+                </>
               ) : (
-                <User className="w-4 h-4" />
+                <User className="w-[18px] h-[18px] text-white stroke-white group-hover:text-black group-hover:stroke-black transition-colors duration-200" />
               )}
             </button>
 

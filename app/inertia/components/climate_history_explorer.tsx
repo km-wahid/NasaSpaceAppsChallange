@@ -220,9 +220,13 @@ export default function ClimateHistoryExplorer({
 
       {/* Main Map Stage + Side Card */}
       <div className="card-modern overflow-hidden">
-        {/* Top Control Bar: Segmented Switch */}
-        <div className="p-3 bg-base-200/50 border-b border-base-300 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-1 bg-base-100 p-1 rounded-xl border border-base-300/80">
+        {/* Top Control Bar: Equal-Width Segmented Switch (Option A) & GIS Link */}
+        <div className="p-3 bg-slate-50 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div
+            role="tablist"
+            aria-label="Climate Metric Layers"
+            className="w-full sm:w-auto grid grid-cols-3 sm:flex items-center gap-1 bg-white p-1 rounded-xl border border-slate-200"
+          >
             {[
               { id: 'temperature' as const, label: 'Temperature', icon: Sun },
               { id: 'rainfall' as const, label: 'Rainfall', icon: CloudRain },
@@ -234,33 +238,47 @@ export default function ClimateHistoryExplorer({
                 <button
                   key={tab.id}
                   type="button"
+                  role="tab"
+                  aria-selected={active}
                   onClick={() => setView(tab.id)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all select-none ${
+                  className={`w-full sm:w-auto flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-lg text-xs font-semibold transition-all duration-180 select-none cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#15803d] ${
                     active
-                      ? 'bg-success text-success-content shadow-xs'
-                      : 'text-base-content/70 hover:text-base-content hover:bg-base-200'
+                      ? 'bg-[#15803d] text-white border border-[#166534] shadow-xs'
+                      : 'bg-white text-black hover:bg-[#F3F4F6] border border-transparent'
                   }`}
                 >
-                  <Icon className="w-3.5 h-3.5" />
-                  <span>{tab.label}</span>
+                  <Icon
+                    className={`w-3.5 h-3.5 transition-colors ${
+                      active ? 'text-white stroke-white' : 'text-black stroke-black'
+                    }`}
+                  />
+                  <span
+                    className={`text-[11px] sm:text-xs leading-none transition-colors ${
+                      active ? 'text-white font-bold' : 'text-black font-semibold'
+                    }`}
+                  >
+                    {tab.label}
+                  </span>
                 </button>
               )
             })}
           </div>
 
-          <Link
-            href="/explorer/map"
-            className="text-xs font-semibold text-success hover:underline flex items-center gap-1 self-end sm:self-auto"
-          >
-            <span>Open Fullscreen GIS View</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
+          <div className="flex items-center justify-end">
+            <Link
+              href="/explorer/map"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-3 py-1.5 rounded-lg transition-colors"
+            >
+              <span>Open Fullscreen GIS View</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
         </div>
 
         {/* Map Stage & Minimal Side Card */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 min-h-[420px]">
-          {/* Main Map (Primary element) */}
-          <div className="lg:col-span-8 relative min-h-[380px] bg-base-200">
+        <div className="grid grid-cols-1 lg:grid-cols-12 min-h-[420px] md:min-h-[500px]">
+          {/* Main Map (Primary element: Full Width & Full Height) */}
+          <div className="lg:col-span-8 relative min-h-[380px] md:min-h-[500px] flex flex-col w-full bg-slate-100">
             {regionalLoading && (
               <div className="absolute top-3 left-3 z-20 px-2 py-1 rounded-md bg-base-100/90 text-[10px] font-mono border border-base-300 flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-success animate-ping" />

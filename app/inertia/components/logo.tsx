@@ -16,9 +16,9 @@ export default function Logo({
   href = '/',
 }: LogoProps) {
   const iconDimensions = {
-    sm: 24,
-    md: 32,
-    lg: 44,
+    sm: 26,
+    md: 34,
+    lg: 46,
   }[size]
 
   const titleSizes = {
@@ -28,37 +28,20 @@ export default function Logo({
   }[size]
 
   const content = (
-    <div className={`inline-flex items-center gap-2.5 select-none ${className}`}>
-      {/* Crisp Vector / Leaf Image Logo */}
+    <div className={`inline-flex items-center gap-2 select-none ${className}`}>
+      {/* Crisp Brand Leaf Image */}
       <div
-        className="relative flex items-center justify-center rounded-xl bg-success/10 p-1 text-success flex-shrink-0"
+        className="relative flex items-center justify-center flex-shrink-0"
         style={{ width: iconDimensions, height: iconDimensions }}
       >
-        <svg
-          viewBox="0 0 100 100"
-          className="w-full h-full"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          aria-hidden="true"
-        >
-          <path
-            d="M78 28C74 18 64 12 50 14C33 16 18 30 18 52C18 73 34 86 52 86C72 86 84 70 84 50C84 41 81 34 78 28Z"
-            fill="currentColor"
-          />
-          <path
-            d="M78 28C65 32 46 45 35 62C44 65 58 64 70 54C79 46 82 37 78 28Z"
-            fill="#22c55e"
-          />
-          <path
-            d="M22 66C32 52 50 40 76 29C72 37 60 52 44 64C35 71 27 72 22 66Z"
-            fill="#ffffff"
-            fillOpacity="0.9"
-          />
-          <path
-            d="M24 74C23 80 20 85 16 88C22 88 30 84 34 78C30 78 26 77 24 74Z"
-            fill="#15803d"
-          />
-        </svg>
+        <img
+          src="/brand/leaf.png"
+          alt="OrbitAgro"
+          className="w-full h-full object-contain pointer-events-none select-none drop-shadow-xs"
+          width={iconDimensions}
+          height={iconDimensions}
+          loading="eager"
+        />
       </div>
 
       {showText && (

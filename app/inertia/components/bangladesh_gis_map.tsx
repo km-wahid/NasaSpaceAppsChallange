@@ -137,6 +137,10 @@ export default function BangladeshGisMap({
         keyboard: true,
       }).setView(overview ? [23.7, 90.35] : [latitude, longitude], overview ? 7 : compact ? 10 : 11)
 
+      if (overview) {
+        nextMap.fitBounds(BANGLADESH_BOUNDS, { padding: [20, 20] })
+      }
+
       L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors',
         maxZoom: 18,
@@ -285,17 +289,19 @@ export default function BangladeshGisMap({
       climateOverlay.current = group
       legend = new L.Control({ position: 'bottomleft' })
       legend.onAdd = () => {
-        const body = L.DomUtil.create('div', 'oa-climate-map-legend')
+        const body = L.DomUtil.create('div', 'oa-climate-map-legend bg-white/95 border border-slate-300 rounded-xl p-2.5 shadow-md')
         const title = document.createElement('strong')
+        title.className = 'block text-xs font-bold text-slate-800 mb-1'
         const scale = document.createElement('i')
-        const labels = document.createElement('span')
+        scale.className = `block h-2 rounded w-full my-1.5 ${climateMetric}`
+        const labels = document.createElement('div')
+        labels.className = 'flex items-center justify-between gap-3 text-[11px] font-mono font-bold text-slate-700'
         const minimum = values.length ? Math.min(...values) : 0
         const maximum = values.length ? Math.max(...values) : 0
         const unit = climateMetric === 'temperature' ? '°C' : ' mm'
         title.textContent =
           climateMetric === 'temperature' ? 'Monthly mean temperature' : 'Monthly rainfall'
-        scale.className = climateMetric
-        labels.append(`${minimum.toFixed(1)}${unit}`, `${maximum.toFixed(1)}${unit}`)
+        labels.innerHTML = `<span>Min: ${minimum.toFixed(1)}${unit}</span><span class="text-slate-400">—</span><span>Max: ${maximum.toFixed(1)}${unit}</span>`
         body.append(title, scale, labels)
         return body
       }
@@ -523,10 +529,10 @@ export default function BangladeshGisMap({
   }, [latitude, layers, longitude, mapVersion, opacity, t])
 
   return (
-    <div className={compact ? 'oa-map oa-map-compact' : 'oa-map oa-map-full'}>
+    <div className={`w-full h-full relative flex-1 oa-map ${compact ? 'min-h-[380px] md:min-h-[460px]' : 'oa-map-full'}`}>
       <div
         ref={container}
-        className="oa-map-surface"
+        className="w-full h-full min-h-[inherit] oa-map-surface"
         role="region"
         aria-label={
           failed ? `${t('mapUnavailable')} ${district}` : `${t('mapPreview')} ${district}`
