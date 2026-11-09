@@ -57,7 +57,7 @@ export default function AccountMenu({ isOpen, onClose, user, isMobile = false }:
 
   if (isMobile) {
     return (
-      <div className="fixed inset-0 z-50 flex flex-col justify-end">
+      <div className="fixed inset-0 z-[60] flex flex-col justify-end">
         {/* Dim backdrop */}
         <div
           className="fixed inset-0 bg-black/50 transition-opacity"
@@ -65,10 +65,11 @@ export default function AccountMenu({ isOpen, onClose, user, isMobile = false }:
           aria-hidden="true"
         />
 
-        {/* Slide-up bottom sheet */}
+        {/* Slide-up bottom sheet with generous bottom padding for mobile dock clearance */}
         <div
           ref={menuRef}
-          className="relative w-full bg-base-100 rounded-t-2xl border-t border-base-300 shadow-2xl p-5 z-10 animate-fade-in space-y-4 max-h-[85vh] overflow-y-auto"
+          className="relative w-full bg-base-100 rounded-t-2xl border-t border-base-300 shadow-2xl px-5 pt-5 pb-24 sm:pb-8 z-10 animate-fade-in space-y-4 max-h-[85vh] overflow-y-auto"
+          style={{ paddingBottom: 'calc(6rem + env(safe-area-inset-bottom, 0px))' }}
         >
           {/* Drag Handle Bar */}
           <div className="w-12 h-1.5 bg-base-300 rounded-full mx-auto mb-2" />
@@ -134,15 +135,13 @@ export default function AccountMenu({ isOpen, onClose, user, isMobile = false }:
                   </div>
                 </Link>
 
-                <div className="border-t border-base-300/60 pt-2 mt-2">
+                <div className="border-t border-slate-200/80 pt-2.5 mt-2.5 mb-2">
                   <Form route="session.destroy">
                     <button
                       type="submit"
-                      className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-error/10 text-error transition-colors text-xs font-semibold"
+                      className="w-full flex items-center justify-start gap-[10px] py-3 px-4 rounded-[13px] bg-[#F8E4E1] hover:bg-[#F3D3CE] text-[#B42318] active:scale-[0.98] transition-all duration-150 font-semibold text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B42318]/40 cursor-pointer text-left select-none shadow-xs"
                     >
-                      <div className="w-8 h-8 rounded-lg bg-error/15 text-error flex items-center justify-center">
-                        <LogOut className="w-4 h-4" />
-                      </div>
+                      <LogOut className="w-4 h-4 text-[#B42318] stroke-[#B42318] flex-shrink-0" />
                       <span>{t('logout') || 'Log out'}</span>
                     </button>
                   </Form>
@@ -252,14 +251,14 @@ export default function AccountMenu({ isOpen, onClose, user, isMobile = false }:
               <span>{t('navPlanner') || 'Rotation Planner'}</span>
             </Link>
 
-            <div className="border-t border-base-300/60 pt-1 mt-1">
+            <div className="border-t border-slate-200/80 pt-2.5 mt-2.5">
               <Form route="session.destroy">
                 <button
                   type="submit"
-                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-error hover:bg-error/10 transition-colors text-left"
+                  className="w-full flex items-center justify-start gap-[10px] py-3 px-4 rounded-[13px] bg-[#F8E4E1] hover:bg-[#F3D3CE] text-[#B42318] active:scale-[0.98] transition-all duration-150 font-semibold text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B42318]/40 cursor-pointer text-left select-none"
                   role="menuitem"
                 >
-                  <LogOut className="w-4 h-4 text-error" />
+                  <LogOut className="w-4 h-4 text-[#B42318] stroke-[#B42318] flex-shrink-0" />
                   <span>{t('logout') || 'Log out'}</span>
                 </button>
               </Form>

@@ -29,7 +29,7 @@ export default function PasswordInput({ name, id, autoComplete, invalid, errorId
       />
       <button
         type="button"
-        className="absolute top-1/2 right-2 -translate-y-1/2 p-2 text-slate-500 hover:text-slate-800 rounded-lg transition-colors cursor-pointer"
+        className="absolute top-1/2 right-2.5 -translate-y-1/2 p-1.5 !bg-transparent hover:!bg-transparent text-[#15803d] hover:text-[#166534] !border-none !shadow-none transition-colors cursor-pointer flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[#15803d] rounded-lg select-none"
         onClick={() => setVisible((current) => !current)}
         aria-label={visible ? 'Hide password' : 'Show password'}
         aria-pressed={visible}

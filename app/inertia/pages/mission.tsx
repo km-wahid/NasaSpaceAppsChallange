@@ -3,6 +3,7 @@ import { Link } from '@adonisjs/inertia/react'
 import { useState } from 'react'
 import { useLocale } from '../lib/i18n'
 import Stat from '../components/stat'
+import MissionHero from '../components/mission_hero'
 import {
   Satellite,
   Layers,
@@ -60,10 +61,14 @@ export default function Mission() {
   ]
 
   return (
-    <div className="w-full max-w-4xl mx-auto px-6 py-12">
+    <div className="w-full">
       <Head title={t('missionTitle') || 'Mission & Methodology - OrbitAgro'} />
 
-      {/* Header */}
+      {/* New Hero Section */}
+      <MissionHero />
+
+      <div id="orbit-to-acre" className="w-full max-w-4xl mx-auto px-6 py-12">
+        {/* Header */}
       <div className="mb-10 text-center sm:text-left">
         <span className="nasa-subtitle mb-2">
           <span className="nasa-subtitle-dot" />
@@ -204,5 +209,6 @@ export default function Mission() {
         </Link>
       </div>
     </div>
-  )
+  </div>
+)
 }

@@ -1,7 +1,9 @@
-import { Head } from '@inertiajs/react'
+import { Head, usePage } from '@inertiajs/react'
 import { Link } from '@adonisjs/inertia/react'
 import { useEffect, useState } from 'react'
 import { useLocale } from '../lib/i18n'
+import type { InertiaProps } from '../types'
+import { type Data } from '@generated/data'
 import {
   Compass,
   Layers,
@@ -14,7 +16,9 @@ import {
 
 type NetworkConnection = EventTarget & { saveData?: boolean }
 
-export default function Home() {
+export default function Home({ user }: InertiaProps) {
+  const { props } = usePage<Data.SharedProps>()
+  const currentUser = user ?? props.user
   const { t, locale } = useLocale()
   const [showHeroVideo, setShowHeroVideo] = useState(false)
 
@@ -106,10 +110,7 @@ export default function Home() {
         {/* Hero Content: 1 Headline, 1 Subline, 2 CTAs */}
         <div className="relative z-10 max-w-4xl mx-auto px-6 py-20 text-center flex flex-col items-center">
           {/* Micro tag */}
-          <span className="nasa-subtitle text-emerald-400 mb-4 px-3 py-1 rounded-full bg-slate-900 border border-emerald-500/30">
-            <span className="nasa-subtitle-dot" />
-            NASA EO INTELLIGENCE
-          </span>
+
 
           {/* 1 Headline */}
           <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white max-w-3xl leading-tight">
@@ -121,7 +122,7 @@ export default function Home() {
             {t('landingHeroSub')}
           </p>
 
-          {/* 2 CTAs (Explore farm, Login) */}
+          {/* CTAs (Explore farm, Login only if unauthenticated) */}
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Link
               href="/farms"
@@ -131,12 +132,14 @@ export default function Home() {
               <ArrowRight className="w-4 h-4" />
             </Link>
 
-            <Link
-              href="/login"
-              className="btn-modern bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 text-sm font-semibold cursor-pointer"
-            >
-              {t('landingLogin')}
-            </Link>
+            {!currentUser && (
+              <Link
+                href="/login"
+                className="btn-modern bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 text-sm font-semibold cursor-pointer"
+              >
+                {t('landingLogin')}
+              </Link>
+            )}
           </div>
         </div>
       </section>
