@@ -1,206 +1,208 @@
 import { Head } from '@inertiajs/react'
 import { Link } from '@adonisjs/inertia/react'
-import { useEffect, useState } from 'react'
-import Icon from '../components/icon'
+import { useState } from 'react'
 import { useLocale } from '../lib/i18n'
+import Stat from '../components/stat'
+import {
+  Satellite,
+  Layers,
+  GitCompare,
+  Sprout,
+  ChevronDown,
+  ChevronUp,
+  ArrowRight,
+  Sun,
+  CloudRain,
+  ShieldAlert,
+} from 'lucide-react'
 
 export default function Mission() {
   const { t } = useLocale()
-  const [activeStep, setActiveStep] = useState(0)
-  const pipeline = [
+  const [expandedStep, setExpandedStep] = useState<number | null>(0)
+
+  const steps = [
     {
-      icon: 'satellite' as const,
-      title: t('missionStepObserve'),
-      text: t('missionStepObserveBody'),
+      id: 1,
+      icon: Satellite,
+      title: t('missionStepObserve') || 'Observe (উপগ্রহ পর্যবেক্ষণ)',
+      summary: 'Collect NASA POWER radiation and precipitation data.',
+      detail:
+        'Continuous orbital observations from NASA MODIS and POWER agroclimatology track 10 years of daily solar radiation, ambient temperature, and precipitation anomalies across Bangladesh.',
+      source: 'NASA POWER',
     },
     {
-      icon: 'layers' as const,
-      title: t('missionStepUnderstand'),
-      text: t('missionStepUnderstandBody'),
+      id: 2,
+      icon: Layers,
+      title: t('missionStepUnderstand') || 'Calibrate (জলবায়ু বিশ্লেষণ)',
+      summary: 'Map seasonal drought, flood stress, and soil limits.',
+      detail:
+        'Raw satellite radiances are normalized against Bangladesh Agricultural Research Institute (BARI) agro-ecological zones and soil organic carbon baselines.',
+      source: 'BARI / AEZ',
     },
-    { icon: 'soil' as const, title: t('missionStepCompare'), text: t('missionStepCompareBody') },
-    { icon: 'sprout' as const, title: t('missionStepAct'), text: t('missionStepActBody') },
+    {
+      id: 3,
+      icon: GitCompare,
+      title: t('missionStepCompare') || 'Score (গাণিতিক মূল্যায়ন)',
+      summary: 'Deterministic scoring of 3-season crop combinations.',
+      detail:
+        'Every rotation plan is evaluated via fixed mathematical weights for soil health, water demand, and economic resilience. No AI hallucinations or randomness inside.',
+      source: 'Deterministic Engine',
+    },
+    {
+      id: 4,
+      icon: Sprout,
+      title: t('missionStepAct') || 'Act (বাস্তবায়ন ও আবর্তন)',
+      summary: 'Deliver transparent sowing and harvest schedules.',
+      detail:
+        'Provides precise turnaround buffers between Kharif-1, Kharif-2, and Rabi seasons, ensuring legume recovery breaks and residue management for the farmer.',
+      source: 'Farmer Decision',
+    },
   ]
-  const pressures = [
-    { icon: 'sun' as const, title: t('drought'), value: 'HIGH', color: 'badge-warning' },
-    { icon: 'rain' as const, title: t('flood'), value: 'SEASONAL', color: 'badge-info' },
-    { icon: 'soil' as const, title: t('soilLoss'), value: 'WATCH', color: 'badge-error' },
-  ]
-
-  useEffect(() => {
-    if (!('IntersectionObserver' in window)) return
-
-    const steps = document.querySelectorAll<HTMLElement>('[data-mission-step]')
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visibleStep = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0]
-
-        if (visibleStep) {
-          setActiveStep(Number((visibleStep.target as HTMLElement).dataset.missionStep))
-        }
-      },
-      { rootMargin: '-24% 0px -42%', threshold: [0.2, 0.45, 0.7] }
-    )
-
-    steps.forEach((step) => observer.observe(step))
-    return () => observer.disconnect()
-  }, [])
 
   return (
-    <>
-      <Head title={t('missionTitle')} />
-      <section
-        className="hero oa-hero oa-hero-video oa-mission-video-hero"
-        aria-labelledby="mission-hero-title"
-      >
-        <video
-          className="oa-hero-video-media"
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
-          aria-hidden="true"
-          tabIndex={-1}
-        >
-          <source src="/videos/vid2.mp4" type="video/mp4" />
-          {t('missionVideoFallback')}
-        </video>
-        <div className="hero-content oa-hero-copy oa-mission-video-hero-copy">
-          <div>
-            <p className="oa-kicker">
-              <Icon name="satellite" size={18} /> {t('missionEyebrow')}
-            </p>
-            <h1 id="mission-hero-title">{t('missionTitle')}</h1>
-            <p className="oa-lead">{t('missionBody')}</p>
-            <div className="oa-actions">
-              <Link className="btn btn-primary btn-lg" href="/planner">
-                {t('missionPrimary')} <Icon name="arrow" />
-              </Link>
-              <Link className="btn btn-outline btn-lg" href="/explorer">
-                {t('missionSecondary')}
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
+    <div className="w-full max-w-4xl mx-auto px-6 py-12">
+      <Head title={t('missionTitle') || 'Mission & Methodology - OrbitAgro'} />
 
-      <section className="oa-section oa-mission-scroll" aria-labelledby="mission-scroll-title">
-        <div className="oa-section-heading">
-          <p className="oa-kicker">01 / {t('missionScrollEyebrow')}</p>
-          <h2 id="mission-scroll-title">{t('missionPipeline')}</h2>
-          <p>{t('missionScrollBody')}</p>
-        </div>
-        <div className="oa-mission-scroll-layout">
-          <div className="oa-mission-scroll-steps">
-            {pipeline.map((step, index) => (
-              <article
-                className={`card card-border oa-mission-scroll-step${activeStep === index ? ' is-active' : ''}`}
-                data-mission-step={index}
-                key={step.title}
+      {/* Header */}
+      <div className="mb-10 text-center sm:text-left">
+        <span className="nasa-subtitle mb-2">
+          <span className="nasa-subtitle-dot" />
+          SCIENTIFIC METHODOLOGY
+        </span>
+        <h1 className="text-2xl sm:text-4xl font-bold tracking-tight text-base-content mt-1">
+          From Orbit to Acre
+        </h1>
+        <p className="mt-2 text-sm text-base-content/70 max-w-xl">
+          Deterministic 4-step pipeline translating NASA Earth Observations into climate-resilient crop rotation.
+        </p>
+      </div>
+
+      {/* 4-Step Stepper / Timeline with Expandable Details */}
+      <div className="space-y-3 mb-12">
+        {steps.map((step, idx) => {
+          const Icon = step.icon
+          const isExpanded = expandedStep === idx
+
+          return (
+            <div
+              key={step.id}
+              className={`card-modern p-4 sm:p-5 transition-all ${
+                isExpanded ? 'border-success/60 bg-base-100 shadow-sm' : 'hover:border-base-300'
+              }`}
+            >
+              <div
+                className="flex items-center justify-between cursor-pointer select-none"
+                onClick={() => setExpandedStep(isExpanded ? null : idx)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    setExpandedStep(isExpanded ? null : idx)
+                  }
+                }}
               >
-                <div className="card-body">
-                  <div className="oa-mission-scroll-step-head">
-                    <span className="oa-mission-scroll-icon">
-                      <Icon name={step.icon} size={30} />
-                    </span>
-                    <span className="badge badge-outline">0{index + 1}</span>
+                <div className="flex items-center gap-3.5 min-w-0">
+                  {/* Step Number & Icon */}
+                  <div
+                    className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors ${
+                      isExpanded ? 'bg-success text-white' : 'bg-base-200 text-success'
+                    }`}
+                  >
+                    <Icon className="w-5 h-5" />
                   </div>
-                  <h3 className="card-title">{step.title}</h3>
-                  <p>{step.text}</p>
-                  <span className="oa-mission-scroll-signal" aria-hidden="true">
-                    <i />
-                    <i />
-                    <i />
-                  </span>
+
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono text-[11px] font-bold text-success">
+                        STEP 0{step.id}
+                      </span>
+                      <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-base-200 text-base-content/60">
+                        {step.source}
+                      </span>
+                    </div>
+                    <h3 className="text-sm sm:text-base font-bold text-base-content truncate mt-0.5">
+                      {step.title}
+                    </h3>
+                    <p className="text-xs text-base-content/70 mt-0.5 truncate sm:overflow-visible sm:whitespace-normal">
+                      {step.summary}
+                    </p>
+                  </div>
                 </div>
-              </article>
-            ))}
-          </div>
 
-          <aside className="oa-mission-scroll-visual" aria-hidden="true">
-            <div className="oa-mission-orbit">
-              <span className="oa-mission-orbit-ring" />
-              <span className="oa-mission-orbit-ring oa-mission-orbit-ring-inner" />
-              <div className="oa-mission-orbit-icon" key={activeStep}>
-                <Icon name={pipeline[activeStep].icon} size={58} />
-              </div>
-              <span className="oa-mission-orbit-dot" />
-            </div>
-            <div className="oa-mission-visual-status">
-              <span>0{activeStep + 1} / 04</span>
-              <strong>{pipeline[activeStep].title}</strong>
-              <small>{pipeline[activeStep].text}</small>
-            </div>
-            <ul className="steps steps-horizontal oa-mission-progress">
-              {pipeline.map((step, index) => (
-                <li
-                  className={`step${index <= activeStep ? ' step-primary' : ''}`}
-                  key={step.title}
-                />
-              ))}
-            </ul>
-          </aside>
-        </div>
-      </section>
-
-      <section className="oa-section oa-pressure-section">
-        <div className="oa-section-heading">
-          <p className="oa-kicker">02 / FIELD REALITY</p>
-          <h2>{t('missionPressure')}</h2>
-        </div>
-        <div className="oa-pressure-grid">
-          {pressures.map((pressure) => (
-            <article className="card card-border" key={pressure.title}>
-              <div className="card-body">
-                <div className="oa-card-top">
-                  <Icon name={pressure.icon} size={30} />
-                  <span className={`badge badge-soft ${pressure.color}`}>{pressure.value}</span>
+                <div className="p-1.5 text-base-content/50 hover:text-base-content rounded-full flex-shrink-0 ml-2">
+                  {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                 </div>
-                <h3 className="card-title">{pressure.title}</h3>
-                <progress
-                  className="progress progress-primary"
-                  value={pressure.value === 'HIGH' ? 78 : pressure.value === 'SEASONAL' ? 61 : 54}
-                  max="100"
-                />
               </div>
-            </article>
-          ))}
-        </div>
-      </section>
 
-      <section className="oa-pillars">
+              {/* Expandable Detail */}
+              {isExpanded && (
+                <div className="mt-4 pt-3.5 border-t border-base-300/50 text-xs text-base-content/80 leading-relaxed animate-fade-in">
+                  <p>{step.detail}</p>
+                </div>
+              )}
+            </div>
+          )
+        })}
+      </div>
+
+      {/* Field Realities: 3 Minimal KPI Stat Cards (1 title + 1 value + 1 label) */}
+      <div className="mb-12">
+        <h2 className="text-lg font-bold text-base-content mb-4 flex items-center gap-2">
+          <span>Observed Climate Pressures</span>
+          <span className="text-xs font-mono text-base-content/50 font-normal">
+            (Bogura Station Baselines)
+          </span>
+        </h2>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <Stat
+            title="Drought Stress"
+            value="HIGH"
+            label="Pre-monsoon dry spell watch"
+            trend="up"
+            trendLabel="+1.4°C"
+            source="NASA POWER"
+            icon={<Sun className="w-4 h-4" />}
+          />
+          <Stat
+            title="Monsoon Rainfall"
+            value="SEASONAL"
+            label="1,640 mm annual average"
+            trend="neutral"
+            trendLabel="Stable"
+            source="NASA POWER"
+            icon={<CloudRain className="w-4 h-4" />}
+          />
+          <Stat
+            title="Soil Depletion"
+            value="WATCH"
+            label="Intensive cereal-cereal fatigue"
+            trend="down"
+            trendLabel="Critical"
+            source="BARI Soil Survey"
+            icon={<ShieldAlert className="w-4 h-4" />}
+          />
+        </div>
+      </div>
+
+      {/* CTA Box */}
+      <div className="card-modern p-6 bg-base-200/50 flex flex-col sm:flex-row items-center justify-between gap-4">
         <div>
-          <p className="oa-kicker">03 / ROTATION LOGIC</p>
-          <h2>{t('missionPillars')}</h2>
-          <p>{t('missionBody')}</p>
+          <h3 className="text-base font-bold text-base-content">
+            Ready to test rotation scenarios?
+          </h3>
+          <p className="text-xs text-base-content/70 mt-1">
+            Compare water requirements and soil restoration scores for your district.
+          </p>
         </div>
-        <ol>
-          <li>
-            <Icon name="soil" />
-            <span>
-              <strong>{t('soilRecovery')}</strong>
-              <small>Legume breaks and residue-aware sequences</small>
-            </span>
-          </li>
-          <li>
-            <Icon name="water" />
-            <span>
-              <strong>{t('climateFit')}</strong>
-              <small>Seasonal water and temperature constraints</small>
-            </span>
-          </li>
-          <li>
-            <Icon name="money" />
-            <span>
-              <strong>{t('economicStability')}</strong>
-              <small>Transparent trade-offs where evidence exists</small>
-            </span>
-          </li>
-        </ol>
-      </section>
-    </>
+        <Link
+          href="/compare"
+          className="btn-modern bg-success hover:bg-success/90 text-white text-xs font-bold whitespace-nowrap"
+        >
+          <span>Compare Strategies</span>
+          <ArrowRight className="w-4 h-4" />
+        </Link>
+      </div>
+    </div>
   )
 }

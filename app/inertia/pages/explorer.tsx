@@ -1,10 +1,10 @@
 import { Head } from '@inertiajs/react'
 import { useState } from 'react'
-import Icon from '../components/icon'
 import ClimateHistoryExplorer from '../components/climate_history_explorer'
 import { useLocale } from '../lib/i18n'
 import { detectUserLocation, type UserLocation } from '../lib/location'
 import { usePublicCatalog } from '../lib/use_public_catalog'
+import { Navigation, AlertCircle } from 'lucide-react'
 
 export default function Explorer() {
   const { t } = useLocale()
@@ -12,6 +12,7 @@ export default function Explorer() {
   const [userLocation, setUserLocation] = useState<UserLocation | null>(null)
   const [locating, setLocating] = useState(false)
   const [locationError, setLocationError] = useState('')
+
   const useMyLocation = async () => {
     setLocating(true)
     setLocationError('')
@@ -20,38 +21,44 @@ export default function Explorer() {
       setUserLocation(location)
       if (location.districtId) setDistrictId(location.districtId)
     } catch (reason) {
-      setLocationError(reason instanceof Error ? reason.message : t('locationFallback'))
+      setLocationError(reason instanceof Error ? reason.message : (t('locationFallback') || 'Location unavailable.'))
     } finally {
       setLocating(false)
     }
   }
 
   return (
-    <div className="oa-explorer-page">
-      <Head title={t('explorerTitle')} />
-      <header className="oa-page-header">
+    <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 py-8">
+      <Head title={t('explorerTitle') || 'EO Explorer - OrbitAgro'} />
+
+      {/* Minimal Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-4 border-b border-base-300/60">
         <div>
-          <p className="oa-kicker">
-            <Icon name="satellite" size={18} /> {t('explorerEyebrow')}
-          </p>
-          <h1>Bangladesh climate & satellite explorer</h1>
-          <p>
-            Explore ten complete years of temperature, warming and rainfall history for a district
-            or your current location.
+          <span className="nasa-subtitle mb-1">
+            <span className="nasa-subtitle-dot" />
+            EARTH OBSERVATION EXPLORER
+          </span>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-base-content">
+            Bangladesh Climate & Satellite Explorer
+          </h1>
+          <p className="text-xs text-base-content/70 mt-1">
+            Ten years of NASA POWER climate history & MODIS reflectance imagery.
           </p>
         </div>
+
         {catalog && (
-          <div className="oa-explorer-location">
-            <label>
-              <span>{t('selectDistrict')}</span>
+          <div className="flex items-center gap-2 self-start md:self-auto">
+            {/* District Selector */}
+            <div className="relative">
               <select
-                className="select"
+                className="select select-bordered select-sm rounded-xl text-xs font-semibold pr-8 bg-base-100"
                 value={districtId}
                 onChange={(event) => {
                   setUserLocation(null)
                   setLocationError('')
                   setDistrictId(event.target.value)
                 }}
+                aria-label="Select Bangladesh District"
               >
                 {catalog.districts.map((district) => (
                   <option key={district.district_id} value={district.district_id}>
@@ -59,51 +66,56 @@ export default function Explorer() {
                   </option>
                 ))}
               </select>
-            </label>
+            </div>
+
+            {/* GPS Location Button */}
             <button
-              className="btn btn-primary"
               type="button"
+              className="btn btn-outline btn-sm rounded-xl text-xs font-semibold gap-1.5"
               onClick={useMyLocation}
               disabled={locating}
+              aria-label="Detect GPS Location"
             >
               {locating ? (
-                <span className="loading loading-spinner loading-sm" />
+                <span className="loading loading-spinner loading-xs" />
               ) : (
-                <Icon name="navigation" size={18} />
+                <Navigation className="w-3.5 h-3.5 text-success" />
               )}
-              {locating ? t('locating') : t('useMyLocation')}
+              <span className="hidden sm:inline">{locating ? 'Detecting…' : 'My Location'}</span>
             </button>
           </div>
         )}
-      </header>
+      </div>
 
       {locationError && (
-        <div className="alert alert-warning oa-explorer-location-error" role="alert">
-          <Icon name="warning" />
+        <div className="p-3 mb-6 rounded-xl bg-warning/15 text-warning-content border border-warning/30 flex items-center gap-2 text-xs">
+          <AlertCircle className="w-4 h-4 text-warning flex-shrink-0" />
           <span>{locationError}</span>
         </div>
       )}
 
       {loading && (
-        <div className="oa-loading" role="status">
-          <span className="loading loading-ring loading-lg" />
-          <span>{t('loading')}</span>
+        <div className="py-20 text-center space-y-3">
+          <div className="skeleton-solid w-16 h-16 rounded-full mx-auto" />
+          <div className="text-xs font-mono text-base-content/60">Loading district climate catalog…</div>
         </div>
       )}
+
       {error && (
-        <div className="alert alert-error alert-soft" role="alert">
+        <div className="p-4 rounded-xl bg-error/15 text-error-content border border-error/30 flex items-center justify-between text-xs">
           <span>{error}</span>
-          <button className="btn btn-sm" onClick={retry}>
-            {t('tryAgain')}
+          <button className="btn btn-xs btn-outline" onClick={retry}>
+            Retry
           </button>
         </div>
       )}
-      {catalog && !loading && !error && (
+
+      {catalog && (
         <ClimateHistoryExplorer
           districtId={districtId}
-          districtName={catalog.district.district_name}
-          latitude={userLocation?.latitude}
-          longitude={userLocation?.longitude}
+          districtName={userLocation?.district || catalog.district.district_name}
+          latitude={userLocation ? userLocation.latitude : null}
+          longitude={userLocation ? userLocation.longitude : null}
         />
       )}
     </div>

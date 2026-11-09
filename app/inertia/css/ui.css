@@ -1,5 +1,6 @@
 @layer theme, base, legacy, components, utilities;
 @import 'tailwindcss';
+@import './tokens.css';
 @import './app.css' layer(legacy);
 @import './design.css' layer(components);
 @import 'leaflet/dist/leaflet.css';

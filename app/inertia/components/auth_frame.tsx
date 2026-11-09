@@ -1,59 +1,53 @@
 import type { ReactNode } from 'react'
 import { Head } from '@inertiajs/react'
 import { Link } from '@adonisjs/inertia/react'
-import Icon from './icon'
+import Logo from './logo'
+import { ArrowRight } from 'lucide-react'
 
 export default function AuthFrame({
   title,
-  description,
   children,
   signup = false,
+  hasError = false,
 }: {
   title: string
-  description: string
   children: ReactNode
   signup?: boolean
+  hasError?: boolean
 }) {
   return (
-    <div className="auth-page">
+    <div className="min-h-[82vh] flex items-center justify-center px-4 py-12">
       <Head title={signup ? 'Create account' : 'Log in'} />
-      <aside className="auth-landscape">
-        <img src="/media/home-field-sunset.jpg" alt="" aria-hidden="true" />
-        <div className="auth-landscape-content">
-          <span className="badge badge-success badge-soft">
-            <Icon name="satellite" size={15} /> NASA EARTH OBSERVATION
-          </span>
-          <p className="auth-landscape-kicker">YOUR FARM, KEPT TOGETHER</p>
-          <h2>
-            Your land.
-            <br />
-            Your next season.
-          </h2>
-          <p>Return to saved fields, climate history and transparent crop-rotation guidance.</p>
-          <div className="auth-landscape-note">
-            <Icon name="shield" size={17} /> Stored securely. Decisions stay with the farmer.
-          </div>
+
+      {/* Centered Modern Auth Card (No gradients, solid surface) */}
+      <div
+        className={`w-full max-w-md card-modern p-7 sm:p-8 bg-base-100 border border-base-300 shadow-xl transition-all ${
+          hasError ? 'animate-shake' : ''
+        }`}
+      >
+        {/* Brand Header */}
+        <div className="text-center mb-6">
+          <Logo size="md" showSubtitle={true} href="/" className="justify-center" />
+          <h1 className="text-xl font-bold text-base-content mt-4">{title}</h1>
         </div>
-      </aside>
-      <main className="card auth-card">
-        <div className="card-body auth-card-body">
-          <p className="auth-card-kicker">
-            <Icon name="sprout" size={17} /> SECURE FARM WORKSPACE
-          </p>
-          <h1>{title}</h1>
-          <p className="auth-description">{description}</p>
+
+        {/* Form Body */}
+        <div className="space-y-4">
           {children}
-          <p className="auth-switch">
-            {signup ? 'Already growing with us?' : 'New to OrbitAgro?'}{' '}
-            <Link href={signup ? '/login' : '/signup'}>
-              {signup ? 'Log in' : 'Create an account'} <Icon name="arrow" size={14} />
-            </Link>
-          </p>
-          <p className="auth-privacy">
-            <Icon name="shield" size={15} /> Your farm records stay linked to your account.
-          </p>
         </div>
-      </main>
+
+        {/* Small bottom link */}
+        <div className="mt-6 pt-5 border-t border-base-300/60 text-center text-xs text-base-content/70">
+          <span>{signup ? 'Already have an account?' : 'New to OrbitAgro?'}</span>{' '}
+          <Link
+            href={signup ? '/login' : '/signup'}
+            className="font-semibold text-success hover:underline inline-flex items-center gap-0.5 ml-1"
+          >
+            <span>{signup ? 'Log in' : 'Create account'}</span>
+            <ArrowRight className="w-3 h-3" />
+          </Link>
+        </div>
+      </div>
     </div>
   )
 }

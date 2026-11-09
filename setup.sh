@@ -3,17 +3,24 @@ set -eu
 
 compose_file="docker.yml"
 
-command -v python3 >/dev/null 2>&1 || {
+if command -v python3 >/dev/null 2>&1 && \
+  python3 -c 'import sys; sys.exit(0 if sys.version_info[0] >= 3 else 1)' >/dev/null 2>&1; then
+  python_cmd=python3
+elif command -v python >/dev/null 2>&1 && \
+  python -c 'import sys; sys.exit(0 if sys.version_info[0] >= 3 else 1)' >/dev/null 2>&1; then
+  python_cmd=python
+else
   echo "Python 3 is required to prepare the included crop dataset." >&2
   exit 1
-}
+fi
+
 command -v docker >/dev/null 2>&1 || {
   echo "Docker with Compose is required to run the website." >&2
   exit 1
 }
 
 echo "Preparing the included Bangladesh crop dataset..."
-python3 database/prepare_import.py
+"$python_cmd" database/prepare_import.py
 
 echo "Building and starting the website..."
 docker compose -f "$compose_file" up --build --force-recreate -d
