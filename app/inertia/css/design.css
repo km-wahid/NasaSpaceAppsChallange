@@ -1390,10 +1390,6 @@ input {
   font-size: 12px;
   font-weight: 700;
 }
-.oa-planner-steps {
-  width: min(100%, 760px);
-  margin: 14px auto 34px;
-}
 .oa-loading {
   display: flex;
   min-height: 260px;
@@ -2947,10 +2943,6 @@ input {
   .oa-page-header label {
     min-width: 0;
   }
-  .oa-planner-steps {
-    overflow-x: auto;
-    font-size: 11px;
-  }
   .oa-telemetry-stack {
     grid-template-columns: 1fr;
   }
@@ -3082,10 +3074,6 @@ input {
 }
 
 /* Visualization-first planner and strategy comparison. */
-.oa-planner-page .oa-page-header {
-  border-radius: 20px;
-  background: linear-gradient(135deg, var(--color-base-100), var(--color-base-200));
-}
 .oa-planner-page .location-scene {
   min-height: 0;
   padding: clamp(18px, 3vw, 34px);

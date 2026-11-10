@@ -318,6 +318,9 @@
   background: var(--color-base-100);
   border-radius: 14px;
 }
+.location-summary-content {
+  display: contents;
+}
 .location-summary-pin {
   background: #edf4e8;
   color: #246349;
@@ -328,11 +331,11 @@
   height: 42px;
   flex-shrink: 0;
 }
-.location-summary > div {
+.location-summary-copy {
   flex: 1;
   min-width: 0;
 }
-.location-summary > div > span {
+.location-summary-copy > span {
   font-size: 9px;
   letter-spacing: 0.1em;
   color: #526b5c;

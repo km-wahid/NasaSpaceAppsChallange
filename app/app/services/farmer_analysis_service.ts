@@ -120,6 +120,19 @@ export function presentDistrictRotationPreviews(
                 : 'Neutral reference effect',
         soilSourceId: String(row.soil_effect_source_id),
         soilNote: reference?.soilNote,
+        profitPerHa: null,
+        yieldTonnesPerHa:
+          row.reported_yield_metric_tonnes_per_hectare !== null &&
+          Number.isFinite(Number(row.reported_yield_metric_tonnes_per_hectare))
+            ? Number(row.reported_yield_metric_tonnes_per_hectare)
+            : null,
+        yieldKind:
+          row.reported_yield_metric_tonnes_per_hectare !== null &&
+          Number.isFinite(Number(row.reported_yield_metric_tonnes_per_hectare))
+            ? ('reported' as const)
+            : null,
+        soilScore: soilPoints === null ? null : (soilPoints + 100) / 2,
+        soilMetric: 'reference-effect' as const,
       }
     })
     const area = Number(rabiCrop.area_acres)
@@ -314,6 +327,11 @@ export function presentRotationPlans(
               : 'Neutral reference effect',
       soilSourceId: crop.soilEffectSourceId,
       soilNote: crop.soilNote,
+      profitPerHa: crop.profitPerHa,
+      yieldTonnesPerHa: crop.yieldTonnesPerHa ?? null,
+      yieldKind: crop.yieldKind ?? null,
+      soilScore: crop.scores.soil,
+      soilMetric: 'farm-fit' as const,
       reason: waterMissing
         ? 'Fits the published planting window. Farm water supply has not been checked.'
         : crop.scores.water >= 70

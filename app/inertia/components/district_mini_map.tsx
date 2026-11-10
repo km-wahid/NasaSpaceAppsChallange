@@ -41,10 +41,12 @@ export default function DistrictMiniMap({
   district,
   latitude,
   longitude,
+  background = false,
 }: {
   district: string
-  latitude: number
-  longitude: number
+  latitude: number | null
+  longitude: number | null
+  background?: boolean
 }) {
   const [features, setFeatures] = useState<Feature[]>([])
   useEffect(() => {
@@ -68,20 +70,29 @@ export default function DistrictMiniMap({
       })),
     [features]
   )
-  const [pointX, pointY] = project([longitude, latitude])
+  const point =
+    latitude !== null && longitude !== null && Number.isFinite(latitude) && Number.isFinite(longitude)
+      ? project([longitude, latitude])
+      : null
   return (
-    <figure className="district-mini-map" aria-labelledby="district-map-title">
-      <figcaption id="district-map-title">
-        <span>
-          <Icon name="map" size={17} /> Selected district
-        </span>
-        <strong>{district}</strong>
-      </figcaption>
+    <figure
+      className={`district-mini-map ${background ? 'district-mini-map-background' : ''}`}
+      aria-labelledby={background ? undefined : 'district-map-title'}
+      aria-hidden={background || undefined}
+    >
+      {!background && (
+        <figcaption id="district-map-title">
+          <span>
+            <Icon name="map" size={17} /> Selected district
+          </span>
+          <strong>{district}</strong>
+        </figcaption>
+      )}
       {paths.length ? (
         <svg
           viewBox={`-8 -8 ${width + 16} ${height + 16}`}
-          role="img"
-          aria-label={`${district} highlighted on a map of Bangladesh`}
+          role={background ? undefined : 'img'}
+          aria-label={background ? undefined : `${district} highlighted on a map of Bangladesh`}
         >
           {paths.map((item) => (
             <path
@@ -90,14 +101,14 @@ export default function DistrictMiniMap({
               data-selected={item.name.toLocaleLowerCase() === district.toLocaleLowerCase()}
             />
           ))}
-          <circle cx={pointX} cy={pointY} r="5" />
+          {point && <circle cx={point[0]} cy={point[1]} r="5" />}
         </svg>
       ) : (
         <div className="district-mini-map-fallback">
           <Icon name="pin" size={38} /> {district}
         </div>
       )}
-      <p>District reference point · lightweight boundary view</p>
+      {!background && <p>District reference point · lightweight boundary view</p>}
     </figure>
   )
 }

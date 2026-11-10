@@ -22,6 +22,8 @@ export type Candidate = {
   turnaroundDays?: number
   waterRequirementMm: number | null
   profitPerHa: number | null
+  yieldTonnesPerHa?: number | null
+  yieldKind?: 'expected' | 'reported' | null
   scores: Scores
   soilEffectPoints?: number
   soilEffectSourceId?: string

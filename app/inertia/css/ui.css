@@ -2012,6 +2012,96 @@ body {
   padding: 44px clamp(24px, 4vw, 48px);
   background: var(--color-base-100);
 }
+.oa-planner-page .location-map-experience {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  min-height: 680px;
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 470px);
+  align-items: center;
+  overflow: hidden;
+  padding: clamp(24px, 4vw, 52px);
+  background: color-mix(in srgb, var(--color-primary) 14%, var(--color-base-200));
+}
+.oa-planner-page .location-map-experience > .district-mini-map-background {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  display: grid;
+  min-height: 0;
+  grid-template-rows: 1fr;
+  place-items: center;
+  padding: 40px;
+  border: 0;
+  background:
+    radial-gradient(circle at 34% 40%, color-mix(in srgb, var(--color-accent) 28%, transparent), transparent 24%),
+    linear-gradient(145deg, color-mix(in srgb, var(--color-primary) 24%, var(--color-base-100)), var(--color-base-200));
+}
+.oa-planner-page .location-map-experience > .district-mini-map-background::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, transparent 35%, color-mix(in srgb, var(--color-neutral) 10%, transparent)),
+    linear-gradient(180deg, color-mix(in srgb, var(--color-base-100) 16%, transparent), transparent 45%);
+}
+.oa-planner-page .location-map-experience > .district-mini-map-background svg {
+  width: min(58%, 560px);
+  height: 500px;
+  margin-right: 36%;
+  opacity: 0.92;
+  filter: drop-shadow(0 24px 38px color-mix(in srgb, var(--color-primary) 22%, transparent));
+}
+.oa-planner-page .location-map-experience > .district-mini-map-background path {
+  fill: color-mix(in srgb, var(--color-base-100) 58%, var(--color-primary));
+  stroke: color-mix(in srgb, var(--color-primary) 58%, var(--color-base-100));
+}
+.oa-planner-page .location-map-experience > .district-mini-map-background path[data-selected='true'] {
+  fill: var(--color-primary);
+  stroke: var(--color-primary-content);
+  stroke-width: 2.5;
+}
+.oa-planner-page .location-map-experience > .district-mini-map-background circle {
+  fill: var(--color-accent);
+  stroke: var(--color-base-100);
+  stroke-width: 5;
+}
+.oa-planner-page .location-map-context {
+  display: grid;
+  align-self: end;
+  justify-self: start;
+  gap: 6px;
+  max-width: 330px;
+  padding: 18px;
+  border: 1px solid color-mix(in srgb, var(--color-base-100) 70%, transparent);
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--color-base-100) 84%, transparent);
+  box-shadow: 0 16px 36px color-mix(in srgb, var(--color-neutral) 12%, transparent);
+  backdrop-filter: blur(12px);
+}
+.oa-planner-page .location-map-context .badge {
+  width: fit-content;
+}
+.oa-planner-page .location-map-context strong {
+  margin-top: 4px;
+  color: var(--color-base-content);
+  font-size: 24px;
+}
+.oa-planner-page .location-map-context small {
+  color: color-mix(in srgb, var(--color-base-content) 68%, transparent);
+  line-height: 1.5;
+}
+.site-shell .oa-planner-page .location-map-experience .location-card {
+  z-index: 1;
+  grid-column: 2;
+  width: 100%;
+  padding: clamp(28px, 4vw, 44px);
+  border: 1px solid color-mix(in srgb, var(--color-base-100) 76%, transparent);
+  border-radius: 24px;
+  background: color-mix(in srgb, var(--color-base-100) 94%, transparent);
+  box-shadow: 0 24px 70px color-mix(in srgb, var(--color-neutral) 20%, transparent);
+  backdrop-filter: blur(16px);
+}
 .location-welcome .location-scene-note {
   grid-column: 1 / -1;
   padding: 16px;
@@ -2058,6 +2148,210 @@ body {
 .site-shell .location-summary button:hover {
   background: #194f39;
   color: #ffffff;
+}
+.oa-planner-page .location-summary {
+  position: relative;
+  isolation: isolate;
+  min-height: 340px;
+  justify-content: flex-end;
+  overflow: hidden;
+  padding: 24px;
+  border: 0;
+  background: color-mix(in srgb, var(--color-primary) 14%, var(--color-base-200));
+  box-shadow: 0 22px 60px color-mix(in srgb, var(--color-primary) 14%, transparent);
+}
+.oa-planner-page .location-summary .district-mini-map-background {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  display: grid;
+  min-height: 0;
+  grid-template-rows: 1fr;
+  place-items: center;
+  padding: 24px;
+  border: 0;
+  background:
+    radial-gradient(circle at 70% 42%, color-mix(in srgb, var(--color-accent) 24%, transparent), transparent 26%),
+    linear-gradient(145deg, color-mix(in srgb, var(--color-primary) 22%, var(--color-base-100)), var(--color-base-200));
+}
+.oa-planner-page .district-mini-map-background::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 35%, color-mix(in srgb, var(--color-neutral) 18%, transparent));
+}
+.oa-planner-page .district-mini-map-background svg {
+  width: min(76%, 520px);
+  height: 270px;
+  opacity: 0.9;
+  filter: drop-shadow(0 18px 28px color-mix(in srgb, var(--color-primary) 18%, transparent));
+}
+.oa-planner-page .district-mini-map-background path {
+  fill: color-mix(in srgb, var(--color-base-100) 58%, var(--color-primary));
+  stroke: color-mix(in srgb, var(--color-primary) 58%, var(--color-base-100));
+}
+.oa-planner-page .district-mini-map-background path[data-selected='true'] {
+  fill: var(--color-primary);
+  stroke: var(--color-primary-content);
+  stroke-width: 2.5;
+}
+.oa-planner-page .district-mini-map-background circle {
+  fill: var(--color-accent);
+  stroke: var(--color-base-100);
+  stroke-width: 5;
+}
+.oa-planner-page .district-mini-map-background .district-mini-map-fallback {
+  color: var(--color-primary);
+}
+.oa-planner-page .location-summary-content {
+  display: grid;
+  width: min(100%, 540px);
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid color-mix(in srgb, var(--color-base-100) 70%, transparent);
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--color-base-100) 90%, transparent);
+  box-shadow: 0 16px 36px color-mix(in srgb, var(--color-neutral) 16%, transparent);
+  backdrop-filter: blur(12px);
+}
+.oa-planner-page .location-summary button {
+  border-color: var(--color-base-300);
+  background: var(--color-base-100);
+}
+.planner-live-steps {
+  overflow: hidden;
+  padding: 20px clamp(12px, 4vw, 40px);
+}
+.planner-live-steps .step {
+  transition: color 280ms ease;
+}
+.planner-live-steps .step.is-current::before {
+  animation: planner-step-arrive 520ms ease-out;
+  box-shadow: 0 0 0 8px color-mix(in srgb, var(--color-primary) 12%, transparent);
+}
+.decision-orbit {
+  position: relative;
+  display: grid;
+  width: 104px;
+  height: 104px;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 20%, transparent);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--color-primary) 8%, var(--color-base-100));
+}
+.decision-orbit::before,
+.decision-orbit::after {
+  content: '';
+  position: absolute;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 22%, transparent);
+  border-radius: 50%;
+  animation: decision-pulse 1.8s ease-out infinite;
+}
+.decision-orbit::before {
+  inset: 12px;
+}
+.decision-orbit::after {
+  inset: 24px;
+  animation-delay: 600ms;
+}
+.decision-orbit > span {
+  z-index: 1;
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--color-primary-content);
+  background: var(--color-primary);
+  transition: transform 320ms ease;
+}
+.decision-orbit[data-phase='2'] > span {
+  transform: scale(1.12);
+}
+.decision-orbit > i {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  animation: decision-orbit-dot 2.4s linear infinite;
+}
+.decision-orbit > i:nth-of-type(2) {
+  animation-delay: -800ms;
+}
+.decision-orbit > i:nth-of-type(3) {
+  animation-delay: -1600ms;
+}
+@keyframes planner-step-arrive {
+  0% {
+    transform: scale(0.7);
+  }
+  65% {
+    transform: scale(1.16);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes decision-pulse {
+  from {
+    opacity: 0.8;
+    transform: scale(0.72);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.42);
+  }
+}
+@keyframes decision-orbit-dot {
+  from {
+    transform: rotate(0deg) translateX(46px) rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg) translateX(46px) rotate(-360deg);
+  }
+}
+@media (max-width: 600px) {
+  .oa-planner-page .location-summary {
+    min-height: 300px;
+    padding: 14px;
+  }
+  .oa-planner-page .location-summary-content {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .oa-planner-page .location-summary-pin {
+    display: none;
+  }
+  .oa-planner-page .district-mini-map-background svg {
+    width: 92%;
+    height: 230px;
+  }
+}
+@media (max-width: 760px) {
+  .oa-planner-page .location-map-experience {
+    min-height: 720px;
+    grid-template-columns: 1fr;
+    align-content: start;
+    padding: 248px 18px 18px;
+  }
+  .oa-planner-page .location-map-experience > .district-mini-map-background {
+    padding: 18px;
+  }
+  .oa-planner-page .location-map-experience > .district-mini-map-background svg {
+    width: 88%;
+    height: 330px;
+    align-self: start;
+    margin: 16px 0 0;
+  }
+  .oa-planner-page .location-map-context {
+    display: none;
+  }
+  .site-shell .oa-planner-page .location-map-experience .location-card {
+    grid-column: 1;
+    padding: 28px 22px;
+  }
 }
 .farmer-dashboard > .grid:first-child {
   align-items: stretch;
@@ -3260,5 +3554,861 @@ body {
 
   .auth-card h1 {
     font-size: 38px;
+  }
+}
+
+.water-radar-wrap {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+}
+
+.water-radar-chart {
+  width: min(100%, 580px);
+  overflow: visible;
+  touch-action: manipulation;
+}
+
+.water-radar-grid,
+.water-radar-axis {
+  fill: none;
+  pointer-events: none;
+  stroke: color-mix(in srgb, var(--color-base-content) 13%, transparent);
+  stroke-width: 1;
+}
+
+.water-radar-shape {
+  fill: color-mix(in srgb, var(--color-info) 20%, transparent);
+  stroke: var(--color-info);
+  stroke-linejoin: round;
+  stroke-width: 3;
+  opacity: 0.45;
+  pointer-events: none;
+  transform: scaleY(0.015);
+  transform-box: view-box;
+  transform-origin: 210px 210px;
+  transition:
+    transform 900ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 500ms ease;
+}
+
+.water-radar-chart[data-morphed='true'] .water-radar-shape {
+  opacity: 1;
+  transform: scaleY(1);
+}
+
+.water-radar-seed {
+  pointer-events: none;
+  stroke: var(--color-info);
+  stroke-linecap: round;
+  stroke-width: 4;
+  transition: opacity 260ms ease 180ms;
+}
+
+.water-radar-chart[data-morphed='true'] .water-radar-seed {
+  opacity: 0;
+}
+
+.water-radar-month {
+  cursor: pointer;
+  outline: none;
+}
+
+.water-radar-point {
+  fill: var(--color-info);
+  stroke: var(--color-base-100);
+  stroke-width: 2;
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 180ms ease;
+}
+
+.water-radar-hit {
+  fill: var(--color-base-100);
+  fill-opacity: 0.001;
+  pointer-events: all;
+}
+
+.water-radar-label,
+.water-radar-level {
+  fill: var(--color-base-content);
+  font-size: 11px;
+  font-weight: 750;
+  pointer-events: none;
+  text-anchor: middle;
+}
+
+.water-radar-level {
+  fill: color-mix(in srgb, var(--color-base-content) 62%, transparent);
+  font-size: 8px;
+  font-weight: 600;
+}
+
+.water-radar-month[data-level='unknown'] .water-radar-point {
+  fill: var(--color-base-300);
+}
+
+.water-radar-month[data-selected='true'] .water-radar-point,
+.water-radar-month:focus .water-radar-point,
+.water-radar-month:hover .water-radar-point {
+  transform: scale(1.8);
+}
+
+.water-radar-month[data-selected='true'] .water-radar-label,
+.water-radar-month:focus .water-radar-label {
+  fill: var(--color-info);
+}
+
+.water-radar-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+  color: color-mix(in srgb, var(--color-base-content) 68%, transparent);
+  font-size: 11px;
+}
+
+.water-radar-legend span::before {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 5px;
+  border-radius: 99px;
+  background: color-mix(in srgb, var(--color-info) 42%, var(--color-base-100));
+  content: '';
+}
+
+.water-radar-legend span[data-level='moderate']::before {
+  background: color-mix(in srgb, var(--color-info) 70%, var(--color-base-100));
+}
+
+.water-radar-legend span[data-level='high']::before {
+  background: var(--color-info);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .water-radar-shape {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .water-radar-seed {
+    display: none;
+  }
+}
+
+/* Step 3 keeps its own calm, finance-dashboard palette and follows the device theme. */
+.local-decision-dashboard {
+  --local-surface: #f4f7f3;
+  --local-card: #ffffff;
+  --local-border: #dfe7de;
+  --local-text: #17211b;
+  --local-muted: #68746c;
+  --local-grid: #e5ece5;
+  --local-rain: #93d7b2;
+  --local-temp: #f29b70;
+  --crop-1: #2f9e67;
+  --crop-2: #ee9b65;
+  --crop-3: #7a8de8;
+  --crop-4: #df6f8e;
+  --crop-5: #37a9b4;
+  --crop-6: #b38bd4;
+  display: grid;
+  gap: 18px;
+  padding: clamp(16px, 2.5vw, 28px);
+  border: 1px solid var(--local-border);
+  border-radius: 28px;
+  color: var(--local-text);
+  background: var(--local-surface);
+  color-scheme: light;
+}
+
+.local-dashboard-header,
+.local-dashboard-card-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.local-dashboard-header > div > p,
+.local-dashboard-card-heading > div > p,
+.local-plan-summary .card-body > p {
+  margin: 0 0 5px;
+  color: var(--local-muted);
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: 0.1em;
+}
+
+.local-dashboard-header h2 {
+  margin: 0;
+  font-size: clamp(24px, 4vw, 38px);
+  font-weight: 720;
+  letter-spacing: -0.035em;
+}
+
+.local-decision-dashboard .card,
+.local-decision-dashboard .local-dashboard-empty {
+  border: 1px solid var(--local-border);
+  color: var(--local-text);
+  background: var(--local-card);
+  box-shadow: 0 12px 34px rgb(30 62 42 / 6%);
+}
+
+.local-dashboard-top-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(240px, 0.72fr);
+  gap: 18px;
+}
+
+.local-month-chart svg {
+  display: block;
+  width: 100%;
+  min-height: 230px;
+  overflow: visible;
+}
+
+.local-chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  color: var(--local-muted);
+  font-size: 12px;
+}
+
+.local-chart-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.local-chart-legend i {
+  width: 9px;
+  height: 9px;
+  border-radius: 99px;
+  background: var(--local-rain);
+}
+
+.local-chart-legend i[data-series='temperature'] {
+  background: var(--local-temp);
+}
+
+.local-chart-grid {
+  stroke: var(--local-grid);
+  stroke-width: 1;
+}
+
+.local-chart-axis,
+.local-chart-month {
+  fill: var(--local-muted);
+  font-size: 11px;
+}
+
+.local-rain-bar {
+  fill: var(--local-rain);
+  opacity: 0.86;
+}
+
+.local-temperature-line {
+  fill: none;
+  stroke: var(--local-temp);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 3;
+}
+
+.local-temperature-point {
+  fill: var(--local-card);
+  stroke: var(--local-temp);
+  stroke-width: 3;
+}
+
+.local-plan-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  width: 100%;
+  margin: 3px 0 8px;
+  overflow-x: auto;
+}
+
+.local-plan-tabs:has(.tab:nth-child(4)) {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.local-plan-tabs .tab {
+  min-width: max-content;
+  padding-inline: 8px;
+  font-size: 10px;
+}
+
+.local-rotation-graph {
+  align-items: stretch;
+  width: 100%;
+  margin: 2px 0 12px;
+}
+
+.local-rotation-graph .step {
+  min-height: 62px;
+  grid-template-columns: 38px 1fr;
+  justify-items: start;
+  text-align: left;
+}
+
+.local-rotation-graph .step::before {
+  width: 3px;
+}
+
+.local-rotation-graph .step::after {
+  width: 27px;
+  height: 27px;
+  color: var(--color-success-content);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.local-rotation-graph .step > span {
+  display: grid;
+  align-self: center;
+  padding: 7px 11px;
+  border: 1px solid var(--local-border);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--color-success) 7%, var(--local-card));
+}
+
+.local-rotation-graph strong {
+  font-size: 15px;
+}
+
+.local-rotation-graph small {
+  color: var(--local-muted);
+  font-size: 10px;
+}
+
+.local-plan-signal-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.local-plan-signal-grid article {
+  display: grid;
+  align-content: start;
+  gap: 5px;
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid var(--local-border);
+  border-radius: 13px;
+  background: color-mix(in srgb, var(--local-surface) 72%, var(--local-card));
+}
+
+.local-plan-signal-grid article > span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--local-muted);
+  font-size: 10px;
+}
+
+.local-plan-signal-grid article > strong {
+  font-size: 11px;
+  line-height: 1.3;
+}
+
+.local-signal-meter {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3px;
+}
+
+.local-signal-meter i {
+  height: 4px;
+  border-radius: 99px;
+  background: var(--local-border);
+}
+
+.local-signal-meter[data-level='low'] i:first-child,
+.local-signal-meter[data-level='moderate'] i:nth-child(-n + 2),
+.local-signal-meter[data-level='high'] i {
+  background: var(--local-rain);
+}
+
+.local-period-line {
+  height: 4px;
+  border-radius: 99px;
+  background: var(--local-border);
+  overflow: hidden;
+}
+
+.local-period-line i {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--local-temp);
+}
+
+.local-dashboard-crop-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.local-crop-bars {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(44px, 1fr));
+  gap: clamp(8px, 1.4vw, 16px);
+  min-height: 250px;
+  padding-top: 15px;
+}
+
+.local-crop-bar-item {
+  --crop: var(--crop-1);
+  display: grid;
+  grid-template-rows: 34px 1fr 38px;
+  gap: 8px;
+  min-width: 0;
+  color: var(--local-muted);
+  font-size: 11px;
+  text-align: center;
+}
+
+.local-crop-bar-item:nth-child(2) { --crop: var(--crop-2); }
+.local-crop-bar-item:nth-child(3) { --crop: var(--crop-3); }
+.local-crop-bar-item:nth-child(4) { --crop: var(--crop-4); }
+.local-crop-bar-item:nth-child(5) { --crop: var(--crop-5); }
+.local-crop-bar-item:nth-child(6) { --crop: var(--crop-6); }
+
+.local-crop-bar-item strong {
+  color: var(--local-text);
+  font-size: 11px;
+  line-height: 1.15;
+}
+
+.local-crop-bar-track {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: 150px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--crop) 10%, transparent);
+  overflow: hidden;
+}
+
+.local-crop-bar-track i {
+  width: 100%;
+  border-radius: 10px 10px 5px 5px;
+  background: var(--crop);
+  transition: height 500ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.local-crop-bar-track i[data-missing='true'] {
+  opacity: 0.25;
+}
+
+.local-crop-key {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  margin-right: 8px;
+  border-radius: 99px;
+  background: var(--crop-1);
+}
+
+.local-crop-key[data-crop='1'] { background: var(--crop-2); }
+.local-crop-key[data-crop='2'] { background: var(--crop-3); }
+.local-crop-key[data-crop='3'] { background: var(--crop-4); }
+.local-crop-key[data-crop='4'] { background: var(--crop-5); }
+.local-crop-key[data-crop='5'] { background: var(--crop-6); }
+
+.local-crop-table-card th,
+.local-crop-table-card td {
+  border-color: var(--local-border);
+  white-space: nowrap;
+}
+
+@media (prefers-color-scheme: dark) {
+  .local-decision-dashboard {
+    --local-surface: #101713;
+    --local-card: #17201a;
+    --local-border: #2a382e;
+    --local-text: #edf5ef;
+    --local-muted: #a1afa5;
+    --local-grid: #2b3a30;
+    --local-rain: #69c996;
+    color-scheme: dark;
+  }
+}
+
+@media (max-width: 900px) {
+  .local-dashboard-top-grid,
+  .local-dashboard-crop-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 620px) {
+  .local-decision-dashboard {
+    padding: 12px;
+    border-radius: 20px;
+  }
+
+  .local-dashboard-header,
+  .local-dashboard-card-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .local-dashboard-header .btn {
+    width: 100%;
+  }
+
+  .local-month-chart .card-body,
+  .local-crop-chart .card-body,
+  .local-crop-table-card .card-body {
+    padding: 16px;
+  }
+
+  .local-crop-bars {
+    gap: 5px;
+  }
+
+  .local-crop-bar-item {
+    font-size: 9px;
+  }
+}
+
+/* My farms: make the active farm and next action obvious before showing detailed inputs. */
+.farms-page {
+  display: grid;
+  gap: 24px;
+}
+
+.farms-page .workspace-page-banner {
+  overflow: hidden;
+  margin: 0;
+  border-color: color-mix(in oklch, var(--color-primary) 18%, var(--color-base-300));
+  background:
+    radial-gradient(circle at 85% 0%, color-mix(in oklch, var(--color-primary) 12%, transparent), transparent 38%),
+    var(--color-base-100);
+}
+
+.farms-hero-copy {
+  display: grid;
+  align-content: center;
+  gap: 14px;
+}
+
+.farms-hero-copy > p {
+  max-width: 570px;
+}
+
+.farms-district-control {
+  display: grid;
+  gap: 6px;
+  max-width: 420px;
+  margin-top: 10px;
+  padding: 14px;
+  border: 1px solid var(--color-base-300);
+  border-radius: 16px;
+  background: color-mix(in oklch, var(--color-base-200) 72%, transparent);
+}
+
+.farms-district-control label {
+  display: grid;
+  grid-template-columns: auto minmax(150px, 1fr);
+  align-items: center;
+  gap: 14px;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.farms-district-control select {
+  width: 100%;
+  background: var(--color-base-100);
+}
+
+.farms-district-control > p {
+  font-size: 11px;
+  opacity: 0.65;
+}
+
+.farms-hero-scene {
+  position: relative;
+  display: grid;
+  min-width: 0;
+}
+
+.farms-hero-scene .farm-scene {
+  width: 100%;
+}
+
+.farms-hero-scene > .badge {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  border: 0;
+  color: var(--color-neutral-content);
+  background: color-mix(in oklch, var(--color-neutral) 88%, transparent);
+  backdrop-filter: blur(8px);
+}
+
+.site-shell .farm-workspace {
+  display: grid;
+  gap: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.farm-workspace-heading {
+  display: flex;
+  grid-template-columns: none;
+  align-items: end;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 4px 2px;
+}
+
+.farm-workspace-heading h2 {
+  margin-top: 4px;
+  font-size: clamp(25px, 3vw, 36px);
+  font-weight: 600;
+}
+
+.farm-workspace-heading > div > p:last-child {
+  margin-top: 6px;
+  color: color-mix(in oklch, var(--color-base-content) 68%, transparent);
+  font-size: 14px;
+}
+
+.farm-dashboard-grid {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.8fr) minmax(360px, 1.2fr);
+  gap: 18px;
+}
+
+.farm-switcher-card,
+.selected-farm-card {
+  border: 1px solid var(--color-base-300);
+  background: var(--color-base-100);
+  box-shadow: 0 16px 45px color-mix(in oklch, var(--color-neutral) 7%, transparent);
+}
+
+.farm-card-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.farm-card-heading .card-title {
+  margin-top: 3px;
+  font-size: 18px;
+}
+
+.farm-switcher-card .card-body,
+.selected-farm-card .card-body {
+  gap: 20px;
+  padding: 24px;
+}
+
+.farm-switcher-card .saved-farm-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.farm-switcher-card .saved-farm-card {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) 20px;
+  align-items: center;
+  justify-items: stretch;
+  gap: 12px;
+  min-height: 68px;
+  padding: 12px;
+  border: 1px solid var(--color-base-300);
+  border-radius: 14px;
+  background: var(--color-base-100);
+}
+
+.farm-switcher-card .saved-farm-card:hover {
+  border-color: color-mix(in oklch, var(--color-primary) 50%, var(--color-base-300));
+  background: var(--color-base-200);
+}
+
+.farm-switcher-card .saved-farm-card[data-selected='true'] {
+  border-color: var(--color-primary);
+  background: color-mix(in oklch, var(--color-primary) 7%, var(--color-base-100));
+}
+
+.farm-switcher-card .saved-farm-icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  margin: 0;
+  border-radius: 12px;
+  color: var(--color-primary);
+  background: var(--color-base-200);
+}
+
+.saved-farm-copy {
+  display: grid;
+  min-width: 0;
+}
+
+.saved-farm-copy strong,
+.saved-farm-copy small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.saved-farm-copy small {
+  margin-top: 2px;
+  opacity: 0.65;
+}
+
+.farm-switcher-card .saved-farm-card > svg {
+  position: static;
+  color: var(--color-primary);
+}
+
+.selected-farm-card {
+  color: var(--color-neutral-content);
+  border-color: transparent;
+  background:
+    linear-gradient(145deg, color-mix(in oklch, var(--color-neutral) 96%, var(--color-primary)), var(--color-neutral));
+}
+
+.selected-farm-card .badge-outline {
+  color: var(--color-accent);
+  border-color: color-mix(in oklch, var(--color-accent) 55%, transparent);
+}
+
+.selected-farm-name {
+  margin-top: 8px;
+  color: inherit;
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 560;
+  letter-spacing: -0.035em;
+}
+
+.selected-farm-location {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 6px;
+  opacity: 0.72;
+}
+
+.farm-facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-block: 1px solid color-mix(in oklch, var(--color-neutral-content) 18%, transparent);
+}
+
+.farm-facts > div {
+  display: grid;
+  gap: 5px;
+  padding: 18px 14px;
+  border-right: 1px solid color-mix(in oklch, var(--color-neutral-content) 18%, transparent);
+}
+
+.farm-facts > div:first-child {
+  padding-left: 0;
+}
+
+.farm-facts > div:last-child {
+  border-right: 0;
+}
+
+.farm-facts span {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.62;
+}
+
+.farm-facts strong {
+  font-size: 14px;
+}
+
+.selected-farm-card .btn-primary {
+  color: var(--color-primary-content);
+  background: var(--color-primary);
+}
+
+.site-shell #farm-workspace > details.farm-create-panel {
+  padding: 0;
+  border: 1px solid var(--color-base-300);
+  border-radius: 18px;
+  background: var(--color-base-100);
+}
+
+.farm-create-panel > summary {
+  padding: 18px 22px;
+  cursor: pointer;
+  list-style-position: inside;
+}
+
+.farm-create-panel > form {
+  padding: 0 22px 22px;
+}
+
+@media (max-width: 820px) {
+  .farm-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 620px) {
+  .farms-page {
+    gap: 18px;
+  }
+
+  .farms-page .workspace-page-banner {
+    padding: 22px 18px;
+  }
+
+  .farms-district-control label {
+    grid-template-columns: 1fr;
+    gap: 7px;
+  }
+
+  .farms-hero-scene {
+    min-height: 190px;
+  }
+
+  .farm-workspace-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .farm-workspace-heading .btn {
+    width: 100%;
+  }
+
+  .farm-switcher-card .card-body,
+  .selected-farm-card .card-body {
+    padding: 18px;
+  }
+
+  .farm-facts {
+    grid-template-columns: 1fr;
+  }
+
+  .farm-facts > div,
+  .farm-facts > div:first-child {
+    padding: 12px 0;
+    border-right: 0;
+    border-bottom: 1px solid color-mix(in oklch, var(--color-neutral-content) 18%, transparent);
+  }
+
+  .farm-facts > div:last-child {
+    border-bottom: 0;
   }
 }
