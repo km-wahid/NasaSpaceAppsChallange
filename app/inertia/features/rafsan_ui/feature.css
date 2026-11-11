@@ -450,6 +450,205 @@
   }
 }
 
+/* Full-screen auth: field video with a readable glass sign-in panel. */
+.oa-shell-login .oa-header {
+  display: none;
+}
+
+.oa-main-login {
+  min-height: 100svh;
+  padding: 0;
+}
+
+.rafsan-login-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(25rem, 2fr);
+  min-height: 100svh;
+  overflow: hidden;
+  color: var(--color-base-content);
+  background: var(--color-neutral);
+}
+
+.rafsan-login-media {
+  position: relative;
+  min-width: 0;
+  min-height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.rafsan-login-media > :where(video, img) {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.rafsan-login-media .hero-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(90deg, rgb(3 20 12 / 28%), rgb(3 20 12 / 6%) 48%, rgb(3 20 12 / 58%)),
+    linear-gradient(0deg, rgb(3 20 12 / 78%), transparent 66%);
+}
+
+.rafsan-login-media-content {
+  align-self: end;
+  display: grid;
+  gap: 0.9rem;
+  width: min(100%, 46rem);
+  padding: clamp(2rem, 5vw, 5.5rem);
+  color: white;
+  text-shadow: 0 2px 16px rgb(0 0 0 / 45%);
+}
+
+.rafsan-login-media-content h2 {
+  max-width: 11ch;
+  margin: 0;
+  color: white;
+  font-size: clamp(3.25rem, 6vw, 6.5rem);
+  line-height: 0.92;
+  letter-spacing: -0.065em;
+}
+
+.rafsan-login-media-content > p:last-child {
+  max-width: 38rem;
+  margin: 0;
+  color: rgb(255 255 255 / 86%);
+  font-size: clamp(1rem, 1.3vw, 1.2rem);
+}
+
+.rafsan-login-kicker {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+}
+
+.rafsan-login-panel.card {
+  align-self: center;
+  width: min(calc(100% - 3rem), 34rem);
+  max-height: calc(100svh - 3rem);
+  margin: 1.5rem auto;
+  overflow-y: auto;
+  border: 1px solid color-mix(in srgb, var(--color-base-content) 15%, transparent);
+  border-radius: 1.75rem;
+  background: color-mix(in srgb, var(--color-base-100) 86%, transparent);
+  box-shadow: 0 2rem 6rem rgb(0 0 0 / 32%);
+  backdrop-filter: blur(24px) saturate(1.18);
+}
+
+.rafsan-login-panel .card-body {
+  gap: 1rem;
+  padding: clamp(1.6rem, 4vw, 3rem);
+}
+
+.rafsan-login-panel .card-title {
+  margin: 0.4rem 0 0;
+  font-size: clamp(2.25rem, 4vw, 3.75rem);
+  line-height: 0.98;
+  letter-spacing: -0.055em;
+}
+
+.rafsan-login-description {
+  max-width: 34rem;
+  margin: 0;
+  color: color-mix(in srgb, var(--color-base-content) 72%, transparent);
+}
+
+.rafsan-login-panel form {
+  display: grid;
+  gap: 1rem;
+  margin-top: 0.75rem;
+}
+
+.rafsan-login-panel form > div {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.rafsan-login-panel label {
+  font-size: 0.78rem;
+  font-weight: 750;
+}
+
+.rafsan-login-panel .input {
+  min-height: 3.15rem;
+  color: var(--color-base-content);
+  border-color: color-mix(in srgb, var(--color-base-content) 20%, var(--color-base-300));
+  background: color-mix(in srgb, var(--color-base-100) 72%, transparent);
+}
+
+.rafsan-login-panel .input:focus,
+.rafsan-login-panel .input:focus-within {
+  border-color: var(--color-primary);
+  outline: 3px solid color-mix(in srgb, var(--color-primary) 16%, transparent);
+  outline-offset: 1px;
+}
+
+.rafsan-login-switch,
+.rafsan-login-privacy {
+  margin: 0;
+  font-size: 0.82rem;
+}
+
+.rafsan-login-switch a,
+.rafsan-login-privacy {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.rafsan-login-switch a {
+  color: var(--color-primary);
+  font-weight: 750;
+}
+
+.rafsan-login-privacy {
+  color: color-mix(in srgb, var(--color-base-content) 64%, transparent);
+}
+
+@media (max-width: 820px) {
+  .rafsan-login-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .rafsan-login-media,
+  .rafsan-login-panel.card {
+    grid-area: 1 / 1;
+  }
+
+  .rafsan-login-media-content {
+    align-self: start;
+    padding: 1.25rem;
+  }
+
+  .rafsan-login-media-content h2,
+  .rafsan-login-media-content > p:last-child,
+  .rafsan-login-media-content .rafsan-login-kicker {
+    display: none;
+  }
+
+  .rafsan-login-panel.card {
+    align-self: end;
+    max-height: calc(100svh - 6rem);
+    margin: 1rem auto;
+    border-radius: 1.4rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rafsan-login-media > video {
+    display: none;
+  }
+}
+
 /* Floating animated navigation inspired by the supplied tab-bar reference. */
 .oa-header-home .oa-desktop-nav .menu {
   display: flex;
