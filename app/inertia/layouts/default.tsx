@@ -5,13 +5,16 @@ import { ReactElement, useEffect, useState } from 'react'
 import { Form, Link as NavigationLink } from '@adonisjs/inertia/react'
 import Icon from '../components/icon'
 import { useLocale } from '../lib/i18n'
+import FooterParticles from '../features/rafsan_ui/footer_particles'
 
 export default function Layout({ children }: { children: ReactElement<Data.SharedProps> }) {
   const { url } = usePage()
   const { locale, setLocale, t } = useLocale()
   const [menuOpen, setMenuOpen] = useState(false)
+  const [headerHidden, setHeaderHidden] = useState(false)
   const user = children.props.user
   const path = url.split(/[?#]/)[0]
+  const fullScreenAuth = path === '/login' || path === '/signup'
   const publicNavigation = [
     { href: '/mission', label: t('navMission') },
     { href: '/explorer', label: t('navExplorer') },
@@ -25,22 +28,77 @@ export default function Layout({ children }: { children: ReactElement<Data.Share
         { href: '/explorer/map', label: t('navMap') },
       ]
     : publicNavigation
+  const navigationIcons: Record<string, Parameters<typeof Icon>[0]['name']> = {
+    '/farms': 'barn',
+    '/mission': 'shield',
+    '/explorer': 'globe',
+    '/planner': 'sprout',
+    '/compare': 'layers',
+    '/explorer/map': 'map',
+  }
 
   useEffect(() => {
     toast.dismiss()
     setMenuOpen(false)
+    setHeaderHidden(false)
   }, [url])
+
+  useEffect(() => {
+    let previousY = window.scrollY
+    let accumulatedDistance = 0
+    let previousDirection = 0
+    let frame = 0
+
+    const updateHeader = () => {
+      frame = 0
+      const currentY = window.scrollY
+      const distance = currentY - previousY
+      const direction = Math.sign(distance)
+
+      if (direction && direction !== previousDirection) accumulatedDistance = 0
+      accumulatedDistance += distance
+
+      if (currentY < 80) {
+        accumulatedDistance = 0
+        setHeaderHidden(false)
+      } else if (accumulatedDistance > 24) {
+        setMenuOpen(false)
+        setHeaderHidden(true)
+        accumulatedDistance = 0
+      } else if (accumulatedDistance < -16) {
+        setHeaderHidden(false)
+        accumulatedDistance = 0
+      }
+
+      if (direction) previousDirection = direction
+      previousY = currentY
+    }
+
+    const handleScroll = () => {
+      if (!frame) frame = window.requestAnimationFrame(updateHeader)
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      if (frame) window.cancelAnimationFrame(frame)
+    }
+  }, [])
 
   useEffect(() => {
     if (children.props.flash.error) toast.error(children.props.flash.error)
   }, [children.props.flash.error])
 
   return (
-    <div className={`oa-shell ${path === '/explorer/map' ? 'oa-shell-map' : ''}`}>
+    <div
+      className={`oa-shell ${path === '/explorer/map' ? 'oa-shell-map' : ''} ${fullScreenAuth ? 'oa-shell-login' : ''}`}
+    >
       <a className="oa-skip-link" href="#main-content">
         {t('skip')}
       </a>
-      <header className={`oa-header oa-header-home ${path === '/' ? '' : 'oa-header-inner'}`}>
+      <header
+        className={`oa-header oa-header-home ${path === '/' ? '' : 'oa-header-inner'} ${headerHidden ? 'oa-header-hidden' : ''}`}
+      >
         <div className="navbar oa-navbar">
           <div className="navbar-start min-w-0">
             <NavigationLink href="/" className="oa-brand" aria-label="OrbitAgro">
@@ -65,25 +123,41 @@ export default function Layout({ children }: { children: ReactElement<Data.Share
                     className={path === item.href ? 'menu-active' : ''}
                     aria-current={path === item.href ? 'page' : undefined}
                   >
-                    {item.label}
+                    <span className="oa-nav-tab-icon" aria-hidden="true">
+                      <Icon name={navigationIcons[item.href]} size={17} />
+                    </span>
+                    <span className="oa-nav-tab-label">{item.label}</span>
                   </NavigationLink>
                 </li>
               ))}
             </ul>
           </nav>
           <div className="navbar-end gap-2">
-            <label className="oa-locale-select">
-              <span className="sr-only">{t('language')}</span>
-              <select
-                className="select select-sm"
-                value={locale}
-                onChange={(event) => setLocale(event.target.value as 'bn' | 'en')}
-                aria-label={t('language')}
-              >
-                <option value="bn">বাংলা</option>
-                <option value="en">EN</option>
-              </select>
-            </label>
+            <div
+              className="tabs tabs-box tabs-sm oa-locale-tabs"
+              role="group"
+              aria-label={t('language')}
+            >
+              {[
+                { value: 'bn' as const, short: 'বাং', label: 'বাংলা' },
+                { value: 'en' as const, short: 'EN', label: 'English' },
+              ].map((language) => (
+                <button
+                  type="button"
+                  className={`tab ${locale === language.value ? 'tab-active' : ''}`}
+                  aria-pressed={locale === language.value}
+                  aria-label={language.label}
+                  title={language.label}
+                  key={language.value}
+                  onClick={() => {
+                    setLocale(language.value)
+                    setHeaderHidden(false)
+                  }}
+                >
+                  <span aria-hidden="true">{language.short}</span>
+                </button>
+              ))}
+            </div>
             {user ? (
               <div className="oa-account">
                 <span
@@ -114,7 +188,10 @@ export default function Layout({ children }: { children: ReactElement<Data.Share
               aria-label={menuOpen ? t('menuClose') : t('menuOpen')}
               aria-expanded={menuOpen}
               aria-controls="mobile-navigation"
-              onClick={() => setMenuOpen((open) => !open)}
+              onClick={() => {
+                setHeaderHidden(false)
+                setMenuOpen((open) => !open)
+              }}
             >
               <svg
                 width="22"
@@ -139,7 +216,12 @@ export default function Layout({ children }: { children: ReactElement<Data.Share
                     href={item.href}
                     className={path === item.href ? 'menu-active' : ''}
                   >
-                    {item.label}
+                    <span className="oa-mobile-nav-copy">
+                      <span className="oa-nav-tab-icon" aria-hidden="true">
+                        <Icon name={navigationIcons[item.href]} size={18} />
+                      </span>
+                      {item.label}
+                    </span>
                     <Icon name="arrow" size={16} />
                   </NavigationLink>
                 </li>
@@ -148,11 +230,12 @@ export default function Layout({ children }: { children: ReactElement<Data.Share
           </nav>
         )}
       </header>
-      <main id="main-content" className="oa-main">
+      <main id="main-content" className={`oa-main ${fullScreenAuth ? 'oa-main-login' : ''}`}>
         {children}
       </main>
-      {path !== '/explorer/map' && (
+      {path !== '/explorer/map' && !fullScreenAuth && (
         <footer className="footer sm:footer-horizontal oa-footer">
+          <FooterParticles />
           <aside>
             <NavigationLink href="/" className="oa-brand oa-brand-footer">
               <span className="oa-brand-mark">

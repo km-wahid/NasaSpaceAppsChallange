@@ -208,7 +208,9 @@ export default function FarmWorkspace({ catalog }: { catalog: Catalog }) {
         {labels.map((label, index) => (
           <label className="priority-control" key={label}>
             <span className="priority-control-heading">
-              <span><Icon name={priorityMeta[label].icon} /> {priorityMeta[label].title}</span>
+              <span>
+                <Icon name={priorityMeta[label].icon} /> {priorityMeta[label].title}
+              </span>
               <strong>{weights[index]}%</strong>
             </span>
             <progress className="progress progress-primary" value={weights[index]} max="100" />
@@ -280,13 +282,17 @@ export default function FarmWorkspace({ catalog }: { catalog: Catalog }) {
                     key={farm.farm_id}
                     onClick={() => setFarmId(String(farm.farm_id))}
                   >
-                    <span className="saved-farm-icon"><Icon name="barn" size={22} /></span>
+                    <span className="saved-farm-icon">
+                      <Icon name="barn" size={22} />
+                    </span>
                     <span className="saved-farm-copy">
                       <strong>{farm.name}</strong>
                       <small>
-                        {catalog.districts.find(
-                          (district) => String(district.district_id) === String(farm.district_id)
-                        )?.district_name}
+                        {
+                          catalog.districts.find(
+                            (district) => String(district.district_id) === String(farm.district_id)
+                          )?.district_name
+                        }
                       </small>
                     </span>
                     <Icon name={String(farm.farm_id) === farmId ? 'check' : 'arrow'} size={18} />

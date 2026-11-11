@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { api } from '../lib/api'
 import type { Catalog } from '../components/data_browser'
 import FarmWorkspace from '../components/farm_workspace'
-import FarmScene from '../components/farm_scene'
 import Icon from '../components/icon'
 
 export default function Farms() {
@@ -36,40 +35,50 @@ export default function Farms() {
   return (
     <div className="oa-app-page farms-page">
       <Head title="My farms" />
-      <div className="oa-page-header workspace-page-banner">
-        <div className="farms-hero-copy">
-          <p className="oa-kicker">
-            <Icon name="barn" size={18} /> MY FARMS
-          </p>
-          <h1>Your farm workspace</h1>
-          <p>Select a farm, check what is ready, and move straight into your seasonal plan.</p>
-          {catalog && (
-            <div className="farms-district-control">
-              <label htmlFor="farm-district">
-                <span>New farm location</span>
-                <select
-                  id="farm-district"
-                  className="select select-bordered"
-                  value={districtId || catalog.district.district_id}
-                  disabled={loading}
-                  onChange={(event) => setDistrictId(event.target.value)}
-                >
-                  {catalog.districts.map((district) => (
-                    <option key={district.district_id} value={district.district_id}>
-                      {district.district_name}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <p>Used only when you add a new farm.</p>
-            </div>
-          )}
+      <header className="fw-hero">
+        <img className="fw-hero-img" src="/media/home-field-sunset.jpg" alt="" />
+        <div className="fw-hero-shade" />
+        <div className="fw-hero-body">
+          <p className="fw-kicker">MY FARM</p>
+          <h1>Welcome to your farm</h1>
+          <p>See your land, care for it, and choose what to do next.</p>
+          <div className="fw-chips" aria-label="What you can manage here">
+            <span>
+              <Icon name="sprout" size={16} /> Crops
+            </span>
+            <span>
+              <Icon name="water" size={16} /> Water
+            </span>
+            <span>
+              <Icon name="soil" size={16} /> Soil
+            </span>
+            <span>
+              <Icon name="sun" size={16} /> Weather
+            </span>
+          </div>
         </div>
-        <div className="farms-hero-scene" aria-hidden="true">
-          <FarmScene scene="farm" />
-          <span className="badge badge-lg">Farm overview</span>
-        </div>
-      </div>
+        {catalog && (
+          <label className="fw-district" htmlFor="farm-district">
+            <span>
+              <Icon name="pin" size={16} /> New farm location
+            </span>
+            <select
+              id="farm-district"
+              className="select select-sm"
+              value={districtId || catalog.district.district_id}
+              disabled={loading}
+              onChange={(event) => setDistrictId(event.target.value)}
+            >
+              {catalog.districts.map((district) => (
+                <option key={district.district_id} value={district.district_id}>
+                  {district.district_name}
+                </option>
+              ))}
+            </select>
+            <small>Used only when you add another farm.</small>
+          </label>
+        )}
+      </header>
       {loading && (
         <p role="status" className="flex items-center gap-3 py-6">
           <span className="loading loading-spinner" />

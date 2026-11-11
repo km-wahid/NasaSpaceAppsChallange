@@ -4,13 +4,13 @@ export default function OrbitalVisual({ compact = false }: { compact?: boolean }
   return (
     <figure
       className={`oa-orbital-visual ${compact ? 'oa-orbital-visual-compact' : ''}`}
-      aria-label="Modeled crop health map of northern Bangladesh"
+      aria-label="Illustrative district context map of northern Bangladesh"
     >
       <div className="oa-visual-status">
-        <span className="status status-success" /> LIVE MODEL VIEW
+        <span className="status status-info" /> ILLUSTRATIVE VIEW
       </div>
       <svg viewBox="0 0 760 520" role="img" aria-labelledby="orbital-title orbital-desc">
-        <title id="orbital-title">Modeled field conditions</title>
+        <title id="orbital-title">Illustrative district context</title>
         <desc id="orbital-desc">
           An abstract map with rivers, farm boundaries and vegetation zones.
         </desc>
@@ -74,15 +74,15 @@ export default function OrbitalVisual({ compact = false }: { compact?: boolean }
       <div className="oa-map-callout oa-map-callout-health">
         <Icon name="leaf" size={18} />
         <span>
-          <strong>NDVI 0.71</strong>
-          <small>Healthy canopy</small>
+          <strong>Crop context</strong>
+          <small>Stored district reference</small>
         </span>
       </div>
       <div className="oa-map-callout oa-map-callout-water">
         <Icon name="water" size={18} />
         <span>
-          <strong>0.34 m³/m³</strong>
-          <small>Soil moisture</small>
+          <strong>Soil context</strong>
+          <small>Stored district reference</small>
         </span>
       </div>
       <figcaption>Illustrative view derived from stored district context</figcaption>

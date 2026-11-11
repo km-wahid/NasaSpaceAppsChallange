@@ -197,9 +197,9 @@ export default function ExplorerMap() {
               <h2 className="oa-context-title">Optional context</h2>
               {(
                 [
-                  ['vegetation', t('cropHealth'), 'NDVI model'],
-                  ['moisture', t('soilWater'), 'Soil context'],
-                  ['heat', t('temperature'), 'Heat context'],
+                  ['vegetation', 'Crop records', 'Illustrative district context'],
+                  ['moisture', 'Soil reference', 'District organic-carbon context'],
+                  ['heat', t('temperature'), 'NASA POWER climate context'],
                 ] as const
               ).map(([key, label, note]) => (
                 <label className="oa-layer-row" key={key}>
@@ -229,8 +229,9 @@ export default function ExplorerMap() {
                 />
               </label>
               <p className="oa-model-note">
-                <Icon name="info" size={17} /> NASA satellite imagery is observational. The crop,
-                moisture and heat circles are modeled context, not field measurements.
+                <Icon name="info" size={17} /> The MODIS true-colour imagery is visual context only.
+                The circles are illustrative overlays from stored district references, not NDVI,
+                soil-moisture or field measurements.
               </p>
               <Link className="btn btn-outline btn-sm" href="/explorer">
                 View 10-year climate history
@@ -255,13 +256,13 @@ export default function ExplorerMap() {
             <div className="oa-diagnostic-grid">
               <article>
                 <Icon name="leaf" />
-                <span>{t('cropHealth')}</span>
-                <strong>{catalog.statistics.length ? '0.68' : '—'}</strong>
+                <span>Crop records</span>
+                <strong>{catalog.statistics.length || '—'}</strong>
               </article>
               <article>
                 <Icon name="water" />
-                <span>{t('soilWater')}</span>
-                <strong>{soilMoisture}% SOC</strong>
+                <span>Soil organic carbon</span>
+                <strong>{soilMoisture === '—' ? soilMoisture : `${soilMoisture}%`}</strong>
               </article>
               <article>
                 <Icon name="rain" />
@@ -283,9 +284,7 @@ export default function ExplorerMap() {
           <div className="oa-gis-timeline">
             <button
               className="btn btn-primary btn-circle"
-              aria-label={
-                playing ? 'Pause satellite year animation' : 'Play satellite year animation'
-              }
+              aria-label={playing ? 'Pause climate history animation' : 'Play climate history animation'}
               onClick={() => setPlaying((value) => !value)}
             >
               <span aria-hidden="true">{playing ? 'Ⅱ' : '▶'}</span>

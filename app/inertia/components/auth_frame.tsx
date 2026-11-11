@@ -21,7 +21,7 @@ export default function AuthFrame({
         <img src="/media/home-field-sunset.jpg" alt="" aria-hidden="true" />
         <div className="auth-landscape-content">
           <span className="badge badge-success badge-soft">
-            <Icon name="satellite" size={15} /> NASA EARTH OBSERVATION
+            <Icon name="satellite" size={15} /> NASA POWER CLIMATE DATA
           </span>
           <p className="auth-landscape-kicker">YOUR FARM, KEPT TOGETHER</p>
           <h2>

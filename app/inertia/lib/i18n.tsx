@@ -5,8 +5,8 @@ export type Locale = 'bn' | 'en'
 const copy = {
   en: {
     skip: 'Skip to content',
-    brandTagline: 'NASA EO Intelligence',
-    liveRegion: 'Rangpur · satellite data ready',
+    brandTagline: 'NASA POWER climate context',
+    liveRegion: 'Rangpur · climate data ready',
     navHome: 'Overview',
     navMission: 'Mission',
     navDashboard: 'Farmer dashboard',
@@ -23,14 +23,14 @@ const copy = {
     menuClose: 'Close navigation',
     language: 'Language',
     signedIn: 'Signed in as',
-    footerLine: 'NASA Earth observation decision support for Bangladesh farmers.',
+    footerLine: 'Climate-informed decision support for Bangladesh farmers.',
     footerNote: 'Decision support — the farmer makes the final decision.',
-    homeBadge: 'Smart farming from space',
+    homeBadge: 'Climate-informed farming',
     homeKicker: 'A complete view of your field, in front of the farmer',
     homeTitle: 'Know your land. Grow more. Spend less.',
     homeSubtitle: 'Understand soil. Save water. Grow high-yield crops.',
     homeBody:
-      'Combine local farm knowledge with stored Earth observations to choose crops for each season with confidence.',
+      'Combine local farm knowledge with stored NASA POWER climate data and reviewed references to compare crops for each season.',
     homePrimary: 'Explore my farm',
     homeSecondary: 'View weather and soil',
     homeTrust: 'Transparent guidance calibrated for Bangladesh conditions',
@@ -53,10 +53,10 @@ const copy = {
     observationEyebrow: 'Earth observation · GIS layers',
     observationTitle: 'See what is shaping every season',
     observationBody:
-      'We turn stored Earth observations and local GIS layers into a clear view of field conditions.',
+      'We present stored NASA POWER climate history, district references and contextual MODIS true-colour imagery without treating them as field measurements.',
     observationTemperature: 'Temperature',
     observationTemperatureBody:
-      'Surface-temperature layers show where heat may increase crop and water stress.',
+      'Historical NASA POWER air-temperature grids show regional heat patterns, not field surface temperature.',
     observationClimate: 'Climate change',
     observationClimateBody:
       'Long-term heat and rainfall patterns reveal how local growing conditions are shifting.',
@@ -70,10 +70,10 @@ const copy = {
       'Seasonal rainfall and dry-period layers support planting and irrigation decisions.',
     observationVegetation: 'Vegetation health',
     observationVegetationBody:
-      'Changes in crop greenness help reveal stress and uneven growth across the landscape.',
+      'MODIS true-colour imagery provides visual context only; OrbitAgro does not calculate vegetation indices or crop stress from it.',
     homeCycleTitle: 'A three-season crop cycle',
     homeCycleBody: 'See planting windows, water demand and trade-offs before choosing.',
-    missionEyebrow: 'NASA Earth observation initiative',
+    missionEyebrow: 'Climate-informed decision support',
     missionTitle: 'Understand your land. Adapt your farming. Grow resilience.',
     missionBody:
       'OrbitAgro turns cached environmental context, reviewed crop guidance and farmer inputs into explainable seasonal choices.',
@@ -91,7 +91,7 @@ const copy = {
     missionScrollEyebrow: 'How it works',
     missionPipeline: 'How raw observations become seed-level guidance',
     missionScrollBody:
-      'Follow the evidence from a satellite observation to a practical decision for the next season.',
+      'Follow stored climate evidence, district references and farmer inputs to a practical decision for the next season.',
     missionStepObserve: 'Observe the season',
     missionStepObserveBody:
       'We collect cached NASA POWER climate signals, district context and reviewed crop references.',
@@ -174,8 +174,8 @@ const copy = {
   },
   bn: {
     skip: 'মূল কনটেন্টে যান',
-    brandTagline: 'নাসা ভূ-পর্যবেক্ষণ তথ্য',
-    liveRegion: 'রংপুর · স্যাটেলাইট তথ্য প্রস্তুত',
+    brandTagline: 'NASA POWER জলবায়ু তথ্য',
+    liveRegion: 'রংপুর · জলবায়ু তথ্য প্রস্তুত',
     navHome: 'পরিচিতি',
     navMission: 'উদ্দেশ্য',
     navDashboard: 'কৃষক ড্যাশবোর্ড',
@@ -192,14 +192,14 @@ const copy = {
     menuClose: 'মেনু বন্ধ করুন',
     language: 'ভাষা',
     signedIn: 'লগ ইন করেছেন',
-    footerLine: 'বাংলাদেশের কৃষকের জন্য নাসা ভূ-পর্যবেক্ষণভিত্তিক সিদ্ধান্ত সহায়তা।',
+    footerLine: 'বাংলাদেশের কৃষকের জন্য জলবায়ুভিত্তিক সিদ্ধান্ত সহায়তা।',
     footerNote: 'এটি সিদ্ধান্ত সহায়তা — চূড়ান্ত সিদ্ধান্ত কৃষকের।',
-    homeBadge: 'মহাকাশ থেকে স্মার্ট কৃষি',
+    homeBadge: 'জলবায়ু-সচেতন কৃষি',
     homeKicker: 'কৃষকের চোখের সামনে সম্পূর্ণ জমির স্বাস্থ্য',
     homeTitle: 'আপনার জমি চিনুন। বেশি ফলন পান। খরচ কমান।',
     homeSubtitle: 'মাটি বুঝুন। পানি বাঁচান। ভালো ফলন পান।',
     homeBody:
-      'স্থানীয় কৃষি জ্ঞান ও সংরক্ষিত ভূ-পর্যবেক্ষণ তথ্য মিলিয়ে প্রতি মৌসুমের উপযুক্ত ফসল বেছে নিন।',
+      'স্থানীয় কৃষি জ্ঞান, সংরক্ষিত NASA POWER জলবায়ু তথ্য ও যাচাইকৃত রেফারেন্স মিলিয়ে প্রতি মৌসুমের ফসল তুলনা করুন।',
     homePrimary: 'আমার খামার দেখুন',
     homeSecondary: 'আবহাওয়া ও মাটি দেখুন',
     homeTrust: 'বাংলাদেশের পরিবেশ অনুযায়ী স্বচ্ছ ও ব্যাখ্যাযোগ্য নির্দেশনা',
@@ -222,10 +222,10 @@ const copy = {
     observationEyebrow: 'ভূ-পর্যবেক্ষণ · জিআইএস স্তর',
     observationTitle: 'প্রতি মৌসুমকে কী প্রভাবিত করে দেখুন',
     observationBody:
-      'সংরক্ষিত ভূ-পর্যবেক্ষণ ও স্থানীয় জিআইএস স্তর থেকে আমরা জমির অবস্থার সহজ চিত্র তৈরি করি।',
+      'সংরক্ষিত NASA POWER জলবায়ু ইতিহাস, জেলার রেফারেন্স ও প্রাসঙ্গিক MODIS সত্য-রঙের ছবি দেখানো হয়; এগুলো মাঠের পরিমাপ নয়।',
     observationTemperature: 'তাপমাত্রা',
     observationTemperatureBody:
-      'ভূপৃষ্ঠের তাপমাত্রার স্তর দেখায় কোথায় তাপ ফসল ও পানির ওপর চাপ বাড়াতে পারে।',
+      'ঐতিহাসিক NASA POWER বায়ুর তাপমাত্রা আঞ্চলিক তাপের ধরন দেখায়; এটি মাঠের ভূপৃষ্ঠের তাপমাত্রা নয়।',
     observationClimate: 'জলবায়ু পরিবর্তন',
     observationClimateBody:
       'দীর্ঘমেয়াদি তাপ ও বৃষ্টির ধরন থেকে স্থানীয় চাষের পরিবেশের পরিবর্তন বোঝা যায়।',
@@ -238,10 +238,11 @@ const copy = {
     observationRainfallBody:
       'মৌসুমি বৃষ্টি ও শুষ্ক সময়ের স্তর বপন এবং সেচের সিদ্ধান্ত নিতে সহায়তা করে।',
     observationVegetation: 'উদ্ভিদের স্বাস্থ্য',
-    observationVegetationBody: 'ফসলের সবুজ রঙের পরিবর্তন থেকে জমিজুড়ে চাপ ও অসম বৃদ্ধি বোঝা যায়।',
+    observationVegetationBody:
+      'MODIS সত্য-রঙের ছবি শুধু দৃশ্যগত প্রেক্ষাপট দেয়; OrbitAgro এটি থেকে উদ্ভিদ সূচক বা ফসলের চাপ হিসাব করে না।',
     homeCycleTitle: 'তিন মৌসুমের ফসলি চাকা',
     homeCycleBody: 'বেছে নেওয়ার আগে বপনের সময়, পানির চাহিদা ও সুবিধা-অসুবিধা দেখুন।',
-    missionEyebrow: 'নাসা ভূ-পর্যবেক্ষণ উদ্যোগ',
+    missionEyebrow: 'জলবায়ুভিত্তিক সিদ্ধান্ত সহায়তা',
     missionTitle: 'জমি বুঝুন। চাষ মানিয়ে নিন। সহনশীলতা বাড়ান।',
     missionBody:
       'অরবিটএগ্রো সংরক্ষিত পরিবেশ তথ্য, যাচাইকৃত ফসল নির্দেশনা ও কৃষকের তথ্যকে ব্যাখ্যাযোগ্য মৌসুমি বিকল্পে রূপ দেয়।',
@@ -259,7 +260,7 @@ const copy = {
     missionScrollEyebrow: 'কীভাবে কাজ করে',
     missionPipeline: 'কাঁচা পর্যবেক্ষণ থেকে বীজ-পর্যায়ের নির্দেশনা',
     missionScrollBody:
-      'স্যাটেলাইট পর্যবেক্ষণ থেকে পরবর্তী মৌসুমের ব্যবহারিক সিদ্ধান্ত পর্যন্ত তথ্যের পথ অনুসরণ করুন।',
+      'সংরক্ষিত জলবায়ু তথ্য, জেলার রেফারেন্স ও কৃষকের তথ্য থেকে পরবর্তী মৌসুমের ব্যবহারিক সিদ্ধান্ত পর্যন্ত পথ অনুসরণ করুন।',
     missionStepObserve: 'মৌসুম পর্যবেক্ষণ করুন',
     missionStepObserveBody:
       'আমরা সংরক্ষিত NASA POWER জলবায়ু সংকেত, জেলার প্রেক্ষাপট ও যাচাইকৃত ফসল তথ্য একত্র করি।',

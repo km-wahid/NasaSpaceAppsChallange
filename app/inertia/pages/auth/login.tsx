@@ -1,10 +1,10 @@
 import { Form } from '@adonisjs/inertia/react'
-import AuthFrame from '../../components/auth_frame'
 import PasswordInput from '../../components/password_input'
+import RafsanLoginFrame from '../../features/rafsan_ui/login_frame'
 
 export default function Login() {
   return (
-    <AuthFrame
+    <RafsanLoginFrame
       title="Welcome back."
       description="Log in to pick up where your growing plans left off."
     >
@@ -59,6 +59,6 @@ export default function Login() {
           </>
         )}
       </Form>
-    </AuthFrame>
+    </RafsanLoginFrame>
   )
 }
