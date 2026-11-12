@@ -143,6 +143,7 @@ Core business rules live in `app/app/services/`. Controllers validate requests a
 
 ## Data, privacy, and limits
 
+- Dataset successfully published on Mendeley Data: : https://data.mendeley.com/datasets/tb5x9gw2pt/2
 - NASA POWER and NASA GIBS provide environmental context; NASA does not endorse the application.
 - OpenStreetMap data and Nominatim support maps and user-triggered reverse geocoding.
 - Location detection runs only after a user action. Guests are not persisted; signed-in users can save a district preference.
