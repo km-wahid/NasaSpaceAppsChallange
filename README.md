@@ -37,6 +37,29 @@ flowchart LR
 
 The same inputs always produce the same result. Recommendation generation never calls NASA or an LLM: it reads cached environmental profiles and reviewed reference data. If required evidence is missing or stale, OrbitAgro reports that limitation instead of fabricating a recommendation.
 
+## NASA data used
+
+These are the NASA datasets used by the working demo. The first dataset supplies planning inputs; the second is a contextual map layer only.
+
+| Dataset | Official link | How OrbitAgro uses it |
+|---|---|---|
+| **NASA POWER Agroclimatology daily and monthly data** | [NASA POWER Temporal APIs](https://power.larc.nasa.gov/docs/services/api/temporal/) · [Daily API](https://power.larc.nasa.gov/docs/services/api/temporal/daily/) · [Monthly API](https://power.larc.nasa.gov/docs/services/api/temporal/monthly/) | The app requests the latest ten complete years for a farm point and for the Bangladesh explorer. Daily parameters are 2 m mean/minimum/maximum air temperature (`T2M`, `T2M_MIN`, `T2M_MAX`), corrected precipitation (`PRECTOTCORR`), 2 m relative humidity (`RH2M`), all-sky surface shortwave radiation (`ALLSKY_SFC_SW_DWN`), and 10 m wind speed (`WS10M`). Stored daily observations are converted into deterministic seasonal rainfall, dry-spell, heavy-rain, temperature, and coverage features used to screen crop rotations. Monthly `T2M`, `T2M_MAX`, and `PRECTOTCORR` values power the climate-history charts and regional temperature/rainfall map. These are historical grid estimates, not field measurements or forecasts. |
+| **MODIS Terra Corrected Reflectance True Color** via NASA EOSDIS GIBS | [GIBS layer](https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/MODIS_Terra_CorrectedReflectance_TrueColor/) | The explorer loads dated true-colour satellite tiles as visual context for the selected month. The imagery is not analyzed, does not produce vegetation or crop-stress indices, and does not affect recommendation scores. |
+
+NASA POWER responses are cached before scoring so a recommendation remains reproducible if the API is unavailable. The scoring engine never makes a live NASA request while calculating a recommendation.
+
+### NASA imagery used for presentation only
+
+The homepage also contains optimized copies of five NASA Earth Observatory images. They explain the kinds of Earth observations relevant to farming but are not data inputs to the planner or scoring engine.
+
+| Image source | How it is used |
+|---|---|
+| [Fine-Tuning Irrigation in Asia](https://science.nasa.gov/earth/earth-observatory/fine-tuning-irrigation-in-asia-148203/) | Illustrates thermal observation and irrigation context in Bangladesh. |
+| [Excessive Monsoon Rains Flood Asia](https://science.nasa.gov/earth/earth-observatory/excessive-monsoon-rains-flood-asia-147006/) | Illustrates monsoon rainfall and flooding context. |
+| [Food Crisis Grows from Dry Soils](https://earthobservatory.nasa.gov/images/145116/food-crisis-grows-from-dry-soils) | Illustrates soil-moisture context. |
+| [World of Change: Global Temperatures](https://earthobservatory.nasa.gov/world-of-change/global-temperatures) | Illustrates long-term temperature change. |
+| [NASA Data Aid Food Security Assessments in Kenya](https://earthobservatory.nasa.gov/images/147831/nasa-data-aid-food-security-assessments-in-kenya) | Illustrates vegetation monitoring and food-security context. |
+
 ## Product experience
 
 ### A field-first starting point
@@ -74,7 +97,7 @@ OrbitAgro uses visuals to explain the path from Earth observation to a farm deci
 - Location detection with a manual district fallback
 - Downloadable planting guidance and saved rotation choices
 
-## Run the complete demo
+## Install and run the complete demo
 
 ### Requirements
 
@@ -82,17 +105,55 @@ OrbitAgro uses visuals to explain the path from Earth observation to a farm deci
 - Docker with Compose
 - Python 3
 
-### One-command setup
+### 1. Install
 
 ```bash
 git clone https://github.com/km-wahid/NasaSpaceAppsChallange.git
 cd NasaSpaceAppsChallange
+```
+
+### 2. Build and run
+
+Prepare the included crop dataset, then build and start the application:
+
+```bash
+python3 database/prepare_import.py
+docker compose -f docker.yml up -d --build
+```
+
+Open [http://localhost:3333](http://localhost:3333).
+
+For a fresh database, load the prepared demo dataset after the containers start:
+
+```bash
+docker compose -f docker.yml exec -T postgres \
+  psql -v ON_ERROR_STOP=1 -U nasaweb -d nasaweb -f /imports/load_postgres.sql
+docker compose -f docker.yml restart app
+```
+
+### One-command alternative
+
+```bash
 ./setup.sh
 ```
 
-Open [http://localhost:3333](http://localhost:3333) when the script prints `Ready`.
-
 The setup script validates and prepares the included Bangladesh crop dataset, builds the application, starts PostgreSQL, runs migrations and seeders, imports the dataset into a fresh database, and waits for the website. Running it again preserves existing farmer data.
+
+### Production build
+
+To build the application directly from source:
+
+```bash
+cd app
+npm install
+npm run build
+```
+
+To build only the Docker image without starting the containers:
+
+```bash
+docker compose -f docker.yml build
+```
 
 ```bash
 # Follow application logs
