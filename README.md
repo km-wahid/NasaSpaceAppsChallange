@@ -57,7 +57,7 @@ Planner and explorer screenshots use the repository's non-persistent browser-tes
 
 OrbitAgro uses visuals to explain the path from Earth observation to a farm decision, not as decoration alone.
 
-- Local field footage and NASA Earth Observatory imagery establish the wider environmental context.
+- Local field footage & NASA Earth Observatory imagery establish the wider environmental context.
 - Animated climate layers, seasonal charts, crop calendars, map controls, and restrained transitions reveal change over time.
 - Motion pauses when the user requests reduced motion; the homepage video is also disabled for data-saving connections.
 - Posters, local media, lazy-loaded imagery, and mobile layouts keep the experience usable on slower devices.
