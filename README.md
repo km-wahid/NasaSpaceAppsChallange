@@ -97,7 +97,7 @@ OrbitAgro uses visuals to explain the path from Earth observation to a farm deci
 - Location detection with a manual district fallback
 - Downloadable planting guidance and saved rotation choices
 
-## Install and run the complete demo
+## Install and run
 
 ### Requirements
 
@@ -105,39 +105,33 @@ OrbitAgro uses visuals to explain the path from Earth observation to a farm deci
 - Docker with Compose
 - Python 3
 
-### 1. Install
+### Easy installation (recommended)
+
+Clone the project, enter its directory, and run the setup script:
 
 ```bash
 git clone https://github.com/km-wahid/NasaSpaceAppsChallange.git
 cd NasaSpaceAppsChallange
+./setup.sh
 ```
 
-### 2. Build and run
+Open [http://localhost:3333](http://localhost:3333) when the script finishes.
 
-Prepare the included crop dataset, then build and start the application:
+`setup.sh` validates and prepares the included Bangladesh crop dataset, builds the application, starts PostgreSQL, runs migrations and seeders, imports the dataset into a fresh database, and waits until the website is ready. Running it again preserves existing farmer data.
+
+### Alternative: manual installation
+
+If you prefer to run each setup step yourself:
 
 ```bash
 python3 database/prepare_import.py
 docker compose -f docker.yml up -d --build
-```
-
-Open [http://localhost:3333](http://localhost:3333).
-
-For a fresh database, load the prepared demo dataset after the containers start:
-
-```bash
 docker compose -f docker.yml exec -T postgres \
   psql -v ON_ERROR_STOP=1 -U nasaweb -d nasaweb -f /imports/load_postgres.sql
 docker compose -f docker.yml restart app
 ```
 
-### One-command alternative
-
-```bash
-./setup.sh
-```
-
-The setup script validates and prepares the included Bangladesh crop dataset, builds the application, starts PostgreSQL, runs migrations and seeders, imports the dataset into a fresh database, and waits for the website. Running it again preserves existing farmer data.
+Then open [http://localhost:3333](http://localhost:3333).
 
 ### Production build
 
